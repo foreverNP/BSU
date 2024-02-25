@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1293</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1293</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="open"/>
+    <addaction name="default_images"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Низкочастотные фильтры</string>
+    </property>
+    <addaction name="blur"/>
+    <addaction name="gaussian"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Глобальная пороговая обработка</string>
+    </property>
+    <addaction name="otsu_thresholding"/>
+    <addaction name="histogramm_thresholding"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>Адаптивная пороговая обработка</string>
+    </property>
+    <addaction name="adaptive_thresholding"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="open">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+  </action>
+  <action name="blur">
+   <property name="text">
+    <string>Однородный усредняющий фильтр</string>
+   </property>
+  </action>
+  <action name="gaussian">
+   <property name="text">
+    <string>Фильтр Гаусса</string>
+   </property>
+  </action>
+  <action name="default_images">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Использовать изображения по умолчанию</string>
+   </property>
+  </action>
+  <action name="adaptive_thresholding">
+   <property name="text">
+    <string>Адаптивная пороговая обработка по среднему значению</string>
+   </property>
+  </action>
+  <action name="otsu_thresholding">
+   <property name="text">
+    <string>Глобальная пороговая обработка Отсу</string>
+   </property>
+  </action>
+  <action name="histogramm_thresholding">
+   <property name="text">
+    <string>Глобальная пороговая обработка с помощью гистограммы</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
