@@ -4,7 +4,7 @@
 - Memory limit: 64 MB
         
 
-Two sequences are given $A$ and $B$, each with a length of $n$.Find the largest $k$ for which there are two index sequences $0 \le i_1 < i_2 <\ldots <i_k < n$ and $0 \le j_1 < j_2 < \ldots <j_k < n$, such that $A_{i_1} = B_{j_1}$, $A_{i_2} = B_{j_2}$, ..., $A_{i_k} = B_{j_k}$.You also need to find the index sequences themselves.
+Two sequences are given $A$ and $B$, each with a length of $n$.Find the largest $k$ for which there are two index sequences $(0 \le i_1 < i_2 <\ldots <i_k < n)$ and $(0 \le j_1 < j_2 < \ldots <j_k < n)$, such that $A_{i_1} = B_{j_1}$, $A_{i_2} = B_{j_2}$, ..., $A_{i_k} = B_{j_k}$.You also need to find the index sequences themselves.
 
 ## The format of the input data
  in the first line is the number $n$ ($1 \le n\le 1000$), the length of the sequences $A$ and $B$.The second line contains $n$ integers $a_i$ ($1 \le a_i \le 1000$) — elements of the sequence $A$.The third line contains $n$ integers $b_j$ ($1\le b_j \le 1000$) — elements of the sequence $B$.
