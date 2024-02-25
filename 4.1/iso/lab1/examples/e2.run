@@ -1,0 +1,7 @@
+reset;
+model e2.mod;
+data e2.dat;
+option solver cplex;
+solve;
+display z;
+display paint;

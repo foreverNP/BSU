@@ -1,0 +1,172 @@
+\documentclass[12pt]{article}
+ \usepackage[cp1251]{inputenc}
+ \usepackage[russian]{babel}
+ \usepackage{graphicx}
+ \usepackage{amsfonts,amssymb,eucal,amsmath}
+
+\textwidth 170 mm \textheight 255 mm
+\begin{document}
+\voffset = -3.0 cm \hoffset = -1.5 cm
+\parindent = 35pt
+\baselineskip 18pt \sloppy
+%\pagestyle{empty}
+
+
+\newcommand{\msum}{\mathop{\sum}\limits}
+\newcommand{\bN}{{\rm{\bf N}}}
+\newcommand{\bZ}{{\rm{\bf Z}}}
+\newcommand{\bQ}{{\rm{\bf Q}}}
+\newcommand{\m}{\mathop{\rm mod}\nolimits M}
+\newcommand{\rmod}{\mathop{\rm mod}\nolimits}
+\newcommand{\nmod}[1]{\; {\mathop{\rm mod \;}\nolimits} #1}
+\newcommand{\ndiv}[1]{\; {\mathop{\rm div \;}\nolimits} #1}
+\newcommand{\rmin}{\mathop{\rm min}\limits}
+\newcommand{\rmax}{\mathop{\rm max}\limits}
+\newcommand{\rlog}{\mathop{\rm log}\nolimits}
+\newcommand{\rlg}{\mathop{\rm lg}\nolimits}
+\newcommand{\rln}{\mathop{\rm ln}\nolimits}
+\newcommand{\Z}{{\rm {\bf Z}}}
+\newcommand{\N}{{\rm {\bf N}}}
+\newcommand{\R}{{\rm {\bf R}}}
+\newcommand{\0}{{\rm {\bf 0}}}
+\newfont{\wncyr}{wncyr10}
+
+
+
+\large
+
+\baselineskip 12pt
+
+Рассмотрим следующий алгоритм~ ("Параллельные вычисления", \S 6.8,
+пример 6.4)
+
+$
+\begin{array}{l}
+\hspace{0mm}  \mbox{\tt for i = 1 to N do}\\
+\hspace{6mm} \mbox{\tt for j = 1 to N do}\\
+\hspace{12mm} \mbox{\tt u(i+j) = u(2N+1-i-j)}\\
+\hspace{6mm}  \mbox{\tt enddo}\\
+\hspace{0mm} \mbox{\tt enddo}\\
+\end{array}
+$
+
+Гнездо циклов содержит один оператор $S_1:\ u(i+j)=u(2N+1-i-j),$
+$n_1=2,\ e=1,$ $V_1=\{\; (i,j)\in{\rm\bf Z}^2 \mid 1\le i,j\le N
+\;\}.$ Функции
+зависимостей:\\ %(см.~\cite{VV})
+$\overline\Phi^{(2)}_{1,1}(i,j)=
+    \begin{pmatrix}1&0\\-2&-1\end{pmatrix} \begin{pmatrix}i\\j\end{pmatrix}
+    +\begin{pmatrix}0\\2\end{pmatrix} N
+    -\begin{pmatrix}1\\-2\end{pmatrix},\
+    (i,j)\in V^{(2)}_{1,1} = \{\; (i,j)\in{\rm\bf Z}^2 \mid 1\le j,\ i+j\le N,\
+    N+2\le 2i+j \;\},$\\
+$\overline\Phi^{(3)}_{1,1}(i,j)=
+    \begin{pmatrix}1&0\\-2&-1\end{pmatrix} \begin{pmatrix}i\\j\end{pmatrix}
+    +\begin{pmatrix}0\\2\end{pmatrix} N
+    -\begin{pmatrix}0\\-1\end{pmatrix},\
+    (i,j)\in V^{(3)}_{1,1} = \{\; (i,j)\in{\rm\bf Z}^2 \mid j\le N,\ 2i+j\le 2N,\
+    N+1\le i+j \;\},$\\
+$\overline\Phi^{(4)}_{1,1}(i,j)=
+    \begin{pmatrix}-1&-1\\0&0\end{pmatrix} \begin{pmatrix}i\\j\end{pmatrix}
+    +\begin{pmatrix}2\\0\end{pmatrix} N
+    -\begin{pmatrix}0\\-1\end{pmatrix},\
+    (i,j)\in V^{(4)}_{1,1} = \{\; (i,j)\in{\rm\bf Z}^2 \mid i\le N,\ j\le N,\
+    i+j\le 2N-1,\ 2N+1\le 2i+j \;\}.$
+
+На рисунке~1 изображены область изменения параметров гнезда циклов
+$V_1$ и области определения функций зависимостей: область
+$V^{(2)}_{1,1}$
+--- это многогранник~2, область $V^{(3)}_{1,1}$
+---  многогранник~3, область $V^{(4)}_{1,1}$ ---
+многогранник~4, на многограннике~1 и в точке~$(N,N)$ функции
+зависимостей не определены.
+
+\noindent
+\parbox{\textwidth}{
+\unitlength=0.5cm  % для 12pt - 0.6mm
+\begin{center}
+\begin{picture}(19,18)
+\put(0,0){\vector(1,0){18}} \put(17.8,-0.8){$i$}
+\put(0,0){\vector(0,1){18}} \put(-0.7,17.5){$j$}
+\put(2,2){\line(1,0){14}} \put(2,16){\line(1,0){14}}
+\put(2,2){\line(0,1){14}} \put(16,2){\line(0,1){14}}
+%
+%\put(8,2){\line(-1,2){6}}
+\put(8.5,1){\line(-1,2){7}} \put(7.96,2){\line(-1,2){6}}
+\put(7.97,2){\line(-1,2){6}} \put(7.98,2){\line(-1,2){6}}
+\put(7.99,2){\line(-1,2){6}}
+%
+%\put(9,2){\line(-1,2){7}}
+\put(9.5,1){\line(-1,2){8}} \put(8.96,2){\line(-1,2){5}}
+\put(8.97,2){\line(-1,2){5}} \put(8.98,2){\line(-1,2){5}}
+\put(8.99,2){\line(-1,2){5}}
+%
+%\put(14,2){\line(-1,1){12}}
+\put(15,1){\line(-1,1){14}} \put(13.96,2){\line(-1,1){10}}
+\put(13.97,2){\line(-1,1){10}} \put(13.98,2){\line(-1,1){10}}
+\put(13.99,2){\line(-1,1){10}}
+%
+%\put(16,2){\line(-1,1){14}}
+\put(1,17){\line(1,-1){16}} \put(1.96,16){\line(1,-1){12}}
+\put(1.97,16){\line(1,-1){12}} \put(1.98,16){\line(1,-1){12}}
+\put(1.99,16){\line(1,-1){12}}
+%
+%\put(15,2){\line(-1,2){7}}
+\put(15.5,1){\line(-1,2){8}} \put(7.96,16){\line(1,-2){6}}
+\put(7.97,16){\line(1,-2){6}} \put(7.98,16){\line(1,-2){6}}
+\put(7.99,16){\line(1,-2){6}}
+%
+%\put(16,2){\line(-1,2){7}}
+\put(16.5,1){\line(-1,2){8}} \put(15.96,2){\line(-1,2){7}}
+\put(15.97,2){\line(-1,2){7}} \put(15.98,2){\line(-1,2){7}}
+\put(15.99,2){\line(-1,2){7}}
+%
+%\put(16,14){\line(-1,1){2}}
+\put(17,13){\line(-1,1){4}} \put(15.96,14){\line(-1,1){2}}
+\put(15.97,14){\line(-1,1){2}} \put(15.98,14){\line(-1,1){2}}
+\put(15.99,14){\line(-1,1){2}}
+%
+{\linethickness{0.4mm} \put(2,2){\line(1,0){6}}
+\put(9,2){\line(1,0){5}} \put(2,16){\line(1,0){6}}
+\put(9,16){\line(1,0){5}} \put(2,2){\line(0,1){12}}
+\put(16,2){\line(0,1){12}} } \put(4,6){\bf 1} \put(9,5){\bf 2}
+\put(7,13){\bf 3} \put(13,11){\bf 4} {\scriptsize
+\put(2,2){\circle*{0.2}}\put(1,1.4){(1,1)}
+\put(16,16){\circle*{0.2}}\put(16.2,16){(N,N)}
+\put(8,2){\circle*{0.2}}\put(6.5,1.4){(N/2,1)}
+\put(9,2){\circle*{0.2}}\put(8.5,1.4){((N+1)/2,1)}
+\put(10,2){\circle*{0.2}}\put(9.5,2.4){((N+2)/2,1)}
+\put(8,4){\circle*{0.2}}\put(8.2,4){(N/2,2)}
+\put(10,2){\line(-1,1){2}}
+\put(14,2){\circle*{0.2}}\put(13,1.4){(N-1,1)}
+\put(16,2){\circle*{0.2}}\put(15.5,1.4){(N,1)}
+\put(2,14){\circle*{0.2}}\put(0,14){(1,N-1)}
+\put(4,12){\circle*{0.2}}\put(3,12.4){(2,N-2)}
+\put(2,16){\circle*{0.2}}\put(1,16.4){(1,N)}
+\put(8,16){\circle*{0.2}}\put(6.2,16.4){(N/2,N)}
+\put(9,16){\circle*{0.2}}\put(8.5,16.4){((N+1)/2,N)}
+\put(10,16){\circle*{0.2}}\put(10.2,15.4){((N+2)/2,N)}
+\put(10,14){\circle*{0.2}}\put(10.2,14){((N+2)/2,N-1)}
+\put(10,14){\line(0,1){2}}
+\put(14,16){\circle*{0.2}}\put(13,16.4){(N-1,N)}
+\put(16,14){\circle*{0.2}}\put(16.2,14){(N,N-1)}
+\put(14,4){\circle*{0.2}}\put(13,3.4){(N-1,N)} }
+\end{picture}\\
+\textbf{{\small Рисунок~1 -- }Области определения функций
+зависимостей рассматриваемого алгоритма  }
+\end{center}%\vspace{-5mm}
+}
+
+
+На рисунке~1 отмечены точки для случая, когда внешняя переменная $N$
+есть число четное (в случае нечетного $N$ результаты аналогичные).
+
+Отметим, что область значений функции $\overline\Phi^{(2)}_{1,1}$
+--- подмножество точек многогранника~3, область значений функции
+$\overline\Phi^{(3)}_{1,1}$ --- подмножество точек многогранника~1
+и множество точек многогранника~2, область значений функции
+$\overline\Phi^{(4)}_{1,1}$ --- подмножество точек
+многогранников~1~и~2.
+
+
+\end{document}

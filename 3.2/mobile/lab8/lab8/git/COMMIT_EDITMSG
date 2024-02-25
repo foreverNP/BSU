@@ -1,0 +1,6 @@
+Merge branch 'dev'
+
+# Conflicts:
+#	app/build.gradle.kts
+#	app/src/main/java/com/mockcrypto/ui/screens/portfolio/PortfolioScreen.kt
+#	app/src/main/java/com/mockcrypto/ui/screens/portfolio/PortfolioViewModel.kt

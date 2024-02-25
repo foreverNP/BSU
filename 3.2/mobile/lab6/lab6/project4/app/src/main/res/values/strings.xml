@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PetShop</string>
+    <string name="app_title">Зоомагазин - Корма для животных</string>
+    <string name="filter_by_manufacturer">Производитель:</string>
+    <string name="sort_by">Сортировка:</string>
+    <string name="min_price">Минимальная цена:</string>
+    <string name="enter_price">Введите цену</string>
+    <string name="filter">Фильтр</string>
+    <string name="reset">Сброс</string>
+    <string name="refresh">Обновить</string>
+
+    <string-array name="sort_fields">
+        <item>По умолчанию</item>
+        <item>По названию</item>
+        <item>По цене</item>
+        <item>По количеству</item>
+    </string-array>
+
+    <string-array name="sort_order">
+        <item>По возрастанию</item>
+        <item>По убыванию</item>
+    </string-array>
+</resources>

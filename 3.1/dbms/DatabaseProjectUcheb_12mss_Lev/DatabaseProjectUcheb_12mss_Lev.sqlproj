@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.12-preview" />
+  <PropertyGroup>
+    <Name>DatabaseProjectUcheb_12mss_Lev</Name>
+    <ProjectGuid>{F22D4083-8240-4D9B-BF84-6A4E35AABE7A}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\docker-compose.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="common" />
+    <Folder Include="hotel" />
+    <Folder Include="hotel\create" />
+    <Folder Include="hotel\requests" />
+    <Folder Include="kr" />
+    <Folder Include="lab10" />
+    <Folder Include="lab11" />
+    <Folder Include="lab12" />
+    <Folder Include="lab18" />
+    <Folder Include="lab20" />
+    <Folder Include="lab4" />
+    <Folder Include="lab4\1.1" />
+    <Folder Include="lab4\1.2" />
+    <Folder Include="lab4\1.3" />
+    <Folder Include="lab4\1.4" />
+    <Folder Include="lab5" />
+    <Folder Include="lab5\1" />
+    <Folder Include="lab5\2" />
+    <Folder Include="lab5\3" />
+    <Folder Include="lab7" />
+    <Folder Include="lab9" />
+    <Folder Include="zachet" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Remove="lab5\1.3.sql" />
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
+  </Target>
+</Project>

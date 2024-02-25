@@ -1,0 +1,30 @@
+{
+    "city": "Душанбе",
+    "districts": [
+        {
+            "name": "Исмоили",
+            "num_objects": 211,
+            "available_resources": 60000
+        },
+        {
+            "name": "Сомони",
+            "num_objects": 263,
+            "available_resources": 70000
+        },
+        {
+            "name": "Сино",
+            "num_objects": 275,
+            "available_resources": 75000
+        },
+        {
+            "name": "Фирдавси",
+            "num_objects": 201,
+            "available_resources": 80000
+        },
+        {
+            "name": "Шохмансур",
+            "num_objects": 290,
+            "available_resources": 96000
+        }
+    ]
+}

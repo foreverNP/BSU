@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calculator16</string>
+    <string name="error_no_input">Please enter a number!</string>
+    <string name="error_not_a_number">Invalid input! Please enter a valid number.</string>
+    <string name="btn_convert_uk">to Yards²</string>
+    <string name="btn_convert_us">to Feet²</string>
+    <string name="unit_uk">yd²</string>
+    <string name="unit_us">ft²</string>
+</resources>

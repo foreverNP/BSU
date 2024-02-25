@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+  version="5.0">
+  <display-name>DemoThymeleaf Web Application</display-name>
+  
+  <resource-ref>
+        <description>My DataSource Reference</description>
+        <res-ref-name>jdbc/DSTest</res-ref-name>
+       <!--  <res-type>jakarta.activation.DataSource</res-type> -->
+        <res-type> javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+  </resource-ref>
+      <persistence-context-ref>
+            <description>
+                Persistence context for the application.
+            </description>
+            <persistence-context-ref-name>
+                persistence/AppMgr
+            </persistence-context-ref-name>
+            <persistence-unit-name>
+                simpleFactory2 <!-- Defined in persistence.xml -->
+            </persistence-unit-name>
+       </persistence-context-ref>      
+  
+<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

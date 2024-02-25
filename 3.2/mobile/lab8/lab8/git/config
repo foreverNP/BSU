@@ -1,0 +1,21 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = git@github.com:fpmi-pmvs2025/pmvs12b-lab8-dream_team_ye.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[branch "dev"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/dev
+[branch "pages"]
+	remote = origin
+	merge = refs/heads/pages
+	vscode-merge-base = origin/pages

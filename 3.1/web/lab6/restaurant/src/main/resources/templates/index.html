@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Restaurant Demo</title>
+        <link th:href="@{/css/style.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Welcome to Restaurant Demo!</h1>
+            <nav>
+                <ul>
+                    <li><a th:href="@{/clients}">Clients</a></li>
+                    <li><a th:href="@{/menuItems}">Menu Items</a></li>
+                    <li><a th:href="@{/orders}">Orders</a></li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

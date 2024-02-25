@@ -1,0 +1,26 @@
+{
+	"measuring": "temperature",
+	"timestamp": "2023-01-21T02:05:55.000Z ",
+	"device": [
+		{
+			"device_id": 4123,
+			"value": 69.67,
+			"status": "OK"
+		},
+		{
+			"device_id": 587,
+			"value": 19.67,
+			"status": "ERROR"
+		},
+		{
+			"device_id": 1524,
+			"value": 123,
+			"status": "ERROR"
+		},
+		{
+			"device_id": 97,
+			"value": 70,
+			"status": "OK"
+		}
+	]
+}

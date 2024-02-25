@@ -1,0 +1,1 @@
+docker run --name postgres-db -e POSTGRES_PASSWORD=apipass -e POSTGRES_DB=api -e POSTGRES_USER=apiuser -p 5432:5432 -d postgres:16.2-alpine

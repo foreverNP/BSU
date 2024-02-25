@@ -1,0 +1,91 @@
+ \documentclass[12pt]{article}
+ \setlength{\textwidth}{187mm} \setlength{\textheight}{272mm}
+ \setlength{\topmargin}{-28mm} \addtolength{\oddsidemargin}{-27.5mm}
+ \addtolength{\evensidemargin}{-37.5mm} \setlength{\baselineskip}{18pt}
+ \usepackage[cp1251]{inputenc}
+ \usepackage[russian]{babel}
+ \usepackage{graphicx}
+ \usepackage{amsfonts,amssymb,eucal,amsmath}
+%\documentstyle[12pt,russian]{article}
+%\textwidth 185 mm
+%\textheight 120 mm    % vysota texta na stranitse
+\begin{document}
+%\voffset = -3.0 cm    % verkhneye pole
+%\hoffset = -2.5 cm    % levoye pole
+%\parindent = 12pt     % otstup dla abzatsa na 5 bukv
+% \baselineskip = 16pt  % rasstoyaniye mezhdu strokami
+                      % 12 odin interval, 18 poltora, 24 dva
+
+\pagestyle{empty}
+
+ \sloppy
+ \normalsize
+ %\large
+
+
+% \centerline{Схематичное изображение тайлов с перекрытиями в плоскостях,}
+%  \centerline{параллельных $Oli$,  ($Q_1=4$, $Q_2=5$, $r_1=3$, $r_2=7$)}
+
+%\bigskip
+
+ %\smallskip
+
+
+\setlength{\unitlength}{0.9 mm}
+ \begin{picture}(170,60)
+{
+\small
+
+\put(0,0){\begin{picture}(55,60) {
+%
+% osi
+  \put(5,5){\vector(1,0){40}}
+  \put(5,5){\vector(0,1){40}}
+
+  \put(10,10){\line(1,1){30}}
+
+ \put(30.0,55.0){\makebox(0,0){strong scaling}}
+ \put(30.0,49.0){\makebox(0,0){$N_{fixed}$}}
+ \put(2.0,45.0){\makebox(0,0){$R$}}
+ \put(45.0,2.0){\makebox(0,0){$P$}}
+}
+\end{picture}}
+
+\put(60,0){\begin{picture}(55,60) {
+%
+% osi
+  \put(5,5){\vector(1,0){40}}
+  \put(5,5){\vector(0,1){40}}
+
+  \put(10,10){\line(1,1){30}}
+
+ \put(30.0,55.0){\makebox(0,0){weak scaling}}
+ \put(30.0,49.0){\makebox(0,0){$T_{fixed}$}}
+ \put(2.0,45.0){\makebox(0,0){$N$}}
+ \put(45.0,2.0){\makebox(0,0){$P$}}
+}
+\end{picture}}
+
+\put(120,0){\begin{picture}(55,60) {
+%
+% osi
+  \put(5,5){\vector(1,0){40}}
+  \put(5,5){\vector(0,1){40}}
+
+  \put(10,10){\line(1,1){30}}
+
+ \put(30.0,55.0){\makebox(0,0){wide scaling}}
+ \put(30.0,49.0){\makebox(0,0){$P_{fixed}$}}
+ \put(2.0,45.0){\makebox(0,0){$R$}}
+ \put(45.0,2.0){\makebox(0,0){$N$}}
+}
+\end{picture}}
+
+%
+}
+\end{picture}
+
+\end{document}
+
+
+{ 

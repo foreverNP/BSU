@@ -1,0 +1,11 @@
+model task.mod;
+data task.dat;
+
+option solver cplex;
+
+solve;
+
+display Profit;
+display {t in T, i in OILS} x[i,t];
+display {t in T, i in OILS} y[i,t];
+display {t in T, i in OILS} Inv[i,t];

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Order Details</title>
+        <link th:href="@{/css/style.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>
+                Order Details (ID:
+                <span th:text="${order.id}"></span>
+                )
+            </h1>
+            <p>
+                <strong>Client:</strong>
+                <span th:text="${order.client.name}"></span>
+            </p>
+            <p>
+                <strong>Status:</strong>
+                <span th:text="${order.status}"></span>
+            </p>
+            <p>
+                <strong>Total Price:</strong>
+                <span th:text="${order.totalPrice}"></span>
+            </p>
+
+            <h3>Items:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Menu Item</th>
+                        <th>Quantity</th>
+                        <th>Price (subtotal)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${order.orderItems}">
+                        <td th:text="${item.menuItem.name}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.price}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <a th:href="@{'/orders/addItem/' + ${order.id}}">
+                <button>Add Item to this Order</button>
+            </a>
+            <br />
+            <br />
+
+            <nav>
+                <ul>
+                    <li><a th:href="@{/orders}">Back to Orders</a></li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

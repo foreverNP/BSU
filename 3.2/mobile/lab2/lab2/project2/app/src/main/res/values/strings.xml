@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Угадай число</string>
+    <string name="try_to_guess">Попробуйте угадать число от 1 до 200</string>
+    <string name="input_value">Введите число</string>
+    <string name="error_no_input">Пожалуйста, введите число!</string>
+    <string name="error_not_a_number">Неверный ввод! Введите число.</string>
+    <string name="error_out_of_range">Число должно быть от 0 до 200.</string>
+    <string name="ahead">Ваше число меньше загаданного. Попробуйте больше.</string>
+    <string name="behind">Ваше число больше загаданного. Попробуйте меньше.</string>
+    <string name="hit">Поздравляем! Вы угадали число.</string>
+    <string name="play_more">Сыграть ещё</string>
+</resources>

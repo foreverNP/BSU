@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Login</title>
+        <script>
+            function onRoleChange() {
+                var role = document.getElementById("role").value;
+                document.getElementById("adminFields").style.display =
+                    role === "ADMIN" ? "block" : "none";
+                document.getElementById("clientFields").style.display =
+                    role === "USER" ? "block" : "none";
+            }
+        </script>
+    </head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .login-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        select {
+            background-color: #fff;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <body>
+        <form method="post" th:action="@{/app/login}">
+            <label for="role">Select role:</label>
+            <select id="role" name="role" required onchange="onRoleChange()">
+                <option value="" selected disabled>-- Select a role --</option>
+                <option value="ADMIN">Admin</option>
+                <option value="USER">User</option>
+                <option value="GUEST">Guest</option>
+            </select>
+            <br />
+            <br />
+
+            <div id="adminFields" style="display: none">
+                <label for="adminLogin">Admin Login:</label>
+                <input type="text" id="adminLogin" name="adminLogin" />
+                <br />
+                <label for="adminPassword">Admin Password:</label>
+                <input
+                    type="password"
+                    id="adminPassword"
+                    name="adminPassword" />
+            </div>
+
+            <div id="clientFields" style="display: none">
+                <label for="clientId">Client ID:</label>
+                <input type="text" id="clientId" name="clientId" />
+            </div>
+
+            <!-- Для гостя никаких полей не нужно -->
+
+            <br />
+            <button type="submit">Login</button>
+
+            <div th:if="${errorMessage}">
+                <p class="error" th:text="${errorMessage}"></p>
+            </div>
+        </form>
+    </body>
+</html>

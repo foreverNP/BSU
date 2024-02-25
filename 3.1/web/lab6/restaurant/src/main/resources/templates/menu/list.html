@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Menu Items</title>
+        <link th:href="@{/css/style.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Menu Items</h1>
+            <div class="mb-20">
+                <a th:href="@{/menuItems/create}">
+                    <button>Create new Menu Item</button>
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${menuItems}">
+                        <td th:text="${item.id}"></td>
+                        <td th:text="${item.name}"></td>
+                        <td th:text="${item.price}"></td>
+                        <td th:text="${item.category}"></td>
+                        <td>
+                            <a th:href="@{'/menuItems/edit/' + ${item.id}}">
+                                Edit
+                            </a>
+                            |
+                            <a th:href="@{'/menuItems/delete/' + ${item.id}}">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav>
+                <ul>
+                    <li><a th:href="@{/}">Back to Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

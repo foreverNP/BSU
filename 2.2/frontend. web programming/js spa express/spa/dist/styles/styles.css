@@ -1,0 +1,89 @@
+body,
+html {
+    font-family: 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.header-style {
+    padding: 10px;
+    font-size: 26px;
+    height: 12vh;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    display: flex;
+    background-color: #140e19;
+    color: #ffffff;
+}
+
+.menu-style {
+    text-decoration: none;
+    float: left;
+    max-width: 200px;
+    min-width: 200px;
+    height: 77vh;
+    background-color: #1d191f;
+}
+
+.maincontent-style {
+    vertical-align: top;
+    background: url('./img/icon.png') right repeat-y;
+    padding: 0;
+    height: 73vh;
+
+    overflow: auto;
+}
+
+.maincontent-table {
+    margin-right: 60px;
+}
+
+.maincontent-style p {
+    padding-right: 60px;
+}
+
+.maincontent-image {
+    min-width: 210px;
+    max-width: 32%;
+    height: auto;
+    padding: 0;
+    float: left;
+    margin: 10px;
+    margin-top: 0;
+    border-radius: 15px;
+}
+
+.footer-style {
+    height: 15vh;
+    background-color: #140e19;
+    color: #ffffff;
+    text-align: left;
+    clear: both;
+}
+
+ul {
+    list-style-type: none;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+ul li button {
+    text-decoration: none;
+    background-color: #1d191f;
+    color: #ffffff;
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    padding: 8px;
+    border: 0;
+}
+
+ul li button:hover {
+    background-color: #e6e6e6;
+    color: #1d191f;
+}

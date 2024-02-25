@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Calculator16</string>
+    <string name="error_title">Ошибка</string>
+    <string name="error_no_input">Пожалуйста, введите число!</string>
+    <string name="error_not_a_number">Неверный ввод! Введите корректное число.</string>
+    <string name="btn_convert_uk">В ярды²</string>
+    <string name="btn_convert_us">В футы²</string>
+    <string name="unit_uk">ярдов²</string>
+    <string name="unit_us">футов²</string>
+    <string name="btn_info">Доп. окно</string>
+    <string name="info_message">Добро пожаловать во второе окно!</string>
+    <string name="btn_back">Назад</string>
+    <string name="advanced_mode">Расширенный режим</string>
+    <string name="advanced_mode_on">Расширенный режим включен</string>
+    <string name="advanced_mode_off">Расширенный режим отключен</string>
+</resources>

@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<a href="welcome/home"> Demo</a>
+<p>Please select an option</p>
+    <ol>
+      <li><a href="welcome/students/list" th:href="@{/student/list}">Student List1</a></li>
+      <li><a href="welcome/students/list" th:href="@{/students/list}">Student List2</a></li>
+       <li><a href="/students/list" th:href="@{welcome/students/list}">Student List3</a></li>
+       <li><a href="students/list" th:href="@{welcome/students/list}">Student List4</a></li>
+       <li><a href="/students/list" th:href="@{/welcome/students/list}">Student List5</a></li>
+       <li><a href="/students/list" th:href="@{/welcome}">Student List6</a></li>
+        <li><a  href="students/list" th:href="@{/welcome}" >Student List7</a></li>
+     
+      <li><a href="subject/list.html" th:href="@{welcome/order/list}">Order List</a></li>
+     
+      <li><a href="userprofile.html" th:href="@{/userprofile}">See User Profile</a></li>
+    </ol>
+<FORM action="welcome?par1=val1" method="POST">
+		<INPUT type="submit" value="Вызвать сервлет">
+</FORM>
+</body></html>

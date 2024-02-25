@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Order Payment</title>
+    </head>
+    <body>
+        <h1>Order Payment</h1>
+        <form method="post" th:action="@{/app/client/order/pay}">
+            <label for="orderId">Order ID:</label>
+            <input type="text" id="orderId" name="orderId" required />
+            <button type="submit">Pay</button>
+        </form>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </body>
+</html>

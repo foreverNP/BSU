@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Create Menu Item</title>
+    </head>
+    <body>
+        <h1>Create Menu Item</h1>
+        <form method="post" th:action="@{/app/admin/menu/create}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required />
+            <br />
+
+            <label for="price">Price:</label>
+            <input type="text" id="price" name="price" required />
+            <br />
+
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="" disabled selected>
+                    -- Select a Category --
+                </option>
+                <option value="main course">Main Course</option>
+                <option value="dessert">Dessert</option>
+                <option value="drink">Drink</option>
+            </select>
+            <br />
+
+            <button type="submit">Create</button>
+        </form>
+
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </body>
+</html>

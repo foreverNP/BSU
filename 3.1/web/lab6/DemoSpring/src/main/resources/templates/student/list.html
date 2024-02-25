@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <title>Facilty Center</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../../css/default.css" th:href="@{/css/default.css}" />
+  </head>
+
+  <body>
+
+    <h1>Faculty Center</h1>
+   
+    <table>
+      <tr>
+        <th>STUDENT FirstName</th>
+        <th>STUDENT LastName</th>
+        <th>Data</th>
+        <th></th>
+      </tr>
+      <tr th:each="s : ${students}" th:class="${sStat.odd}? 'odd'">
+       
+        <td th:text="${s.firstName}">13 jan 2023</td>
+        <td th:text="${s.lastName}">Frederic Tomato</td>
+         <td th:text="${#dates.format(s.startDate,'dd-MM-yyyy')}">13 jan 2011</td>
+       
+        <td>
+         
+        </td>
+      </tr>
+    </table>
+
+  
+    <p>
+      <a href="welcom/home.html" th:href="@{/}">Return to home</a>
+    </p>
+  
+   
+  </body>
+  
+</html>
+

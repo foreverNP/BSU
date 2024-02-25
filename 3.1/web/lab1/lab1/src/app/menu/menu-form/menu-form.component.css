@@ -1,0 +1,21 @@
+.container {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item > div {
+  flex-grow: 1;
+}
+
+button {
+  margin-left: 10px;
+}

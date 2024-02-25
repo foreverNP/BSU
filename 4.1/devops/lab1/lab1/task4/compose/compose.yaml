@@ -1,0 +1,55 @@
+name: simple-python-app
+services:
+    web:
+        image: nginx:alpine
+        ports:
+            - "80:80"
+        networks:
+            - frontend-net
+        volumes:
+            - type: bind
+              source: ./nginx/app.conf
+              target: /etc/nginx/conf.d/default.conf
+              read_only: true
+        depends_on:
+            - simple_python_app
+
+    simple_python_app:
+        image: simple_python_app:${APP_VERSION:-latest}
+        build: ./simple_python_app
+        environment:
+            API_DB_HOST: db
+            API_DB_PASS: apipass
+            API_DB_NAME: api
+            API_DB_USER: apiuser
+        networks:
+            - frontend-net
+            - backend-net
+        depends_on:
+            db:
+                condition: service_healthy
+                restart: true
+    db:
+        image: postgres:16.2-alpine
+        environment:
+            POSTGRES_PASSWORD: apipass
+            POSTGRES_DB: api
+            POSTGRES_USER: apiuser
+        volumes:
+            - dbdata:/var/lib/postgresql/data
+        networks:
+            - backend-net
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+            start_interval: 1s
+
+networks:
+    frontend-net:
+    backend-net:
+
+volumes:
+    dbdata:

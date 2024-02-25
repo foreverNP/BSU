@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F566D393-C210-428A-A269-BF5E4CB4C75C}|TwoModules\\TwoModules.vcxproj|D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\TwoModules.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F566D393-C210-428A-A269-BF5E4CB4C75C}|TwoModules\\TwoModules.vcxproj|solutionrelative:TwoModules\\TwoModules.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F566D393-C210-428A-A269-BF5E4CB4C75C}|TwoModules\\TwoModules.vcxproj|D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\Mod2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F566D393-C210-428A-A269-BF5E4CB4C75C}|TwoModules\\TwoModules.vcxproj|solutionrelative:TwoModules\\Mod2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F566D393-C210-428A-A269-BF5E4CB4C75C}|TwoModules\\TwoModules.vcxproj|D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\Mod3.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F566D393-C210-428A-A269-BF5E4CB4C75C}|TwoModules\\TwoModules.vcxproj|solutionrelative:TwoModules\\Mod3.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Mod3.cpp",
+              "DocumentMoniker": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\Mod3.cpp",
+              "RelativeDocumentMoniker": "TwoModules\\Mod3.cpp",
+              "ToolTip": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\Mod3.cpp",
+              "RelativeToolTip": "TwoModules\\Mod3.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-02-20T12:49:43.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TwoModules.cpp",
+              "DocumentMoniker": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\TwoModules.cpp",
+              "RelativeDocumentMoniker": "TwoModules\\TwoModules.cpp",
+              "ToolTip": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\TwoModules.cpp",
+              "RelativeToolTip": "TwoModules\\TwoModules.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB8AAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-02-20T12:46:34.571Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Mod2.cpp",
+              "DocumentMoniker": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\Mod2.cpp",
+              "RelativeDocumentMoniker": "TwoModules\\Mod2.cpp",
+              "ToolTip": "D:\\DZ\\UNIK\\MT\\nastya\\slnTwoModules\\TwoModules\\Mod2.cpp",
+              "RelativeToolTip": "TwoModules\\Mod2.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-02-20T12:46:33.659Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

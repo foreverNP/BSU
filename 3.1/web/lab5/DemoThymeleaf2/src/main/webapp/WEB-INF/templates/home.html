@@ -1,0 +1,29 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head> 
+    <title>Thymeleaf Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+	<!--<p>  Welcome to Thymeleaf World!</p>-->
+    <p th:utext="#{welcome.msg}">Welcome Offline</p> 
+    <p>Date : <span th:text="${today.time}">Sat Oct 28 2023</span></p>
+    
+<!--    <p>Date_3 : <span th:text="${session.calend.time}">Sat Oct 28 2023</span></p>-->
+     
+    
+<p>Please select an option</p>
+    <ol>     
+      <li><a href="/students/list" th:href="@{/students/list}">Student List</a></li>
+       
+     
+      <li><a href="subject/list.html" th:href="@{/subject/list}">Order List</a></li>
+      <li><a href="subscribe.html" th:href="@{/subscribe}">Subscribe</a></li>
+      <li><a href="userprofile.html" th:href="@{/userprofile}">See User Profile</a></li>
+    </ol>
+
+      
+      
+        
+  </body>
+</html>

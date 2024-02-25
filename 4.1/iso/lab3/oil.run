@@ -1,0 +1,34 @@
+model oil.mod;
+data oil.dat;
+
+option solver cplex;  
+
+solve;
+
+printf "Minimum transportation cost: %d\n", total_cost;
+printf "Total processing volume: %.0f thousand barrels\n\n", sum{i in 1..N} flow_source[i];
+
+printf "Flows from wells to factories:\n";
+printf "%-10s", "Well\\Factory";
+for {j in 1..M} {
+    printf "%8s%d", "Fact", j;
+}
+printf "\n";
+
+for {i in 1..N} {
+    printf "Well %d     ", i;
+    for {j in 1..M} {
+        printf "%8.2f", flow[i,j];
+    }
+    printf "\n";
+}
+
+printf "\nExtraction from wells:\n";
+for {i in 1..N} {
+    printf "Well %d: %.2f / %d\n", i, flow_source[i], a[i];
+}
+
+printf "\nDelivery to factories:\n";
+for {j in 1..M} {
+    printf "Factory %d: %.2f / %d\n", j, flow_sink[j], b[j];
+}

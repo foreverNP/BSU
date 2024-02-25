@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/background_color"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:id="@+id/linearInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/tvInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/try_to_guess"
+            android:textSize="22sp"
+            android:textColor="@color/text_color" />
+
+        <EditText
+            android:id="@+id/etInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="@string/input_value"
+            android:inputType="number"
+            android:padding="8dp"
+            android:background="@drawable/edittext_bg"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/bControl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_more"
+            android:background="@drawable/button_bg"
+            android:textColor="@color/white"
+            android:onClick="onClick"
+            android:padding="12dp" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearInput"
+        android:layout_marginTop="16dp"
+        android:max="10"
+        android:progress="0" />
+
+    <FrameLayout
+        android:id="@+id/frameImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/progressBar"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sample_image"
+            android:layout_gravity="center"
+            android:contentDescription="@string/image_desc" />
+    </FrameLayout>
+</RelativeLayout>

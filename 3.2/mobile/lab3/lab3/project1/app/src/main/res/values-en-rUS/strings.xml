@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Guess the Number</string>
+    <string name="try_to_guess">Try to guess the number between 1 and 200</string>
+    <string name="input_value">Enter a number</string>
+    <string name="error_no_input">Please, enter a number!</string>
+    <string name="error_not_a_number">Invalid input! Please enter a number.</string>
+    <string name="error_out_of_range">The number must be between 0 and 200.</string>
+    <string name="ahead">Your guess is too low. Try a higher number.</string>
+    <string name="behind">Your guess is too high. Try a lower number.</string>
+    <string name="hit">Congratulations! You guessed the number.</string>
+    <string name="play_more">Play Again</string>
+    <string name="image_desc">Demo image</string>
+    <string name="congrats_title">Congratulations!</string>
+    <string name="congrats_message">You guessed the number in %1$d attempts!</string>
+    <string name="new_game">New Game</string>
+
+</resources>

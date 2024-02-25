@@ -1,0 +1,37 @@
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    networks:
+      - app_network
+    container_name: jaeger
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+    restart: unless-stopped
+
+  dice-app:
+    build: .
+    container_name: dice-app
+    networks:
+      - app_network
+    depends_on:
+      - jaeger
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=8080
+      - OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=dice-server
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+networks:
+  app_network:
+    driver: bridge

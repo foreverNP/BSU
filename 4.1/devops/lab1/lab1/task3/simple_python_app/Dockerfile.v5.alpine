@@ -1,0 +1,23 @@
+FROM python:3.11.1-alpine AS builder
+# -- Медленные операции --
+#   Установка   системных   зависимостей   (в   т.ч.   для зависимостей python)
+RUN apk update \
+    && apk add --no-cache gcc musl-dev postgresql-dev
+
+# Установка зависмостей python в диррекиторию /app/wheels
+RUN  --mount=type=bind,source=requirements.txt,target=/app/requirements.txt \
+    pip  wheel  --no-cache-dir  --no-deps  -r /app/requirements.txt --wheel-dir /app/wheels
+
+
+FROM python:3.11.1-alpine
+# Копирование собранных файлов python из образа builder
+COPY --from=builder /app/wheels /wheels
+#   Установка   зависимостей,   которые   нужны   для   работы приложения
+RUN apk add --no-cache libpq
+# Устанавливаем зависимости python не пересобирая их
+RUN pip install --no-cache --no-cache-dir /wheels/*
+# Копирование кода приложения
+COPY app.py /app/
+# Установка рабочей директории
+WORKDIR /app
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0"]

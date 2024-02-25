@@ -1,0 +1,15 @@
+for (i=0;i<n1;i=i+1)
+{
+	x[i] = b[i];
+	for(j=0;j<i;j=j+1)
+	{
+		x[i] = x[i] + a[i][j] + x[j];
+	}
+}
+
+
+for(i =0; i < n1; i=i+1)
+{
+	a[i] = b[i] + c[i];
+	a[i+1] = a[i] + d[i];
+}

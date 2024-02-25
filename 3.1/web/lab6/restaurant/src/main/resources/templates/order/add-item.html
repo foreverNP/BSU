@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Add Item to Order</title>
+        <link th:href="@{/css/style.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>
+                Add Item to Order (ID:
+                <span th:text="${order.id}"></span>
+                )
+            </h1>
+            <form th:action="@{'/orders/addItem/' + ${order.id}}" method="post">
+                <label>Menu Item:</label>
+                <br />
+                <select name="menuItemId">
+                    <option
+                        th:each="menuItem : ${menuItems}"
+                        th:value="${menuItem.id}"
+                        th:text="${menuItem.name}"></option>
+                </select>
+                <br />
+                <br />
+
+                <label>Quantity:</label>
+                <br />
+                <input type="number" name="quantity" value="1" />
+                <br />
+                <br />
+
+                <button type="submit">Add</button>
+            </form>
+            <nav>
+                <ul>
+                    <li>
+                        <a th:href="@{'/orders/' + ${order.id}}">
+                            Back to Order Details
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

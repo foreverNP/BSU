@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Menu</title>
+    </head>
+    <body>
+        <h1>Administrator Menu</h1>
+        <ul>
+            <li th:each="item : ${menu.menuItems}">
+                <span th:text="${item.name}">Dish Name</span>
+                -
+                <span th:text="${item.price}">Price</span>
+            </li>
+        </ul>
+        <p>
+            Number of visits:
+            <span th:text="${visitCount}">0</span>
+        </p>
+        <p>
+            Last visit:
+            <span th:text="${lastVisit}">Never</span>
+        </p>
+    </body>
+</html>

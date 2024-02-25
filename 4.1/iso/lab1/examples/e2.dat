@@ -1,0 +1,5 @@
+param n:= 2;
+param t:= 40;
+param p:= 1 10 2 15;
+param r:= 1 40 2 30;
+param m:= 1 1000 2 860;

@@ -1,0 +1,312 @@
+Microsoft (R) Macro Assembler (x64) Version 14.12.25835.0   09/25/25 20:12:10
+ddos.txt						     Page 1 - 1
+
+
+				extrn MessageBoxA: PROC
+				extrn ExitProcess:PROC
+				extrn CreateThread:PROC
+				extrn FindWindowA:PROC
+				extrn MoveWindow:PROC
+				extrn Sleep:PROC
+
+ 00000000			.data
+ 00000000 36 34 2D 62 69	caption             db      '64-bit hello', 0
+	   74 20 68 65 6C
+	   6C 6F 00
+ 0000000D 48 65 6C 6C 6F	message             db      'Hello, world', 0
+	   2C 20 77 6F 72
+	   6C 64 00
+ 0000001A 00000000		HWINDOW             dword   ?
+ 0000001E 0000000A		SLEEP_DURATION      dword   10 
+ 00000022 000001C2		CURRENT_X           dword   450
+ 00000026 0000015E		CURRENT_Y           dword   350
+ 0000002A 00000085		MSGBOX_WIDTH        dword   133               
+ 0000002E 0000008C		MSGBOX_HEIGHT       dword   140               
+ 00000032 0000058C		SCREEN_WIDTH        dword   1420              
+ 00000036 00000370		SCREEN_HEIGHT       dword   880
+ 0000003A 00000003		SPEED_Y             dword   3
+ 0000003E 00000002		SPEED_X             dword   2
+ 00000042 00000001		DIRECTION_X         dword   1
+ 00000046 00000001		DIRECTION_Y         dword   1
+ 0000004A 00000000		CHAOS_COUNTER       dword   0 
+ 0000004E 00000014		CHAOS_THRESHOLD     dword   20
+ 00000052 00000008		MAX_SPEED           dword   8
+ 00000056 00000001		MIN_SPEED           dword   1
+
+ 00000000			.code
+
+ 00000000			Start proc
+
+				;CreateThread(0,0,Thread_Func, 0, 0, 0)
+ 00000000  48/ C7 C1		    mov RCX, 0           
+	   00000000
+ 00000007  48/ C7 C2		    mov RDX, 0           
+	   00000000
+ 0000000E  49/ B8		    mov R8,  Move 
+	   00000000000000B6 R
+ 00000018  49/ C7 C1		    mov R9,  0           
+	   00000000
+ 0000001F  48/ 83 EC 0C		    sub RSP, 12          
+ 00000023  48/ C7 04 24		    mov qword ptr [RSP], 0     
+	   00000000
+ 0000002B  C7 44 24 08		    mov dword ptr [RSP + 8], 0 
+	   00000000
+ 00000033  E8 00000000 E	    call CreateThread
+ 00000038  48/ 83 C4 0C		    add RSP, 12
+				    
+ 0000003C  48/ 83 EC 28		    sub rsp,28h 
+ 00000040  48/ C7 C1		    mov rcx, 0 
+	   00000000
+ 00000047  48/ 8D 15		    lea rdx, message 
+	   0000000D R
+ 0000004E  4C/ 8D 05		    lea r8, caption 
+	   00000000 R
+ 00000055  41/ B9		    mov r9d, 0 
+	   00000000
+ 0000005B  E8 00000000 E	    call MessageBoxA
+ 00000060  48/ 83 C4 28		    add RSP,28h
+
+
+
+
+ 00000064  48/ 83 EC 28		    sub rsp,28h 
+ 00000068  C6 05 00000014 R	    mov message+7,'h'
+	   68
+ 0000006F  C6 05 00000015 R	    mov message+8, 'e'
+	   65
+ 00000076  C6 05 00000016 R	    mov message+9,'l'
+	   6C
+ 0000007D  C6 05 00000017 R	    mov message+10,'l'
+	   6C
+ 00000084  C6 05 00000018 R	    mov message+11,'!'
+	   21
+ 0000008B  C6 05 0000000B R	    mov caption+11,'!'
+	   21
+ 00000092  48/ C7 C1		    mov rcx, 0 
+	   00000000
+ 00000099  48/ 8D 15		    lea rdx, message
+	   0000000D R
+ 000000A0  4C/ 8D 05		    lea r8, caption
+	   00000000 R
+ 000000A7  41/ B9		    mov r9d, 0 
+	   00000000
+ 000000AD  E8 00000000 E	    call MessageBoxA
+ 000000B2  48/ 83 C4 28		    add rsp,28h 
+				    
+ 000000B6			Start endp
+
+ 000000B6			Move proc
+
+				;Find_WIndow(0,caption) return handler in EAX
+ 000000B6			FIND:
+ 000000B6  48/ C7 C1		    mov  RCX, 0              
+	   00000000
+ 000000BD  48/ 8D 15		    lea  RDX, [caption] 
+	   00000000 R
+ 000000C4  E8 00000000 E	    call FindWindowA    
+ 000000C9  48/ 83 F8 00		    cmp  RAX, 0
+ 000000CD  74 E7		    je FIND
+
+ 000000CF  89 05 0000001A R	    mov [HWINDOW], EAX
+
+ 000000D5			CHAOS_LOOP:
+				    ; Пауза для плавности движения
+ 000000D5  8B 0D 0000001E R	    mov ECX, [SLEEP_DURATION]
+ 000000DB  E8 00000000 E	    call Sleep
+
+				    ; Увеличиваем счетчик хаоса
+ 000000E0  FF 05 0000004A R	    inc dword ptr [CHAOS_COUNTER]
+				    
+				    ; Генерируем хаос (изменяем направление и скорость)
+ 000000E6  E8 0000006D		    call GenerateChaos
+				    
+				    ; Вычисляем новую позицию X
+ 000000EB  8B 05 0000003E R	    mov EAX, [SPEED_X]
+ 000000F1  0F AF 05		    imul EAX, [DIRECTION_X]  ; Умножаем скорость на направление
+	   00000042 R
+ 000000F8  01 05 00000022 R	    add [CURRENT_X], EAX
+				    
+				    ; Вычисляем новую позицию Y  
+ 000000FE  8B 05 0000003A R	    mov EAX, [SPEED_Y]
+ 00000104  0F AF 05		    imul EAX, [DIRECTION_Y]  ; Умножаем скорость на направление
+	   00000046 R
+ 0000010B  01 05 00000026 R	    add [CURRENT_Y], EAX
+				    
+				    ; Проверяем границы экрана
+ 00000111  E8 000000B9		    call CheckBoundaries  
+
+
+				    ; Перемещаем окно
+ 00000116  8B 0D 0000001A R	    mov ECX, [HWINDOW]
+ 0000011C  8B 15 00000022 R	    mov EDX, [CURRENT_X]
+ 00000122  44/ 8B 05		    mov R8D, [CURRENT_Y]
+	   00000026 R
+ 00000129  44/ 8B 0D		    mov R9D, [MSGBOX_WIDTH]
+	   0000002A R
+ 00000130  8B 05 0000002E R	    mov EAX, [MSGBOX_HEIGHT]
+ 00000136  89 44 24 20		    mov dword ptr [RSP+20h], EAX
+ 0000013A  C7 44 24 28		    mov dword ptr [RSP+28h], 1
+	   00000001
+ 00000142  E8 00000000 E	    call MoveWindow
+
+ 00000147  83 F8 00		    cmp EAX, 0
+ 0000014A  75 89		    jne CHAOS_LOOP
+
+				    ; Выход из программы
+ 0000014C  48/ C7 C1		    mov RCX, 0   
+	   00000000
+ 00000153  E8 00000000 E	    call ExitProcess
+
+				; Процедура генерации хаоса
+ 00000158			GenerateChaos proc
+ 00000158  8B 05 0000004A R	    mov EAX, [CHAOS_COUNTER]
+ 0000015E  3B 05 0000004E R	    cmp EAX, [CHAOS_THRESHOLD]
+ 00000164  7C 1C		    jl RANDOM_CHANGES
+				    
+ 00000166  C7 05 0000004A R	    mov dword ptr [CHAOS_COUNTER], 0
+	   00000000
+				    
+ 00000170  66| 0F C7 F0		    rdrand AX
+ 00000174  66| 83 E0 1F		    and AX, 1Fh     
+ 00000178  66| 83 C0 0A		    add AX, 10    
+ 0000017C  89 05 0000004E R	    mov [CHAOS_THRESHOLD], EAX
+
+ 00000182			RANDOM_CHANGES:
+ 00000182  66| 0F C7 F0		    rdrand AX
+ 00000186  66| 83 E0 07		    and AX, 7          ; 0-7
+ 0000018A  66| 83 F8 01		    cmp AX, 1
+ 0000018E  75 06		    jne SKIP_DIR_X
+ 00000190  F7 1D 00000042 R	    neg dword ptr [DIRECTION_X]
+				    
+ 00000196			SKIP_DIR_X:
+ 00000196  66| 0F C7 F0		    rdrand AX
+ 0000019A  66| 83 E0 07		    and AX, 7
+ 0000019E  66| 83 F8 01		    cmp AX, 1
+ 000001A2  75 06		    jne SKIP_DIR_Y
+ 000001A4  F7 1D 00000046 R	    neg dword ptr [DIRECTION_Y]
+				    
+ 000001AA			SKIP_DIR_Y:
+ 000001AA  66| 0F C7 F0		    rdrand AX
+ 000001AE  66| 83 E0 07		    and AX, 7          ; 0-7
+ 000001B2  66| 83 C0 01		    add AX, 1          ; 1-8
+ 000001B6  89 05 0000003E R	    mov [SPEED_X], EAX
+				    
+ 000001BC  66| 0F C7 F0		    rdrand AX
+ 000001C0  66| 83 E0 07		    and AX, 7
+ 000001C4  66| 83 C0 01		    add AX, 1
+ 000001C8  89 05 0000003A R	    mov [SPEED_Y], EAX
+				    
+ 000001CE  C3			    ret
+ 000001CF			GenerateChaos endp
+
+				; Процедура проверки границ экрана
+ 000001CF			CheckBoundaries proc
+				    ; Проверяем левую границу
+ 000001CF  8B 05 00000022 R	    mov EAX, [CURRENT_X]
+ 000001D5  83 F8 00		    cmp EAX, 0
+ 000001D8  7D 16		    jge CHECK_RIGHT
+ 000001DA  C7 05 00000022 R	    mov dword ptr [CURRENT_X], 5
+	   00000005
+ 000001E4  C7 05 00000042 R	    mov dword ptr [DIRECTION_X], 1
+	   00000001
+ 000001EE  EB 33		    jmp CHECK_TOP
+				    
+ 000001F0			CHECK_RIGHT:
+				    ; Проверяем правую границу  
+ 000001F0  8B 05 00000022 R	    mov EAX, [CURRENT_X]
+ 000001F6  03 05 0000002A R	    add EAX, [MSGBOX_WIDTH]
+ 000001FC  3B 05 00000032 R	    cmp EAX, [SCREEN_WIDTH]
+ 00000202  7E 1F		    jle CHECK_TOP
+ 00000204  8B 05 00000032 R	    mov EAX, [SCREEN_WIDTH]
+ 0000020A  2B 05 0000002A R	    sub EAX, [MSGBOX_WIDTH]
+ 00000210  83 E8 05		    sub EAX, 5
+ 00000213  89 05 00000022 R	    mov [CURRENT_X], EAX
+ 00000219  C7 05 00000042 R	    mov dword ptr [DIRECTION_X], -1
+	   FFFFFFFF
+				    
+ 00000223			CHECK_TOP:
+				    ; Проверяем верхнюю границу
+ 00000223  8B 05 00000026 R	    mov EAX, [CURRENT_Y]
+ 00000229  83 F8 00		    cmp EAX, 0
+ 0000022C  7D 16		    jge CHECK_BOTTOM
+ 0000022E  C7 05 00000026 R	    mov dword ptr [CURRENT_Y], 5
+	   00000005
+ 00000238  C7 05 00000046 R	    mov dword ptr [DIRECTION_Y], 1
+	   00000001
+ 00000242  EB 33		    jmp BOUNDARIES_DONE
+				    
+ 00000244			CHECK_BOTTOM:
+				    ; Проверяем нижнюю границу
+ 00000244  8B 05 00000026 R	    mov EAX, [CURRENT_Y]
+ 0000024A  03 05 0000002E R	    add EAX, [MSGBOX_HEIGHT]
+ 00000250  3B 05 00000036 R	    cmp EAX, [SCREEN_HEIGHT]
+ 00000256  7E 1F		    jle BOUNDARIES_DONE
+ 00000258  8B 05 00000036 R	    mov EAX, [SCREEN_HEIGHT]
+ 0000025E  2B 05 0000002E R	    sub EAX, [MSGBOX_HEIGHT]
+ 00000264  83 E8 05		    sub EAX, 5
+ 00000267  89 05 00000026 R	    mov [CURRENT_Y], EAX
+ 0000026D  C7 05 00000046 R	    mov dword ptr [DIRECTION_Y], -1
+	   FFFFFFFF
+				    
+ 00000277			BOUNDARIES_DONE:
+ 00000277  C3			    ret
+ 00000278			CheckBoundaries endp
+ 00000278			Move endp
+				End
+				    
+Microsoft (R) Macro Assembler (x64) Version 14.12.25835.0   09/25/25 20:12:10
+ddos.txt						     Symbols 2 - 1
+
+
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+CheckBoundaries  . . . . . . . .	P 	 000001CF _TEXT	Length= 000000A9 Public
+  CHECK_RIGHT  . . . . . . . . .	L 	 000001F0 _TEXT	
+  CHECK_TOP  . . . . . . . . . .	L 	 00000223 _TEXT	
+  CHECK_BOTTOM . . . . . . . . .	L 	 00000244 _TEXT	
+  BOUNDARIES_DONE  . . . . . . .	L 	 00000277 _TEXT	
+GenerateChaos  . . . . . . . . .	P 	 00000158 _TEXT	Length= 00000077 Public
+  RANDOM_CHANGES . . . . . . . .	L 	 00000182 _TEXT	
+  SKIP_DIR_X . . . . . . . . . .	L 	 00000196 _TEXT	
+  SKIP_DIR_Y . . . . . . . . . .	L 	 000001AA _TEXT	
+Move . . . . . . . . . . . . . .	P 	 000000B6 _TEXT	Length= 000001C2 Public
+  FIND . . . . . . . . . . . . .	L 	 000000B6 _TEXT	
+  CHAOS_LOOP . . . . . . . . . .	L 	 000000D5 _TEXT	
+Start  . . . . . . . . . . . . .	P 	 00000000 _TEXT	Length= 000000B6 Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+CHAOS_COUNTER  . . . . . . . . .	DWord	 0000004A _DATA	
+CHAOS_THRESHOLD  . . . . . . . .	DWord	 0000004E _DATA	
+CURRENT_X  . . . . . . . . . . .	DWord	 00000022 _DATA	
+CURRENT_Y  . . . . . . . . . . .	DWord	 00000026 _DATA	
+CreateThread . . . . . . . . . .	L 	 00000000 External
+DIRECTION_X  . . . . . . . . . .	DWord	 00000042 _DATA	
+DIRECTION_Y  . . . . . . . . . .	DWord	 00000046 _DATA	
+ExitProcess  . . . . . . . . . .	L 	 00000000 External
+FindWindowA  . . . . . . . . . .	L 	 00000000 External
+HWINDOW  . . . . . . . . . . . .	DWord	 0000001A _DATA	
+MAX_SPEED  . . . . . . . . . . .	DWord	 00000052 _DATA	
+MIN_SPEED  . . . . . . . . . . .	DWord	 00000056 _DATA	
+MSGBOX_HEIGHT  . . . . . . . . .	DWord	 0000002E _DATA	
+MSGBOX_WIDTH . . . . . . . . . .	DWord	 0000002A _DATA	
+MessageBoxA  . . . . . . . . . .	L 	 00000000 External
+MoveWindow . . . . . . . . . . .	L 	 00000000 External
+SCREEN_HEIGHT  . . . . . . . . .	DWord	 00000036 _DATA	
+SCREEN_WIDTH . . . . . . . . . .	DWord	 00000032 _DATA	
+SLEEP_DURATION . . . . . . . . .	DWord	 0000001E _DATA	
+SPEED_X  . . . . . . . . . . . .	DWord	 0000003E _DATA	
+SPEED_Y  . . . . . . . . . . . .	DWord	 0000003A _DATA	
+Sleep  . . . . . . . . . . . . .	L 	 00000000 External
+caption  . . . . . . . . . . . .	Byte	 00000000 _DATA	
+message  . . . . . . . . . . . .	Byte	 0000000D _DATA	
+
+	   0 Warnings
+	   0 Errors

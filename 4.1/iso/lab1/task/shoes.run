@@ -1,0 +1,6 @@
+option solver cplex;
+model shoes.mod;
+data shoes.dat;
+solve;
+printf "\n===== Result =====\n";
+display Revenue, x;

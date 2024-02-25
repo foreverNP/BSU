@@ -1,0 +1,17 @@
+result-1/
+result/
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+*.log
+
+.git/
+.gitignore
+
+README.md

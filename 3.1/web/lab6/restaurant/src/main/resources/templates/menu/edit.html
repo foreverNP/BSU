@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Edit Menu Item</title>
+        <link th:href="@{/css/style.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Edit Menu Item</h1>
+            <form
+                th:action="@{'/menuItems/edit/' + ${menuItem.id}}"
+                method="post"
+                th:object="${menuItem}">
+                <label>Name:</label>
+                <br />
+                <input type="text" th:field="*{name}" />
+                <br />
+
+                <label>Price:</label>
+                <br />
+                <input type="number" th:field="*{price}" step="0.01" />
+                <br />
+
+                <label>Category:</label>
+                <br />
+                <select th:field="*{category}">
+                    <option
+                        th:each="cat : ${categories}"
+                        th:value="${cat}"
+                        th:text="${cat}"></option>
+                </select>
+                <br />
+
+                <button type="submit">Update</button>
+            </form>
+            <nav>
+                <ul>
+                    <li><a th:href="@{/menuItems}">Back to Menu Items</a></li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

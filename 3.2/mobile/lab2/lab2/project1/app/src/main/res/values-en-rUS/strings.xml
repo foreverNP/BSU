@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Guess the Number</string>
+    <string name="try_to_guess">Try to guess the number between 1 and 200</string>
+    <string name="input_value">Enter a number</string>
+    <string name="error">Invalid input!</string>
+    <string name="ahead">Your number is too low. Try a higher one.</string>
+    <string name="behind">Your number is too high. Try a lower one.</string>
+    <string name="hit">Congratulations! You guessed the number.</string>
+    <string name="play_more">Play Again</string>
+</resources>

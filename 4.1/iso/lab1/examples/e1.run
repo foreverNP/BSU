@@ -1,0 +1,7 @@
+reset;
+model e1.mod;
+option solver cplex;
+solve;
+display z;
+display x1;
+display x2;

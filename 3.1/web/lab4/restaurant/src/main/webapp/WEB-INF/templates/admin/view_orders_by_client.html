@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Client Orders</title>
+    </head>
+    <body>
+        <h1>View Client Orders</h1>
+        <form method="post" th:action="@{/app/admin/orders}">
+            <label for="clientId">Client ID:</label>
+            <input type="text" id="clientId" name="clientId" required />
+            <button type="submit">Show Orders</button>
+        </form>
+        <div th:if="${orders != null}">
+            <h2>Client Orders</h2>
+            <ul>
+                <li th:each="order : ${orders}">
+                    Order ID:
+                    <span th:text="${order.id}"></span>
+                    , Status:
+                    <span th:text="${order.status}"></span>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </body>
+</html>

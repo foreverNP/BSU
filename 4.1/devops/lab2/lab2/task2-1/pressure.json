@@ -1,0 +1,26 @@
+{
+	"measuring": "pressure",
+	"timestamp": "2023-01-21T02:05:55.000Z ",
+	"device": [
+		{
+			"device_id": 4123,
+			"value": 9.67,
+			"status": "OK"
+		},
+		{
+			"device_id": 587,
+			"value": 1.03,
+			"status": "ERROR"
+		},
+		{
+			"device_id": 1524,
+			"value": 6.34,
+			"status": "OK"
+		},
+		{
+			" device_id": 97,
+			"value": 0.21,
+			"status": "ERROR"
+		}
+	]
+}

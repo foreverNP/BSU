@@ -1,0 +1,37 @@
+services:
+    # Первое приложение - формирует data.txt из первых строк всех файлов каталога /var/data
+    worker1:
+        build:
+            context: ./worker1
+            dockerfile: Dockerfile
+        container_name: worker1-container
+        volumes:
+            # Монтируем каталог ./data в /var/data для чтения исходных данных
+            - ./data:/var/data:ro
+            # Монтируем каталог ./result-1 в /var/result для записи промежуточных данных
+            - ./result-1:/var/result
+        networks:
+            - app-network
+        restart: "no"
+
+    # Второе приложение - находит минимальное число и возводит в 3 степень
+    worker2:
+        build:
+            context: ./worker2
+            dockerfile: Dockerfile
+        container_name: worker2-container
+        volumes:
+            # Монтируем каталог ./result-1 в /var/data для чтения промежуточных данных
+            - ./result-1:/var/data:ro
+            # Монтируем каталог ./result в /var/result для записи финального результата
+            - ./result:/var/result
+        networks:
+            - app-network
+        # Зависимость от worker1 - worker2 запустится только после завершения worker1
+        depends_on:
+            - worker1
+        restart: "no"
+
+networks:
+    app-network:
+        driver: bridge

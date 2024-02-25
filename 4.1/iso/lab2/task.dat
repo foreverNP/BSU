@@ -1,0 +1,43 @@
+data;
+set OILS := V1 V2 O1 O2 O3;
+set VEG := V1 V2;
+set ANI := O1 O2 O3;
+param first := 1;
+param last := 6;
+
+param cost:
+        1    2    3    4    5    6 :=
+V1     110  130  110  120  100   90
+V2     120  130  140  110  120  100
+O1     130  110  130  120  150  140
+O2     110   90  100  120  110   80
+O3     115  115   95  125  105  135
+;
+
+param dens :=
+V1 8.8
+V2 6.1
+O1 2.0
+O2 4.2
+O3 5.0
+;
+param dens_low := 3;
+param dens_high := 6;
+
+param I0 :=
+V1 250
+V2 250
+O1 166.66666667
+O2 166.66666667
+O3 166.66666666
+;
+
+param p := 150;
+param h := 5;
+param capveg := 200;
+param capani := 250;
+param storvegmax := 1000;
+param storanimax := 1000;
+param finalveginstor := 500;
+param finalaniinstor := 500;
+end;

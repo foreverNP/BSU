@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Create Order</title>
+    </head>
+    <body>
+        <h1>Create Order</h1>
+        <form method="post" th:action="@{/app/client/order/create}">
+            <h2>Select Menu Items:</h2>
+            <ul>
+                <li th:each="item : ${menu.menuItems}">
+                    <input
+                        type="checkbox"
+                        name="itemIds"
+                        th:value="${item.id}" />
+                    <span th:text="${item.name}">Dish Name</span>
+                    -
+                    <span th:text="${item.price}">Price</span>
+                </li>
+            </ul>
+            <button type="submit">Create Order</button>
+        </form>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </body>
+</html>

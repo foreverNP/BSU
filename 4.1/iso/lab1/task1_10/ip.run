@@ -1,0 +1,79 @@
+option solver cplex;
+model ip.mod;
+data t1.dat;
+solve;
+printf "\n===== RESULT: Task 1 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t2.dat;
+solve;
+printf "\n===== RESULT: Task 2 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t3.dat;
+solve;
+printf "\n===== RESULT: Task 3 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t4.dat;
+solve;
+printf "\n===== RESULT: Task 4 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t5.dat;
+solve;
+printf "\n===== RESULT: Task 5 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t6.dat;
+solve;
+printf "\n===== RESULT: Task 6 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t7.dat;
+solve;
+printf "\n===== RESULT: Task 7 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t8.dat;
+solve;
+printf "\n===== RESULT: Task 8 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t9.dat;
+solve;
+printf "\n===== RESULT: Task 9 =====\n";
+display Obj, x;
+reset;
+
+option solver cplex;
+model ip.mod;
+data t10.dat;
+solve;
+printf "\n===== RESULT: Task 10 =====\n";
+display Obj, x;
+reset;

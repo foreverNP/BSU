@@ -1,0 +1,211 @@
+extrn MessageBoxA: PROC
+extrn ExitProcess:PROC
+extrn CreateThread:PROC
+extrn FindWindowA:PROC
+extrn MoveWindow:PROC
+extrn Sleep:PROC
+
+.data
+caption             db      '64-bit hello', 0
+message             db      'Hello, world', 0
+HWINDOW             dword   ?
+SLEEP_DURATION      dword   10 
+CURRENT_X           dword   450
+CURRENT_Y           dword   350
+MSGBOX_WIDTH        dword   133               
+MSGBOX_HEIGHT       dword   140               
+SCREEN_WIDTH        dword   1420              
+SCREEN_HEIGHT       dword   880
+SPEED_Y             dword   3
+SPEED_X             dword   2
+DIRECTION_X         dword   1
+DIRECTION_Y         dword   1
+CHAOS_COUNTER       dword   0 
+CHAOS_THRESHOLD     dword   20
+MAX_SPEED           dword   8
+MIN_SPEED           dword   1
+
+.code
+
+Start proc
+
+;CreateThread(0,0,Thread_Func, 0, 0, 0)
+    mov RCX, 0           
+    mov RDX, 0           
+    mov R8,  Move 
+    mov R9,  0           
+    sub RSP, 12          
+    mov qword ptr [RSP], 0     
+    mov dword ptr [RSP + 8], 0 
+    call CreateThread
+    add RSP, 12
+
+    sub rsp,28h 
+    mov rcx, 0 
+    lea rdx, message 
+    lea r8, caption 
+    mov r9d, 0 
+    call MessageBoxA
+    add RSP,28h
+
+
+    sub rsp,28h 
+    mov message+7,'h'
+    mov message+8, 'e'
+    mov message+9,'l'
+    mov message+10,'l'
+    mov message+11,'!'
+    mov caption+11,'!'
+    mov rcx, 0 
+    lea rdx, message
+    lea r8, caption
+    mov r9d, 0 
+    call MessageBoxA
+    add rsp,28h 
+    
+Start endp
+
+Move proc
+
+;Find_WIndow(0,caption) return handler in EAX
+FIND:
+    mov  RCX, 0              
+    lea  RDX, [caption] 
+    call FindWindowA    
+    cmp  RAX, 0
+    je FIND
+
+    mov [HWINDOW], EAX
+
+CHAOS_LOOP:
+    ; Пауза для плавности движения
+    mov ECX, [SLEEP_DURATION]
+    call Sleep
+
+    ; Увеличиваем счетчик хаоса
+    inc dword ptr [CHAOS_COUNTER]
+    
+    ; Генерируем хаос (изменяем направление и скорость)
+    call GenerateChaos
+    
+    ; Вычисляем новую позицию X
+    mov EAX, [SPEED_X]
+    imul EAX, [DIRECTION_X]  ; Умножаем скорость на направление
+    add [CURRENT_X], EAX
+    
+    ; Вычисляем новую позицию Y  
+    mov EAX, [SPEED_Y]
+    imul EAX, [DIRECTION_Y]  ; Умножаем скорость на направление
+    add [CURRENT_Y], EAX
+    
+    ; Проверяем границы экрана
+    call CheckBoundaries  
+
+
+    ; Перемещаем окно
+    mov ECX, [HWINDOW]
+    mov EDX, [CURRENT_X]
+    mov R8D, [CURRENT_Y]
+    mov R9D, [MSGBOX_WIDTH]
+    mov EAX, [MSGBOX_HEIGHT]
+    mov dword ptr [RSP+20h], EAX
+    mov dword ptr [RSP+28h], 1
+    call MoveWindow
+
+    cmp EAX, 0
+    jne CHAOS_LOOP
+
+    ; Выход из программы
+    mov RCX, 0   
+    call ExitProcess
+
+; Процедура генерации хаоса
+GenerateChaos proc
+    mov EAX, [CHAOS_COUNTER]
+    cmp EAX, [CHAOS_THRESHOLD]
+    jl RANDOM_CHANGES
+    
+    mov dword ptr [CHAOS_COUNTER], 0
+    
+    rdrand AX
+    and AX, 1Fh     
+    add AX, 10    
+    mov [CHAOS_THRESHOLD], EAX
+
+RANDOM_CHANGES:
+    rdrand AX
+    and AX, 7          ; 0-7
+    cmp AX, 1
+    jne SKIP_DIR_X
+    neg dword ptr [DIRECTION_X]
+    
+SKIP_DIR_X:
+    rdrand AX
+    and AX, 7
+    cmp AX, 1
+    jne SKIP_DIR_Y
+    neg dword ptr [DIRECTION_Y]
+    
+SKIP_DIR_Y:
+    rdrand AX
+    and AX, 7          ; 0-7
+    add AX, 1          ; 1-8
+    mov [SPEED_X], EAX
+    
+    rdrand AX
+    and AX, 7
+    add AX, 1
+    mov [SPEED_Y], EAX
+    
+    ret
+GenerateChaos endp
+
+; Процедура проверки границ экрана
+CheckBoundaries proc
+    ; Проверяем левую границу
+    mov EAX, [CURRENT_X]
+    cmp EAX, 0
+    jge CHECK_RIGHT
+    mov dword ptr [CURRENT_X], 5
+    mov dword ptr [DIRECTION_X], 1
+    jmp CHECK_TOP
+    
+CHECK_RIGHT:
+    ; Проверяем правую границу  
+    mov EAX, [CURRENT_X]
+    add EAX, [MSGBOX_WIDTH]
+    cmp EAX, [SCREEN_WIDTH]
+    jle CHECK_TOP
+    mov EAX, [SCREEN_WIDTH]
+    sub EAX, [MSGBOX_WIDTH]
+    sub EAX, 5
+    mov [CURRENT_X], EAX
+    mov dword ptr [DIRECTION_X], -1
+    
+CHECK_TOP:
+    ; Проверяем верхнюю границу
+    mov EAX, [CURRENT_Y]
+    cmp EAX, 0
+    jge CHECK_BOTTOM
+    mov dword ptr [CURRENT_Y], 5
+    mov dword ptr [DIRECTION_Y], 1
+    jmp BOUNDARIES_DONE
+    
+CHECK_BOTTOM:
+    ; Проверяем нижнюю границу
+    mov EAX, [CURRENT_Y]
+    add EAX, [MSGBOX_HEIGHT]
+    cmp EAX, [SCREEN_HEIGHT]
+    jle BOUNDARIES_DONE
+    mov EAX, [SCREEN_HEIGHT]
+    sub EAX, [MSGBOX_HEIGHT]
+    sub EAX, 5
+    mov [CURRENT_Y], EAX
+    mov dword ptr [DIRECTION_Y], -1
+    
+BOUNDARIES_DONE:
+    ret
+CheckBoundaries endp
+Move endp
+End
+    

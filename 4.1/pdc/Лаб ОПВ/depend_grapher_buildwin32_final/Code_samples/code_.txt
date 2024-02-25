@@ -1,0 +1,13 @@
+for (i=0;i<n1;i=i+1)
+{
+	for(j=0;j<n2;j=j+1)
+	{
+		a[i][j][i+j] = a[i-1][j][i+j] + b[i][j][i+j];
+		for(k=0;k<n3;k=k+1)
+		{
+			a[i][j][k] = a[i][j][k-1] + a[i-1][j][k+1] + b[i][j-1][k]+b[i][j][k+i];
+			b[i][j][k] = a[i-1][j][k] + b[i][j][k-1];
+		}
+		c[i][1] = a[i-1][j][i+j] + b[i][j][i+j];
+	}
+}

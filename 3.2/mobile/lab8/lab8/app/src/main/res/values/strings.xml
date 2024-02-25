@@ -1,0 +1,93 @@
+<resources>
+    <string name="app_name">Крипто Трекер</string>
+
+    <string name="bottom_nav_dashboard">Обзор</string>
+    <string name="bottom_nav_portfolio">Портфель</string>
+    <string name="bottom_nav_profile">Профиль</string>
+
+    <string name="dashboard_title">Криптовалюты</string>
+    <string name="crypto_price_label">Цена:</string>
+    <string name="crypto_change_label">Изм. (24ч):</string>
+    <string name="crypto_volume_label">Объем (24ч):</string>
+    <string name="error_loading_data">Ошибка загрузки данных</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="loading">Загрузка…</string>
+
+    <string name="crypto_detail_title">Детали</string>
+    <string name="buy_button">Купить (Демо)</string>
+    <string name="sell_button">Продать (Демо)</string>
+    <string name="historical_data_placeholder">Место для графика истории</string>
+    <string name="analytics_notes_placeholder">Место для аналитических заметок</string>
+
+    <string name="portfolio_title">Демо Портфель</string>
+    <string name="current_balance">Текущий Баланс:</string>
+    <string name="total_value">Стоимость Активов:</string>
+    <string name="total_pnl">Общий P/L:</string>
+    <string name="your_assets">Ваши Активы</string>
+    <string name="transaction_history">История Транзакций</string>
+    <string name="no_assets">У вас пока нет активов.</string>
+    <string name="no_transactions">Нет истории транзакций.</string>
+    <string name="portfolio_amount">Количество:</string>
+    <string name="portfolio_avg_buy_price">Ср. цена покупки:</string>
+    <string name="portfolio_current_value">Текущая стоимость:</string>
+    <string name="transaction_type_buy">ПОКУПКА</string>
+    <string name="transaction_type_sell">ПРОДАЖА</string>
+    <string name="transaction_details">%1$s %2$s %3$s по %4$s</string>
+    <string name="transaction_time">Время:</string>
+
+    <string name="usd_symbol">$</string>
+    <string name="percentage_symbol">%</string>
+
+    <string name="account_summary">Состояние счета</string>
+    <string name="available_balance">Доступный баланс</string>
+    <string name="portfolio_value">Стоимость портфеля</string>
+    <string name="account_data_not_available">Данные счета недоступны</string>
+    <string name="empty_portfolio_message">Ваш портфель пуст</string>
+    <string name="empty_portfolio_instruction">Перейдите на страницу криптовалюты, чтобы купить
+        активы</string>
+    <string name="bought_amount">Куплено %1$s %2$s</string>
+    <string name="sold_amount">Продано %1$s %2$s</string>
+
+    <string name="chart_placeholder">График цены будет здесь</string>
+    <string name="trade">Торговля</string>
+    <string name="buy">Купить</string>
+    <string name="sell">Продать</string>
+    <string name="amount_in_crypto">Количество в %1$s</string>
+    <string name="total">Итого</string>
+    <string name="execute_buy">Купить %1$s</string>
+    <string name="execute_sell">Продать %1$s</string>
+    <string name="market_info">Информация о рынке</string>
+    <string name="market_cap">Рыночная капитализация</string>
+    <string name="volume_24h">Объем торгов (24ч)</string>
+    <string name="circulating_supply">В обращении</string>
+    <string name="all_time_high">Исторический максимум</string>
+    <string name="no_data_available">Нет данных</string>
+    <string name="percent_change_24h">Изменение за 24ч</string>
+    <string name="max_supply">Максимальное предложение</string>
+
+    <!-- Profile screen strings -->
+    <string name="profile_title">Профиль</string>
+    <string name="profile_account_info">Информация об аккаунте</string>
+    <string name="profile_username">Имя пользователя</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_joined">Дата регистрации</string>
+    <string name="profile_theme_settings">Настройки темы</string>
+    <string name="profile_theme_light">Светлая</string>
+    <string name="profile_theme_dark">Темная</string>
+    <string name="profile_theme_system">Системная</string>
+    <string name="profile_portfolio_settings">Настройки портфеля</string>
+    <string name="profile_reset_portfolio">Сбросить портфель</string>
+    <string name="profile_reset_portfolio_confirm">Вы уверены, что хотите сбросить портфель? Все
+        транзакции будут удалены, и баланс будет восстановлен.</string>
+    <string name="profile_logout">Выйти из аккаунта</string>
+    <string name="profile_confirm">Подтвердить</string>
+    <string name="profile_cancel">Отмена</string>
+    <string name="profile_save">Сохранить</string>
+
+    <!-- New strings for portfolio -->
+    <string name="total_balance">Общий баланс</string>
+    <string name="available_cash">Доступные средства</string>
+    <string name="profit_loss">Прибыль/Убыток</string>
+    <string name="add_funds">Пополнить</string>
+    <string name="amount">Количество</string>
+</resources>

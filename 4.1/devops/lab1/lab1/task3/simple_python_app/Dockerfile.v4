@@ -1,0 +1,18 @@
+FROM python:3.11
+# -- Медленные операции --
+#   Установка   системных   зависимостей   (в   т.ч.   для  зависимостей python)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc \
+    && rm -rf /var/lib/apt/lists/*
+# Установка зависмостей python
+
+RUN  --mount=type=bind,source=requirements.txt,target=/app/requirements.txt \
+    pip  install  --no-cache-dir  --no-deps  -r /app/requirements.txt
+
+# -- Быстрые операции --
+# Копирование кода приложения
+COPY app.py /app/
+
+# Установка рабочей директории
+WORKDIR /app
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0"]

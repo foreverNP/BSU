@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Client Login</title>
+    </head>
+    <body>
+        <h1>Client Login</h1>
+        <form method="post" th:action="@{/app/client/login}">
+            <label for="clientId">Enter your Client ID:</label>
+            <input type="text" id="clientId" name="clientId" required />
+            <button type="submit">Login</button>
+        </form>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </body>
+</html>
