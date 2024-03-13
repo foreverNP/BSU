@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+</html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Танцевальный коллектив</title>
+    <style>
+        body,
+        html {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header-style {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 11vh;
+            padding: 10px;
+            background-color: #333;
+            font-size: 26px;
+            font-weight: bold;
+            color: #F5F5F7;
+        }
+
+        .content-style {
+            flex-grow: 1;
+            background: url('../img/icon.png') right repeat-y;
+
+            display: flex;
+            flex-direction: row;
+        }
+
+        .button-container-style {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .console-style {
+            flex-grow: 1;
+            margin-right: 60px;
+            margin-left: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            background-color: #eaeaea;
+            font-size: 20px;
+            color: #000;
+            padding: 10px;
+            overflow: auto;
+            white-space: pre-wrap;
+            border: 3px solid #000;
+            border-radius: 15px;
+        }
+
+        .footer-style {
+            height: 11vh;
+            background-color: #333;
+            color: #D0D0D0;
+        }
+
+        .styled-button {
+            background-color: #4f4f4f;
+            border: none;
+            color: rgb(197, 197, 197);
+            padding: 15px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+        }
+
+        .styled-button:hover {
+            background-color: #333;
+            color: white;
+        }
+
+        @media (max-width: 640px),
+        (max-device-width: 640px) {
+            .content-style {
+                flex-direction: column;
+            }
+
+            .button-container-style {
+                margin-right: 60px;
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-style">
+            Танцевальный коллектив
+        </div>
+
+        <div class="content-style">
+            <div class="button-container-style">
+                <input class="styled-button" onclick="addDance();" value="Ввод информации о танце" type="button">
+                <input class="styled-button" onclick="deleteDance();" value="Удаление информации о танце" type="button">
+                <input class="styled-button" onclick="getDanceInfo();" value="Получение информации о танце"
+                    type="button">
+                <input class="styled-button" onclick="listAllDances();" value="Перечень всех танцев" type="button">
+            </div>
+
+            <div style="display: flex; flex-grow: 1; flex-direction: column;">
+                <div id="communicate-filed" style="margin-left: 60px;">Консоль</div>
+                <textarea class="console-style" readonly></textarea>
+            </div>
+
+        </div>
+
+        <div class="footer-style">
+            <br>
+            Контактный телефон: 123-456-789<br>
+            Адрес: ул. Танцевальная, 1<br>
+            Copyright © 2024 Lev Inc. All rights reserved.
+        </div>
+    </div>
+    
+    <script src="lib.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
