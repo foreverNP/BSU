@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+
+    <style>
+        #menu>.menu-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #menu .menu-container {
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+        }
+
+        #menu .menu-container .menu-container {
+            position: absolute;
+            flex-direction: column;
+            left: 0;
+            top: 100%;
+            background-color: #fff;
+            box-shadow: 0px 2px 5px rgba(57, 57, 57, 0.104);
+        }
+
+        #menu .menu-container>div:hover>.menu-container {
+            display: block;
+        }
+
+        #menu .menu-container .menu-container .menu-container {
+            left: 100%;
+            top: 0;
+        }
+
+        #menu div {
+            position: relative;
+        }
+
+        #menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        #menu a[href] {
+            color: #1d923a;
+        }
+
+        #menu a:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="menu"></div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
