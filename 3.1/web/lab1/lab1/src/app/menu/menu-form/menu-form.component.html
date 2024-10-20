@@ -1,0 +1,80 @@
+<div class="container">
+  <h2>Управление Меню</h2>
+  <form #menuForm="ngForm" (ngSubmit)="onSubmit(menuForm)" novalidate>
+    <div class="form-group">
+      <label for="title">Название</label>
+      <input
+        type="text"
+        id="title"
+        class="form-control"
+        name="title"
+        [(ngModel)]="selectedMenuItem.title"
+        #title="ngModel"
+        required
+      />
+      <div
+        *ngIf="title.invalid && (title.dirty || title.touched)"
+        class="text-danger"
+      >
+        Название обязательно
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="price">Цена</label>
+      <input
+        type="number"
+        id="price"
+        class="form-control"
+        name="price"
+        [(ngModel)]="selectedMenuItem.price"
+        #price="ngModel"
+        required
+        min="0"
+      />
+      <div
+        *ngIf="price.invalid && (price.dirty || price.touched)"
+        class="text-danger"
+      >
+        Цена должна быть положительным числом
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="description">Описание</label>
+      <textarea
+        id="description"
+        class="form-control"
+        name="description"
+        [(ngModel)]="selectedMenuItem.description"
+        #description="ngModel"
+        required
+      ></textarea>
+      <div
+        *ngIf="
+          description.invalid && (description.dirty || description.touched)
+        "
+        class="text-danger"
+      >
+        Описание обязательно
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="menuForm.invalid">
+      {{ selectedMenuItem.id ? "Обновить" : "Добавить" }} элемент
+    </button>
+  </form>
+
+  <h3>Существующие элементы меню</h3>
+  <ul class="list-group">
+    <li *ngFor="let menuItem of menuItems" class="list-group-item">
+      <div>
+        <h5>{{ menuItem.title }} - {{ menuItem.price }} $</h5>
+        <p>{{ menuItem.description }}</p>
+      </div>
+      <button class="btn btn-info" (click)="onEdit(menuItem)">
+        Редактировать
+      </button>
+      <button class="btn btn-danger" (click)="onDelete(menuItem.id)">
+        Удалить
+      </button>
+    </li>
+  </ul>
+</div>
