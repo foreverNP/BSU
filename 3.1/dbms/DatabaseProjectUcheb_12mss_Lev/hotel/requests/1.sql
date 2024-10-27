@@ -13,19 +13,16 @@ FROM clients
 ORDER BY name ASC;
 GO
 
--- 3.3. Вывод бронирований с сортировкой по дате начала (по убыванию) и имени клиента
-SELECT bookings.id, clients.name, bookings.start_date
-FROM bookings
-JOIN clients ON bookings.booker_id = clients.id
-ORDER BY bookings.start_date DESC, clients.name DESC;
+-- 3.3. Вывод бронирований с сортировкой  по дате начала (по убыванию) и имени клиента
+SELECT name, registration_date
+FROM clients 
+ORDER BY name DESC, registration_date DESC;
 GO
 
--- 3.4. Создание вычисляемого поля и вывод уникальных данных
--- Здесь вычисляется количество дней бронирования (в вычисляемом поле)
-SELECT DISTINCT clients.name, bookings.start_date, bookings.end_date, 
-    DATEDIFF(day, bookings.start_date, bookings.end_date) AS stay_duration
-FROM bookings
-JOIN clients ON bookings.booker_id = clients.id;
+-- 3.4. Вывод уникальных комнат и расчёт цены за одну кровать (вычисляемое поле price_per_bed)
+SELECT DISTINCT
+    (price / bed_num) AS price_per_bed
+FROM rooms;
 GO
 
 -- 3.5. Вывод 30% строк из таблицы бронирований
@@ -40,14 +37,12 @@ GO
 
 -- 3.7. Вывод строк с 4 по 7, отсортированных по дате бронирования в обратном порядке
 SELECT *
-FROM (
-    SELECT *, ROW_NUMBER() OVER (ORDER BY booking_date DESC) AS row_num
-    FROM bookings
-) AS TempTable
-WHERE row_num BETWEEN 4 AND 7;
+FROM bookings
+ORDER BY booking_date DESC
+OFFSET 3 ROWS FETCH NEXT 4 ROWS ONLY;
 GO
 
--- 3.8. Сложное выражение для сортировки (например, комнаты по цене на одно спальное место)
+-- 3.8. выражение для сортировки (комнаты по цене на одно спальное место)
 SELECT *
 FROM rooms
 ORDER BY (price / bed_num) DESC;
@@ -60,10 +55,10 @@ GO
 -- WHERE status_id = 2;
 -- GO
 
--- 4.1. Фильтрация данных: бронирования с продолжительностью больше 5 дней
+-- 4.1. Фильтрация данных: бронирования с продолжительностью больше 4 дней
 SELECT *
 FROM bookings
-WHERE DATEDIFF(day, start_date, end_date) > 5;
+WHERE DATEDIFF(day, start_date, end_date) > 4;
 GO
 
 -- 4.2. Фильтрация данных: клиенты, зарегистрированные после 1 июня 2024 года
@@ -138,7 +133,7 @@ SELECT MIN(bed_num) AS MinBeds
 FROM rooms;
 GO
 
--- 8.4. Агрегатные функции: средний доход от бронирований (через расходы на услуги)
+-- 8.4. Агрегатные функции: средний доход (через расходы на услуги)
 SELECT AVG(amount) AS AvgBookingExpense
 FROM expenses;
 GO
@@ -148,10 +143,10 @@ SELECT COUNT(*) AS BookingCount
 FROM bookings;
 GO
 
--- 9.1. Группировка данных: сумма расходов по бронированиям
-SELECT booking_id, SUM(amount) AS TotalExpense
-FROM expenses
-GROUP BY booking_id;
+-- 9.1. Группировка по количеству кроватей и подсчет количества комнат для каждой группы
+SELECT bed_num, COUNT(*) AS RoomCount
+FROM rooms
+GROUP BY bed_num;
 GO
 
 -- 9.2. Группировка данных: средняя стоимость комнат по этажам
@@ -160,11 +155,11 @@ FROM rooms
 GROUP BY floor;
 GO
 
--- 10.1. Фильтрация групп с использованием HAVING: расходы больше 3000 по бронированиям
-SELECT booking_id, SUM(amount) AS TotalExpense
-FROM expenses
-GROUP BY booking_id
-HAVING SUM(amount) > 3000;
+-- 10.1. Фильтрация групп по статусу бронирований, где количество бронирований больше 5
+SELECT status_id, COUNT(*) AS BookingCount
+FROM bookings
+GROUP BY status_id
+HAVING COUNT(*) > 7;
 GO
 
 -- 10.2. Фильтрация групп с использованием HAVING: этажи с средней ценой комнат выше 2500
@@ -197,32 +192,26 @@ SELECT COUNT(*) OVER() AS TotalBookings
 FROM bookings;
 GO
 
--- 12.1. Использование PIVOT для разворачивания данных по услугам для каждого бронирования
+-- 12.1. Количество бронирований по статусу для комнаты
 SELECT *
 FROM (
-    SELECT booking_id, service_id, amount
-    FROM expenses
-) AS SourceTable
+    SELECT r.id AS room_id, bs.name AS status_name
+    FROM rooms r
+    JOIN bookings b ON r.id = b.room_id
+    JOIN booking_statuses bs ON b.status_id = bs.id
+) AS BookingData
 PIVOT (
-    SUM(amount)
-    FOR service_id IN ([1], [2], [3], [4], [5])
+    COUNT(status_name)
+    FOR status_name IN ([confirmed], [cancelled], [pending])
 ) AS PivotTable;
 GO
 
--- 12.2. Использование UNPIVOT для обратного преобразования данных (антипивот)
-SELECT booking_id, ServiceType, TotalAmount
+-- 12.2. Количество этажей и комнат для building
+SELECT building_id, attribute, value
 FROM (
-    SELECT booking_id, [1], [2], [3], [4], [5]
-    FROM (
-        SELECT booking_id, service_id, amount
-        FROM expenses
-    ) AS SourceTable
-    PIVOT (
-        SUM(amount)
-        FOR service_id IN ([1], [2], [3], [4], [5])
-    ) AS PivotTable
-) AS Pivoted
+    SELECT b.id AS building_id, b.floors_num, b.total_rooms
+    FROM buildings b
+) AS BuildingData
 UNPIVOT (
-    TotalAmount FOR ServiceType IN ([1], [2], [3], [4], [5])
-) AS Unpivoted;
-GO
+    value FOR attribute IN (floors_num, total_rooms)
+) AS UnpivotedBuildingData;

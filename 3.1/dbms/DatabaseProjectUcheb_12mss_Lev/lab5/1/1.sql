@@ -1,4 +1,4 @@
-CREATE TABLE Students (
+CREATE TABLE Studentssss (
     id INT PRIMARY KEY,
     fio NVARCHAR(100),
     predmet NVARCHAR(100),
@@ -6,7 +6,7 @@ CREATE TABLE Students (
     ball FLOAT
 );
 
-INSERT INTO Students (id, fio, predmet, ush, ball) VALUES
+INSERT INTO Studentssss (id, fio, predmet, ush, ball) VALUES
 (1, 'Иванова', 'Математика', 'Лицей', 98.5),
 (2, 'Петров', 'Математика', 'Гимназия', 85.0),
 (3, 'Сидоров', 'Физика', 'Лицей', 92.0),
