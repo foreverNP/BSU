@@ -131,19 +131,3 @@ FROM
     LEFT OUTER JOIN Ozenka O ON S.RegNom = O.ReGNom AND O.data = '2022-06-05'
 WHERE 
   O.ReGNom IS NULL;
-
-
-
-
--- 1     1
--- 1     4
--- 2     3
--- 3     1
-
--- 1 1
--- 1 1
--- 1 1
--- 1 1
--- 3 3
-
-

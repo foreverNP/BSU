@@ -14,6 +14,7 @@
     <Folder Include="hotel" />
     <Folder Include="hotel\create" />
     <Folder Include="hotel\requests" />
+    <Folder Include="kr" />
     <Folder Include="lab4" />
     <Folder Include="lab4\1.1" />
     <Folder Include="lab4\1.2" />
@@ -24,6 +25,7 @@
     <Folder Include="lab5\2" />
     <Folder Include="lab5\3" />
     <Folder Include="lab7" />
+    <Folder Include="lab9" />
   </ItemGroup>
   <ItemGroup>
     <Build Remove="lab5\1.3.sql" />

@@ -23,7 +23,7 @@ CREATE TABLE rooms (
     building_id INT,
     bed_num INT,
     floor INT NOT NULL, 
-    price DECIMAL(10,2) NOT NULL,name
+    price DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT CK_RoomType CHECK (bed_num BETWEEN 1 AND 5),
     CONSTRAINT FK_Room_Building FOREIGN KEY (building_id) REFERENCES buildings(id)
