@@ -64,32 +64,14 @@ FULL OUTER JOIN buildings ON building_services.building_id = buildings.id;
 
 -- CROSS JOIN
 
--- 1. Получение всех возможных комбинаций зданий и бронирований.
--- Business value: Полезно для анализа возможного размещения бронирований в зданиях.
-SELECT buildings.id AS BuildingID, bookings.id AS BookingID
-FROM buildings
-CROSS JOIN bookings;
-
--- 2. Получение всех возможных комбинаций клиентов и жалоб.
+-- 1. Получение всех возможных комбинаций клиентов и жалоб.
 -- Business value: Полезно для анализа взаимодействий с клиентами по вопросам жалоб.
 SELECT clients.name AS ClientName, complaints.description AS Complaint
 FROM clients
 CROSS JOIN complaints;
 
--- 3. Комбинации всех клиентов и всех услуг.
+-- 2. Комбинации всех клиентов и всех услуг.
 -- Business value: Анализ интересов клиентов к различным услугам для дальнейших рекомендаций.
 SELECT clients.name AS ClientName, services.name AS ServiceName
 FROM clients
 CROSS JOIN services;
-
--- 4. Комбинации всех номеров и всех типов услуг.
--- Business value: Полный набор возможных услуг, которые могут быть предложены для каждого номера.
-SELECT rooms.id AS RoomID, service_types.name AS ServiceType
-FROM rooms
-CROSS JOIN service_types;
-
--- 5. Получение всех комбинаций классов зданий и типов клиентов.
--- Business value: Полезно для разработки предложений, ориентированных на определенные классы зданий и типы клиентов.
-SELECT building_classes.name AS BuildingClass, clients_types.name AS ClientType
-FROM building_classes
-CROSS JOIN clients_types;

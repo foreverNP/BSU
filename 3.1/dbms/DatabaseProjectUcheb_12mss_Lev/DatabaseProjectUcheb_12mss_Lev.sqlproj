@@ -11,10 +11,13 @@
     <None Include="..\docker-compose.yaml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="common" />
     <Folder Include="hotel" />
     <Folder Include="hotel\create" />
     <Folder Include="hotel\requests" />
     <Folder Include="kr" />
+    <Folder Include="lab10" />
+    <Folder Include="lab11" />
     <Folder Include="lab4" />
     <Folder Include="lab4\1.1" />
     <Folder Include="lab4\1.2" />
