@@ -211,31 +211,20 @@ WHERE
     );
 
 -- Запрос 12: Вывести название страны с наибольшим населением среди стран с наименьшей площадью на каждом континенте
-SELECT 
-    A.Nazvanie,
-    A.Stolica,
-    A.PL,
-    A.KolNas,
-    A.Kontinent
-FROM 
-    Tabl_Kontinent$ A
-WHERE 
-    A.PL = 
-    (
-        SELECT 
-            MIN(PL)
-        FROM 
-            Tabl_Kontinent$
-        WHERE 
-            Kontinent = A.Kontinent
-    )
-    AND A.KolNas = 
-    (
-        SELECT 
-            MAX(KolNas)
-        FROM 
-            Tabl_Kontinent$ B
-        WHERE 
-            B.Kontinent = A.Kontinent
-            AND B.PL = A.PL
-    );
+with min_sq as (  
+    select
+      min(PL) as Country_Min_Square, Kontinent
+    from
+      Tabl_Kontinent$
+    group by
+      Kontinent
+),
+
+population_cte as (
+  select Nazvanie, KolNas
+  from Tabl_Kontinent$ c join min_sq m on c.Kontinent = m.Kontinent and c.PL = m.Country_Min_Square
+)
+
+select Nazvanie
+from population_cte
+where KolNas = (select max(KolNas) from population_cte)
