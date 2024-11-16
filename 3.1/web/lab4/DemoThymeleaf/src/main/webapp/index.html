@@ -1,0 +1,14 @@
+﻿
+<html><body>
+<a href="welcome/home"> Demo</a>
+<p>Please select an option</p>
+    <ol>
+      <li><a href="welcome/students/list" th:href="@{/student/list}">Student List</a></li>
+      <li><a href="/welcome/subject/list.html" th:href="@{/subject/list}">Order List</a></li>
+     
+      <li><a href="userprofile.html" th:href="@{/userprofile}">See User Profile</a></li>
+    </ol>
+<FORM action="welcome" method="POST">
+		<INPUT type="submit" value="Вызвать сервлет">
+</FORM>
+</body></html>

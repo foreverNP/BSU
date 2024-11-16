@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+        https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd" version="3.0">
+	<persistence-unit name="simpleFactory2" 
+				    transaction-type="JTA">
+         				    
+		
+		
+		<provider>
+			org.eclipse.persistence.jpa.PersistenceProvider
+		</provider>
+		<jta-data-source>jdbc/DSTest</jta-data-source>  
+    		<class>by.bsu.entity.Student</class>
+		    <class>by.bsu.entity.Course</class>
+		   <exclude-unlisted-classes/>
+    		<properties>
+    		<property name="jakarta.persistence.jdbc.url" 
+				     value="jdbc:mysql://localhost:3306/university7?characterEncoding=utf8&amp;serverTimezone=UTC"/>
+			<property name="jakarta.persistence.jdbc.user" value="root"/>
+      		<!-- <property name="jakarta.persistence.jdbc.driver" 
+				     value="com.mysql.cj.jdbc.Driver"/> -->
+			<property name="jakarta.persistence.jdbc.password" value="11111"/>
+		
+			 
+		
+			     <property name="eclipselink.ddl-generation" value="create-tables"/>   
+		
+    		    		
+      		
+		</properties>
+	</persistence-unit>
+	
+</persistence>
