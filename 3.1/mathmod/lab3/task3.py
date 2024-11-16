@@ -100,7 +100,7 @@ def ks_test(sample, cdf_func, args=(), alpha=0.05):
 # Функция для проведения теста хи-квадрат
 def chi_squared_test(sample, cdf_func, args=(), alpha=0.05, k=10):
     n = len(sample)
-    # Определение границ интервалов (бинов) по процентилям
+    # Определение границ интервалов (бинов)
     bin_edges = [np.percentile(sample, 100 * i / k) for i in range(k + 1)]
     # Наблюдаемые частоты в каждом бине
     observed, _ = np.histogram(sample, bins=bin_edges)
