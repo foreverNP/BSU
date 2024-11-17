@@ -14,21 +14,21 @@ G.add_node(8, demand=0)  # Промежуточный узел
 
 # Добавляем ребра с пропускными способностями и затратами
 edges = [
-    (1, 2, {"capacity": 70, "weight": 2}),
-    (1, 5, {"capacity": 80, "weight": 3}),
-    (2, 3, {"capacity": 60, "weight": 5}),
-    (2, 7, {"capacity": 70, "weight": 7}),
-    (3, 4, {"capacity": 37, "weight": 4}),
-    (4, 6, {"capacity": 20, "weight": 1}),
-    (5, 6, {"capacity": 30, "weight": 10}),
+    (1, 2, {"capacity": 50, "weight": 2}),
+    (1, 5, {"capacity": 60, "weight": 3}),
+    (2, 3, {"capacity": 55, "weight": 5}),
+    (2, 7, {"capacity": 50, "weight": 7}),
+    (3, 4, {"capacity": 45, "weight": 4}),
+    (4, 6, {"capacity": 18, "weight": 1}),
+    (5, 6, {"capacity": 25, "weight": 10}),
     (5, 8, {"capacity": 15, "weight": 8}),
-    (6, 8, {"capacity": 40, "weight": 7}),
+    (6, 8, {"capacity": 42, "weight": 7}),
     (7, 1, {"capacity": 10, "weight": 6}),
-    (7, 3, {"capacity": 50, "weight": 5}),
-    (7, 5, {"capacity": 20, "weight": 4}),
+    (7, 3, {"capacity": 40, "weight": 5}),
+    (7, 5, {"capacity": 16, "weight": 4}),
     (8, 3, {"capacity": 15, "weight": 3}),
-    (8, 4, {"capacity": 30, "weight": 8}),
-    (8, 7, {"capacity": 10, "weight": 2}),
+    (8, 4, {"capacity": 27, "weight": 8}),
+    (8, 7, {"capacity": 15, "weight": 2}),
 ]
 
 G.add_edges_from(edges)
