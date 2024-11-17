@@ -1,13 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Создаём направленный граф
 G = nx.DiGraph()
-
-# Добавляем узлы с атрибутами спроса или предложения
-# Узлы 1, 2, 6 — источники (предложения)
-# Узлы 3, 4, 5 — стоки (потребности)
-# Узлы 7, 8 — промежуточные узлы
 
 G.add_node(1, demand=-80)  # Источник
 G.add_node(2, demand=-60)  # Источник
@@ -50,13 +44,10 @@ for u in flowDict:
             print(f"{u} -> {v}: {flow}")
 
 
-# Функция для проверки уникальности оптимального решения
+# Попытка найти альтернативный поток с той же стоимостью.
+# Метод: уменьшаем пропускную способность ребер, использованных в оригинальном потоке,
+# и пытаемся найти другой поток той же стоимости.
 def find_alternative_flow(G, original_flow, flow_cost):
-    """
-    Попытка найти альтернативный поток с той же стоимостью.
-    Метод: уменьшаем пропускную способность ребер, использованных в оригинальном потоке,
-    и пытаемся найти другой поток той же стоимости.
-    """
     G_alt = G.copy()
     for u in original_flow:
         for v, flow in original_flow[u].items():
@@ -89,7 +80,6 @@ else:
     )
 
 
-# Визуализация графа
 def visualize_graph(G, flowDict):
     pos = {
         1: (0, 1),
@@ -142,8 +132,7 @@ def visualize_graph(G, flowDict):
     plt.title("Сетевой граф с потоками", fontsize=16)
     plt.axis("off")
     plt.tight_layout()
-    plt.savefig("network_graph.png")
+    plt.savefig("img/network_graph.png")
 
 
-# Вызов функции визуализации
 visualize_graph(G, flowDict)
