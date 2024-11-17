@@ -74,74 +74,98 @@ def compute_potentials(G, costs, U_B):
     return potentials
 
 
-# Функция для поиска цикла, образованного добавлением входящей дуги
-def find_cycle(U_B, entering_arc):
-    # Создаем подграф с базисными дугами
-    B_graph = nx.DiGraph()
+def find_cycle(U_B, entering_arc, flowDict, capacities):
+    B_graph = nx.Graph()
     B_graph.add_edges_from(U_B)
 
-    # Добавляем входящую дугу
-    B_graph.add_edge(*entering_arc)
-
     try:
-        # Находим простой цикл, содержащий входящую дугу
-        cycles = list(nx.simple_cycles(B_graph))
-        for cycle in cycles:
-            if entering_arc[0] in cycle and entering_arc[1] in cycle:
-                # Реконструируем цикл как список дуг
-                cycle_edges = []
-                for i in range(len(cycle)):
-                    u = cycle[i]
-                    v = cycle[(i + 1) % len(cycle)]
-                    cycle_edges.append((u, v))
-                return cycle_edges
+        # Находим все циклы в графе
+        cycles = list(nx.cycle_basis(B_graph))
+
+        # Идентифицируем цикл, содержащий входящую дугу
+        cycle = None
+        for c in cycles:
+            if entering_arc[0] in c and entering_arc[1] in c:
+                cycle = c
+                break
+
+        if not cycle:
+            print("Цикл не найден.")
+            return []
+
+        print(f"Найден цикл: {cycle}")
+
+        # Определяем направление обхода на основе потока
+        x = flowDict.get(entering_arc, 0)
+        d = capacities.get(entering_arc, 0)
+        entry = (entering_arc[0], entering_arc[1])
+        if x == 0:
+            print(
+                f"x{entering_arc[0]}{entering_arc[1]} = 0, обход в направлении {entering_arc[0]}->{entering_arc[1]}"
+            )
+        elif x == d:
+            print(
+                f"x{entering_arc[0]}{entering_arc[1]} = d{entering_arc[0]}{entering_arc[1]}, обход в направлении {entering_arc[1]}->{entering_arc[0]}"
+            )
+            entry = (entering_arc[1], entering_arc[0])
+
+        # Реконструируем цикл как список дуг
+        try:
+            start_index = cycle.index(entry[0])
+            rotated_cycle = cycle[start_index:] + cycle[:start_index]
+            cycle_edges = []
+            for i in range(len(rotated_cycle)):
+                from_node = rotated_cycle[i]
+                to_node = rotated_cycle[(i + 1) % len(rotated_cycle)]
+                if (from_node, to_node) == entry or (to_node, from_node) == entry:
+                    cycle_edges.append(entry)
+                else:
+                    cycle_edges.append((from_node, to_node))
+
+            # Проверяем наличие дуг в U_B
+            edge_mapping = {}
+            for edge in cycle_edges:
+                if edge in U_B:
+                    edge_mapping[edge] = 1
+                elif (edge[1], edge[0]) in U_B:
+                    edge_mapping[(edge[1], edge[0])] = -1
+
+            return edge_mapping
+        except ValueError:
+            print(f"Ошибка: {entry} не найден в цикле.")
+            return []
+
     except nx.NetworkXNoCycle:
         print("Цикл не найден.")
-    return []
+        return []
 
 
 # Функция для вычисления θ^0 и идентификации выходящей дуги
-def compute_theta(G, capacities, flows, cycle, entering_arc):
+def compute_theta(capacities, flows, cycle):
     theta_values = []
-    arcs_with_theta = []
-    # Определяем направление дуг
-    direction = {}
-    for arc in cycle:
-        if arc == entering_arc:
-            direction[arc] = 1  # Положительное направление
+
+    for edge, direction in cycle.items():
+        if direction == 1:
+            theta = capacities.get(edge, 0) - flows.get(edge, 0)
+            print(
+                f"{edge} = U+, θ = d_ij - x_ij = {capacities.get(edge, 0)} - {flows.get(edge, 0)} = {theta}"
+            )
+        elif direction == -1:
+            theta = flows.get(edge, 0)
+            print(f"{edge} = U-, θ = x_ij = {flows.get(edge, 0)}")
         else:
-            direction[arc] = -1  # Отрицательное направление
+            print(f"Ошибка: Направление дуги {edge} не определено.")
+            return
+        theta_values.append((theta, edge))
 
-    # Вычисляем θ для каждой дуги в цикле
-    for arc in cycle:
-        if direction[arc] > 0:
-            residual_capacity = capacities[arc] - flows.get(arc, 0)
-            theta_values.append(residual_capacity)
-            arcs_with_theta.append((arc, residual_capacity))
-        else:
-            flow_on_arc = flows.get(arc, 0)
-            theta_values.append(flow_on_arc)
-            arcs_with_theta.append((arc, flow_on_arc))
+    if not theta_values:
+        print("Нет дуг в цикле для вычисления θ^0.")
+        return None, None
 
-    theta_0 = min(theta_values)
+    theta_0, min_edge = min(theta_values, key=lambda x: x[0])
+    print(f"θ^0 = {theta_0}, дуга: {min_edge}")
 
-    # Идентифицируем выходящую дугу
-    leaving_arc = None
-    for arc, theta in arcs_with_theta:
-        if theta == theta_0:
-            leaving_arc = arc
-            break
-
-    return theta_0, leaving_arc
-
-
-# Функция для корректировки потоков вдоль цикла
-def adjust_flows(flows, cycle, theta_0, direction):
-    for arc in cycle:
-        if direction[arc] > 0:
-            flows[arc] += theta_0
-        else:
-            flows[arc] -= theta_0
+    return theta_0, min_edge
 
 
 # Основная функция метода потенциалов
@@ -151,7 +175,8 @@ def potential_method(G, capacities, costs, flows, demands, U_B, U_N):
     )
 
     iteration = 0
-    while True:
+    max_iterations = 10
+    while True and iteration < max_iterations:
         iteration += 1
         print(f"\nИтерация {iteration}")
 
@@ -175,67 +200,48 @@ def potential_method(G, capacities, costs, flows, demands, U_B, U_N):
                 continue
 
         print("Шаг 3: Проверка условий оптимальности")
-        optimal = True
-        entering_arc = None
+        u_io_jo = None
+        violating_arcs = []
         for u, v in U_N:
             if u in potentials and v in potentials:
-                if flows.get((u, v), 0) == 0 and reduced_costs.get((u, v), 0) > 0:
-                    optimal = False
-                    entering_arc = (u, v)
-                    break
-                elif (
-                    flows.get((u, v), 0) == capacities.get((u, v), 0)
-                    and reduced_costs.get((u, v), 0) < 0
-                ):
-                    optimal = False
-                    entering_arc = (u, v)
-                    break
+                delta = reduced_costs.get((u, v), 0)
+                if flows.get((u, v), 0) == 0 and delta > 0:
+                    violating_arcs.append(((u, v), abs(delta)))
+                    print(f"Δ = {delta}, x_{u}{v} = {flows.get((u, v), 0)} -")
+                elif flows.get((u, v), 0) == capacities.get((u, v), 0) and delta < 0:
+                    violating_arcs.append(((u, v), abs(delta)))
+                    print(
+                        f"Δ = {delta}, x_{u}{v} = {flows.get((u, v), 0)} != d_{u}{v} = {capacities.get((u, v), 0)} -"
+                    )
+                else:
+                    print(f"Δ = {delta}, x_{u}{v} = {flows.get((u, v), 0)} +")
 
-        if optimal:
+        if violating_arcs:
+            # Выбираем дугу с максимальным значением |Δij|
+            u_io_jo, max_delta = max(violating_arcs, key=lambda x: x[1])
+
+        else:
             print("Оптимальное решение найдено.")
             break
 
-        if entering_arc is None:
-            print("Не удалось найти подходящую входящую дугу. Прерывание алгоритма.")
-            break
-
-        print(
-            f"Входящая дуга: {entering_arc} с оценкой Δ = {reduced_costs[entering_arc]}"
-        )
-
         print("Шаг 4: Добавление входящей дуги в базис и поиск цикла")
-        U_B.append(entering_arc)
-        U_N.remove(entering_arc)
+        print(
+            f"дуга: {u_io_jo} с оценкой Δ = {reduced_costs[u_io_jo]} выбрана как (i_0, j_0)"
+        )
+        U_B.append(u_io_jo)
+        U_N.remove(u_io_jo)
+        print(f"U_B = U_B ∪ {u_io_jo}")
 
-        cycle = find_cycle(U_B, entering_arc)
+        cycle = find_cycle(U_B, u_io_jo, flows, capacities)
         if not cycle:
             print("Не удалось найти цикл. Прерывание алгоритма.")
             break
         print(f"Найденный цикл: {cycle}")
 
         print("Шаг 5: Вычисление θ^0 и идентификация выходящей дуги")
-        theta_0, leaving_arc = compute_theta(G, capacities, flows, cycle, entering_arc)
-        print(f"θ^0 = {theta_0}, выходящая дуга: {leaving_arc}")
+        theta_0, leaving_arc = compute_theta(capacities, flows, cycle)
 
-        # Определение направлений дуг в цикле
-        direction = {}
-        for arc in cycle:
-            if arc == entering_arc:
-                direction[arc] = 1  # Положительное направление
-            else:
-                direction[arc] = -1  # Отрицательное направление
-
-        print("Шаг 6: Корректировка потоков вдоль цикла")
-        adjust_flows(flows, cycle, theta_0, direction)
-        print(f"Потоки после корректировки: {flows}")
-
-        print("Шаг 7: Обновление базиса")
-        if leaving_arc != entering_arc:
-            U_B.remove(leaving_arc)
-            U_N.append(leaving_arc)
-            print(f"Выходящая дуга {leaving_arc} удалена из базиса.")
-        else:
-            print("Выходящая дуга совпадает с входящей.")
+        print("Шаг 6: Обновление потоков или базиса")
 
     return flows, U_B, U_N
 
