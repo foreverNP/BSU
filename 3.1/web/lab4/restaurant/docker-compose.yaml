@@ -1,0 +1,16 @@
+services:
+    mysql:
+        image: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: restaurant_db
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+        restart: unless-stopped
+
+volumes:
+    mysql_data:
