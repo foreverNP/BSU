@@ -171,7 +171,7 @@ def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, dem
     cycle = find_cycle()
     if not cycle:
         print("Цикл не найден.")
-        return None, None, None, None
+        return None, None, None, None, None
 
     # Назначаем знаки
     signs = []
@@ -187,7 +187,10 @@ def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, dem
     for idx, (i, j) in enumerate(cycle):
         sign = signs[idx]
         if sign == "+":
-            theta_ij = demand[j] - allocation[i][j]
+            # Если есть ограничения на максимальные значения, используйте их здесь
+            # В данном случае считаем, что d_ij = supply[i] или demand[j], берем минимальное
+            d_ij = min(supply[i], demand[j])
+            theta_ij = d_ij - allocation[i][j]
         else:
             theta_ij = allocation[i][j]
         theta_values.append(theta_ij)
@@ -195,9 +198,9 @@ def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, dem
     # Находим минимальное θ^0
     theta_0 = min(theta_values)
     min_idx = theta_values.index(theta_0)
-    cell = cycle[min_idx]
+    istar_jstar = cycle[min_idx]
 
-    return cycle, signs, theta_values, theta_0, cell
+    return cycle, signs, theta_values, theta_0, istar_jstar
 
 
 def update_allocation(allocation, cycle, signs, theta_0):
@@ -211,61 +214,72 @@ def update_allocation(allocation, cycle, signs, theta_0):
 
 
 def update_basis(basis, i0_j0, istar_jstar):
+    print(f"U_B = {basis} - (i*, j*) = {istar_jstar} + (i0, j0) = {i0_j0}")
+    if istar_jstar == i0_j0:
+        return basis
     basis.remove(istar_jstar)
     basis.append(i0_j0)
     return basis
 
 
-initial_allocation, basis = northwest_corner_method(supply, demand)
+# Начало основного алгоритма
+allocation, basis = northwest_corner_method(supply, demand)
 
-print("Начальный базисный план:")
-for row in initial_allocation:
-    print(row)
-print("Базис:", basis)
+iteration = 0
+while True:
+    iteration += 1
+    print(f"\nИтерация {iteration}")
 
-# Шаг 1: Расчет потенциалов
-u, v = calculate_potentials(basis, costs)
-print("Потенциалы u:", u)
-print("Потенциалы v:", v)
+    print("\nТекущий план распределения:")
+    for row in allocation:
+        print(row)
+    print("Базис:", basis)
 
-# Шаг 2: Подсчет оценок
-delta = calculate_reduced_costs(basis, costs, u, v)
-print("Оценки delta:")
-for row in delta:
-    print(row)
+    # Шаг 1: Расчет потенциалов
+    u, v = calculate_potentials(basis, costs)
+    print("Потенциалы u:", u)
+    print("Потенциалы v:", v)
 
-# Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
-is_optimal, entering_cell = check_optimality_and_select_entering_cell(
-    supply, delta, initial_allocation, basis
-)
-if is_optimal:
-    print("Текущий план оптимален.")
-else:
-    print("Текущий план не оптимален.")
-    print("Клетка для ввода в базис:", entering_cell)
+    # Шаг 2: Подсчет оценок
+    delta = calculate_reduced_costs(basis, costs, u, v)
+    print("Оценки delta:")
+    for row in delta:
+        print(row)
 
-# Шаг 5: Поиск цикла и вычисление θ^0
-cycle, signs, theta_values, theta_0, istar_jstar = find_cycle_and_calculate_theta(
-    initial_allocation, basis, entering_cell, supply, demand
-)
+    # Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
+    is_optimal, entering_cell = check_optimality_and_select_entering_cell(
+        supply, delta, allocation, basis
+    )
+    if is_optimal:
+        print("Текущий план оптимален.")
+        break
+    else:
+        print("Текущий план не оптимален.")
+        print("Клетка для ввода в базис:", entering_cell)
 
-if cycle:
-    print("Найденный цикл:")
-    for idx, cell in enumerate(cycle):
-        i, j = cell
-        print(f"Клетка ({i}, {j}), знак: {signs[idx]}, θ_ij: {theta_values[idx]}")
-    print(f"Минимальное θ^0: {theta_0}")
-else:
-    print("Цикл не найден.")
+    # Шаг 5: Поиск цикла и вычисление θ^0
+    cycle, signs, theta_values, theta_0, istar_jstar = find_cycle_and_calculate_theta(
+        allocation, basis, entering_cell, supply, demand
+    )
 
-# Шаг 6: Обновление плана распределения
-allocation = update_allocation(initial_allocation, cycle, signs, theta_0)
+    if cycle:
+        print("Найденный цикл:")
+        for idx, cell in enumerate(cycle):
+            i, j = cell
+            print(f"Клетка ({i}, {j}), знак: {signs[idx]}, θ_ij: {theta_values[idx]}")
+        print(f"Минимальное θ^0: {theta_0}")
+    else:
+        print("Цикл не найден.")
+        break
 
-print("Обновленный план распределения:")
-for row in allocation:
-    print(row)
+    # Шаг 6: Обновление плана распределения
+    allocation = update_allocation(allocation, cycle, signs, theta_0)
 
-# Шаг 7: Обновление базисного множества клеток
-basis = update_basis(basis, entering_cell, istar_jstar)
+    print("Обновленный план распределения:")
+    for row in allocation:
+        print(row)
 
-print("Обновленный базис:", basis)
+    # Шаг 7: Обновление базисного множества клеток
+    basis = update_basis(basis, entering_cell, istar_jstar)
+
+    print("Обновленный базис:", basis)
