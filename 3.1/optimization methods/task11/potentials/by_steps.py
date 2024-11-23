@@ -1,6 +1,4 @@
 import numpy as np
-from helpers import print_table
-
 
 costs = [[10, 8, 5, 9, 16], [4, 3, 4, 11, 12], [5, 10, 29, 7, 6], [9, 2, 4, 1, 3]]
 
@@ -15,6 +13,8 @@ def northwest_corner_method(supply, demand):
     m = len(supply)
     n = len(demand)
 
+    basis = []
+
     allocation = [
         [0 for _ in range(n)] for _ in range(m)
     ]  # Инициализируем матрицу распределения нулями
@@ -27,63 +27,69 @@ def northwest_corner_method(supply, demand):
             supply[i], demand[j]
         )  # Определяем максимально возможное количество для поставки
         allocation[i][j] = amount  # Заполняем клетку
+        basis.append((i, j))
         supply[i] -= amount  # Обновляем остаток у поставщика
         demand[j] -= amount  # Обновляем потребность у потребителя
 
-        # Вывод таблицы на текущей итерации
-        print_table(allocation, supply, demand)
+        # Если требуется, можно раскомментировать следующую строку для вывода таблицы
+        # print_table(allocation, supply, demand)
 
         if supply[i] == 0:
             i += 1  # Переходим к следующему поставщику
         elif demand[j] == 0:
             j += 1  # Переходим к следующему потребителю
 
-    return allocation
+    return allocation, basis
 
 
-# def least_cost_method(supply, demand, costs):
-#     allocation = np.zeros((len(supply), len(demand)))
+def calculate_potentials(basis, costs):
+    m = len(costs)
+    n = len(costs[0])
+    u = [None] * m
+    v = [None] * n
 
-#     # Создаем копии, чтобы не изменять исходные списки
-#     supply_copy = supply.copy()
-#     demand_copy = demand.copy()
+    # Устанавливаем один из потенциалов в 0, например, u[0]
+    u[0] = 0
 
-#     # Создаем маски для отмеченных строк и столбцов
-#     supply_mask = np.zeros(len(supply_copy), dtype=bool)
-#     demand_mask = np.zeros(len(demand_copy), dtype=bool)
-
-#     while np.any(supply_mask == False) and np.any(demand_mask == False):
-#         # Находим минимальную стоимость среди доступных клеток
-#         min_cost = np.inf
-#         min_cost_cell = (0, 0)
-#         for i in range(len(supply_copy)):
-#             if supply_mask[i]:
-#                 continue
-#             for j in range(len(demand_copy)):
-#                 if demand_mask[j]:
-#                     continue
-#                 if costs[i][j] < min_cost:
-#                     min_cost = costs[i][j]
-#                     min_cost_cell = (i, j)
-
-#         i, j = min_cost_cell
-#         alloc = min(supply_copy[i], demand_copy[j])
-#         allocation[i, j] = alloc
-
-#         supply_copy[i] -= alloc
-#         demand_copy[j] -= alloc
-#         print_table(allocation, supply_copy, demand_copy)
-
-#         if supply_copy[i] == 0:
-#             supply_mask[i] = True
-#         if demand_copy[j] == 0:
-#             demand_mask[j] = True
-
-#     return allocation
+    updated = True
+    while updated:
+        updated = False
+        for i, j in basis:
+            cij = costs[i][j]
+            if u[i] is not None and v[j] is None:
+                v[j] = -cij - u[i]
+                updated = True
+            elif u[i] is None and v[j] is not None:
+                u[i] = -cij - v[j]
+                updated = True
+    return u, v
 
 
-initial_allocation = northwest_corner_method(supply, demand)
+def calculate_reduced_costs(basis, costs, u, v):
+    m = len(costs)
+    n = len(costs[0])
+    delta = [[0 for _ in range(n)] for _ in range(m)]
+    for i in range(m):
+        for j in range(n):
+            if (i, j) not in basis:
+                delta[i][j] = -costs[i][j] - (u[i] + v[j])
+    return delta
+
+
+initial_allocation, basis = northwest_corner_method(supply, demand)
 
 print("Начальный базисный план:")
 for row in initial_allocation:
+    print(row)
+print("Базис:", basis)
+
+# Шаг 1: Расчет потенциалов
+u, v = calculate_potentials(basis, costs)
+print("Потенциалы u:", u)
+print("Потенциалы v:", v)
+
+# Шаг 2: Подсчет оценок
+delta = calculate_reduced_costs(basis, costs, u, v)
+print("Оценки delta:")
+for row in delta:
     print(row)
