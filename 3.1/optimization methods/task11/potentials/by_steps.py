@@ -1,9 +1,32 @@
-import numpy as np
+import pulp
+# costs = [[10, 3, 8, 11, 2], [8, 7, 6, 10, 5], [11, 10, 12, 9, 10], [12, 14, 10, 14, 8]]
+
+# supply = [20, 10, 14, 10]  # Ресурсы районов A1, A2, A3, A4
+# demand = [6, 8, 20, 5, 15]  # Мощности элеваторов B1, B2, B3, B4, B5
 
 costs = [[10, 8, 5, 9, 16], [4, 3, 4, 11, 12], [5, 10, 29, 7, 6], [9, 2, 4, 1, 3]]
 
 supply = [9, 8, 8, 12]  # Ресурсы районов A1, A2, A3, A4
 demand = [6, 7, 9, 8, 7]  # Мощности элеваторов B1, B2, B3, B4, B5
+
+
+def print_table(allocation, supply, demand):
+    m = len(allocation)
+    n = len(allocation[0])
+
+    # Вывод строк таблицы
+    for i in range(m):
+        for j in range(n):
+            print(f"{allocation[i][j]:<6}", end="")
+        print(f"| {supply[i]:<6}")
+
+    # Разделительная линия
+    print("-" * (5 * (n + 2)))
+
+    # Вывод остатка потребностей
+    for d in demand:
+        print(f"{d:<6}", end="")
+    print("\n")
 
 
 def northwest_corner_method(supply, demand):
@@ -32,7 +55,7 @@ def northwest_corner_method(supply, demand):
         demand[j] -= amount  # Обновляем потребность у потребителя
 
         # Если требуется, можно раскомментировать следующую строку для вывода таблицы
-        # print_table(allocation, supply, demand)
+        print_table(allocation, supply, demand)
 
         if supply[i] == 0:
             i += 1  # Переходим к следующему поставщику
@@ -103,11 +126,11 @@ def check_optimality_and_select_entering_cell(supply, delta, allocation, basis):
             if (i, j) not in basis:
                 x_ij = allocation[i][j]
                 delta_ij = delta[i][j]
-                if (x_ij == 0 and delta_ij > 0) or (x_ij == supply[i] and delta_ij < 0):
+                if x_ij == 0 and delta_ij > 0:
                     print(f"x_{i}{j} = {x_ij}, delta_{i}{j} = {delta_ij} -")
                     is_optimal = False  # Нарушается условие оптимальности
-                    if delta_ij > max_delta:
-                        max_delta = delta_ij
+                    if abs(delta_ij) > max_delta:
+                        max_delta = abs(delta_ij)
                         entering_cell = (i, j)
                 else:
                     print(f"x_{i}{j} = {x_ij}, delta_{i}{j} = {delta_ij} +")
@@ -189,7 +212,7 @@ def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, dem
         if sign == "+":
             # Если есть ограничения на максимальные значения, используйте их здесь
             # В данном случае считаем, что d_ij = supply[i] или demand[j], берем минимальное
-            d_ij = min(supply[i], demand[j])
+            d_ij = float("+inf")
             theta_ij = d_ij - allocation[i][j]
         else:
             theta_ij = allocation[i][j]
@@ -222,6 +245,50 @@ def update_basis(basis, i0_j0, istar_jstar):
     return basis
 
 
+def solution(costs, supply, demand):
+    regions = [f"A{i+1}" for i in range(len(supply))]
+    elevators = [f"B{j+1}" for j in range(len(demand))]
+
+    # Формирование задачи
+    prob = pulp.LpProblem("Grain_Transportation", pulp.LpMinimize)
+
+    # Переменные решения
+    x = pulp.LpVariable.dicts("x", (regions, elevators), lowBound=0, cat="Continuous")
+
+    # Целевая функция
+    prob += pulp.lpSum(
+        costs[i][j] * x[regions[i]][elevators[j]]
+        for i in range(len(regions))
+        for j in range(len(elevators))
+    )
+
+    # Ограничения на ресурсы (поставки)
+    for i in range(len(regions)):
+        prob += (
+            pulp.lpSum(x[regions[i]][elevators[j]] for j in range(len(elevators)))
+            == supply[i],
+            f"Supply_{regions[i]}",
+        )
+
+    # Ограничения на мощности (спрос)
+    for j in range(len(elevators)):
+        prob += (
+            pulp.lpSum(x[regions[i]][elevators[j]] for i in range(len(regions)))
+            == demand[j],
+            f"Demand_{elevators[j]}",
+        )
+
+    prob.solve()
+
+    print("Статус:", pulp.LpStatus[prob.status])
+    print("Точный оптимальный план перевозки:")
+    for i in regions:
+        for j in elevators:
+            if x[i][j].varValue > 0:
+                print(f"Перевозить {x[i][j].varValue} единиц из {i} в {j}")
+    print(f"Общая стоимость: {pulp.value(prob.objective)}")
+
+
 # Начало основного алгоритма
 allocation, basis = northwest_corner_method(supply, demand)
 
@@ -252,6 +319,10 @@ while True:
     )
     if is_optimal:
         print("Текущий план оптимален.")
+        print("Оптимальный план распределения:")
+        for row in allocation:
+            print(row)
+        solution(costs, supply, demand)
         break
     else:
         print("Текущий план не оптимален.")
