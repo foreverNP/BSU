@@ -114,6 +114,90 @@ def check_optimality_and_select_entering_cell(supply, delta, allocation, basis):
     return is_optimal, entering_cell
 
 
+def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, demand):
+    m = len(allocation)
+    n = len(allocation[0])
+
+    # Временно добавляем входящую клетку в базис
+    temp_basis = basis.copy()
+    temp_basis.append(entering_cell)
+
+    # Строим структуру для быстрого доступа к базисным клеткам по строкам и столбцам
+    rows = [[] for _ in range(m)]
+    cols = [[] for _ in range(n)]
+    for i, j in temp_basis:
+        rows[i].append(j)
+        cols[j].append(i)
+
+    # Функция для поиска цикла
+    def find_cycle():
+        # Используем DFS для поиска цикла
+        stack = [(entering_cell, [entering_cell], set([entering_cell]), True)]
+        while stack:
+            (current_cell, path, visited, is_row) = stack.pop()
+            i, j = current_cell
+            if is_row:
+                # Переходим по столбцам в той же строке
+                for jj in rows[i]:
+                    next_cell = (i, jj)
+                    if next_cell == entering_cell and len(path) >= 4:
+                        return path
+                    if next_cell not in visited:
+                        stack.append(
+                            (
+                                next_cell,
+                                path + [next_cell],
+                                visited | {next_cell},
+                                not is_row,
+                            )
+                        )
+            else:
+                # Переходим по строкам в том же столбце
+                for ii in cols[j]:
+                    next_cell = (ii, j)
+                    if next_cell == entering_cell and len(path) >= 4:
+                        return path
+                    if next_cell not in visited:
+                        stack.append(
+                            (
+                                next_cell,
+                                path + [next_cell],
+                                visited | {next_cell},
+                                not is_row,
+                            )
+                        )
+        return None
+
+    cycle = find_cycle()
+    if not cycle:
+        print("Цикл не найден.")
+        return None, None, None, None
+
+    # Назначаем знаки
+    signs = []
+    first, second = "-", "+"
+    if allocation[entering_cell[0]][entering_cell[1]] == 0:
+        first, second = "+", "-"
+    for idx in range(len(cycle)):
+        sign = first if idx % 2 == 0 else second
+        signs.append(sign)
+
+    # Вычисляем θ_ij для каждой клетки в цикле
+    theta_values = []
+    for idx, (i, j) in enumerate(cycle):
+        sign = signs[idx]
+        if sign == "+":
+            theta_ij = demand[j] - allocation[i][j]
+        else:
+            theta_ij = allocation[i][j]
+        theta_values.append(theta_ij)
+
+    # Находим минимальное θ^0
+    theta_0 = min(theta_values)
+
+    return cycle, signs, theta_values, theta_0
+
+
 initial_allocation, basis = northwest_corner_method(supply, demand)
 
 print("Начальный базисный план:")
@@ -141,3 +225,17 @@ if is_optimal:
 else:
     print("Текущий план не оптимален.")
     print("Клетка для ввода в базис:", entering_cell)
+
+# Шаг 5: Поиск цикла и вычисление θ^0
+cycle, signs, theta_values, theta_0 = find_cycle_and_calculate_theta(
+    initial_allocation, basis, entering_cell, supply, demand
+)
+
+if cycle:
+    print("Найденный цикл:")
+    for idx, cell in enumerate(cycle):
+        i, j = cell
+        print(f"Клетка ({i}, {j}), знак: {signs[idx]}, θ_ij: {theta_values[idx]}")
+    print(f"Минимальное θ^0: {theta_0}")
+else:
+    print("Цикл не найден.")
