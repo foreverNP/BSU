@@ -194,8 +194,26 @@ def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, dem
 
     # Находим минимальное θ^0
     theta_0 = min(theta_values)
+    min_idx = theta_values.index(theta_0)
+    cell = cycle[min_idx]
 
-    return cycle, signs, theta_values, theta_0
+    return cycle, signs, theta_values, theta_0, cell
+
+
+def update_allocation(allocation, cycle, signs, theta_0):
+    for idx, (i, j) in enumerate(cycle):
+        sign = signs[idx]
+        if sign == "+":
+            allocation[i][j] += theta_0
+        else:
+            allocation[i][j] -= theta_0
+    return allocation
+
+
+def update_basis(basis, i0_j0, istar_jstar):
+    basis.remove(istar_jstar)
+    basis.append(i0_j0)
+    return basis
 
 
 initial_allocation, basis = northwest_corner_method(supply, demand)
@@ -227,7 +245,7 @@ else:
     print("Клетка для ввода в базис:", entering_cell)
 
 # Шаг 5: Поиск цикла и вычисление θ^0
-cycle, signs, theta_values, theta_0 = find_cycle_and_calculate_theta(
+cycle, signs, theta_values, theta_0, istar_jstar = find_cycle_and_calculate_theta(
     initial_allocation, basis, entering_cell, supply, demand
 )
 
@@ -239,3 +257,15 @@ if cycle:
     print(f"Минимальное θ^0: {theta_0}")
 else:
     print("Цикл не найден.")
+
+# Шаг 6: Обновление плана распределения
+allocation = update_allocation(initial_allocation, cycle, signs, theta_0)
+
+print("Обновленный план распределения:")
+for row in allocation:
+    print(row)
+
+# Шаг 7: Обновление базисного множества клеток
+basis = update_basis(basis, entering_cell, istar_jstar)
+
+print("Обновленный базис:", basis)
