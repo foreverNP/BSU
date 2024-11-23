@@ -51,19 +51,19 @@ FROM rooms r
 
 EXCEPT
 
-SELECT DISTINCT r.id, r.building_id, r.floor, r.price
+SELECT r.id, r.building_id, r.floor, r.price
 FROM rooms r
 JOIN bookings b ON r.id = b.room_id
 JOIN complaints c ON b.id = c.booking_id;
 
 -- Запрос 2: Найти здания, которые не предлагают услугу с id = X. например, 'Theatrical Performance'
--- Business value: позволяет расширить предложение услуг в этих зданиях.
+-- Business value: расширить предложение услуг в этих зданиях.
 SELECT b.id, b.class_id, b.floors_num, b.total_rooms
 FROM buildings b
 
 EXCEPT
 
-SELECT DISTINCT b.id, b.class_id, b.floors_num, b.total_rooms
+SELECT b.id, b.class_id, b.floors_num, b.total_rooms
 FROM buildings b
 JOIN building_services bs ON b.id = bs.building_id
 WHERE bs.service_id = 3;
@@ -72,14 +72,14 @@ WHERE bs.service_id = 3;
 
 -- Запрос 1: Найти номера, которые либо в данный момент забронированы, либо на них поступали жалобы.
 -- Business value: мониторинг номеров, требующих внимания.
-SELECT DISTINCT r.id, r.building_id, r.floor, r.price
+SELECT r.id, r.building_id, r.floor, r.price
 FROM rooms r
 JOIN bookings b ON r.id = b.room_id
 WHERE GETDATE() BETWEEN b.start_date AND b.end_date
 
 UNION
 
-SELECT DISTINCT r.id, r.building_id, r.floor, r.price
+SELECT r.id, r.building_id, r.floor, r.price
 FROM rooms r
 JOIN bookings b ON r.id = b.room_id
 JOIN complaints c ON b.id = c.booking_id;
@@ -101,7 +101,7 @@ WHERE bs.name = 'Confirmed';
 -- 14. Написать 4 запроса с использованием подзапросов, используя операторы сравнения, IN, ANY|SOME и ALL, предикат EXISTS.
 
 -- Запрос 1: Найти клиентов со скидкой выше средней.
--- Business value: идентификация клиентов с привилегированными условиями.
+-- Business value: идентификация клиентов с особыми условиями.
 SELECT c.id, c.name, c.discount
 FROM clients c
 WHERE c.discount > (SELECT AVG(discount) FROM clients);
@@ -116,15 +116,15 @@ WHERE r1.price >= ALL (
 );
 
 -- Запрос 3: Найти клиентов, которые бронировали номера с количеством кроватей выше среднего.
--- Business value: сегментация клиентов по предпочтениям.
-SELECT DISTINCT c.id, c.name
+-- Business value: разделение клиентов по предпочтениям.
+SELECT c.id, c.name
 FROM clients c
 JOIN bookings b ON c.id = b.booker_id
 JOIN rooms r ON b.room_id = r.id
 WHERE r.bed_num > (SELECT AVG(bed_num) FROM rooms);
 
 -- Запрос 4: Найти здания, предлагающие все типы услуг.
--- Business value: позиционирование зданий как полнофункциональных объектов.
+-- Business value: 
 SELECT b.id, b.class_id
 FROM buildings b
 WHERE NOT EXISTS (
@@ -147,7 +147,7 @@ WHERE NOT EXISTS (
 );
 
 -- Запрос 6: Найти клиентов, которые зарегистрированы в определенные дни недели (например, только по понедельникам, средам и пятницам).
--- Business value: Позволяет анализировать поведение клиентов в зависимости от дня регистрации для оптимизации маркетинговых кампаний и акций.
+-- Business value: для маркетинговых кампаний и акций.
 SELECT c.id, c.name, c.email, c.registration_date
 FROM clients c
 WHERE DATENAME(WEEKDAY, c.registration_date) IN ('Monday', 'Wednesday', 'Friday');
