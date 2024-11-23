@@ -48,8 +48,26 @@ def calculate_potentials(basis, costs):
     u = [None] * m
     v = [None] * n
 
-    # Устанавливаем один из потенциалов в 0, например, u[0]
-    u[0] = 0
+    # Count basis cells in each row and column
+    row_counts = [0] * m
+    col_counts = [0] * n
+    for i, j in basis:
+        row_counts[i] += 1
+        col_counts[j] += 1
+
+    # Find the row or column with the highest count
+    max_row = max(range(m), key=lambda x: row_counts[x], default=None)
+    max_col = max(range(n), key=lambda x: col_counts[x], default=None)
+    max_row_count = row_counts[max_row] if max_row is not None else -1
+    max_col_count = col_counts[max_col] if max_col is not None else -1
+
+    if max_row_count > max_col_count:
+        u[max_row] = 0
+    elif max_col_count > max_row_count:
+        v[max_col] = 0
+    else:
+        # If counts are equal, prioritize the first row
+        u[max_row] = 0
 
     updated = True
     while updated:
@@ -76,6 +94,26 @@ def calculate_reduced_costs(basis, costs, u, v):
     return delta
 
 
+def check_optimality_and_select_entering_cell(supply, delta, allocation, basis):
+    is_optimal = True
+    max_delta = float("-inf")
+    entering_cell = None
+    for i in range(len(delta)):
+        for j in range(len(delta[0])):
+            if (i, j) not in basis:
+                x_ij = allocation[i][j]
+                delta_ij = delta[i][j]
+                if (x_ij == 0 and delta_ij > 0) or (x_ij == supply[i] and delta_ij < 0):
+                    print(f"x_{i}{j} = {x_ij}, delta_{i}{j} = {delta_ij} -")
+                    is_optimal = False  # Нарушается условие оптимальности
+                    if delta_ij > max_delta:
+                        max_delta = delta_ij
+                        entering_cell = (i, j)
+                else:
+                    print(f"x_{i}{j} = {x_ij}, delta_{i}{j} = {delta_ij} +")
+    return is_optimal, entering_cell
+
+
 initial_allocation, basis = northwest_corner_method(supply, demand)
 
 print("Начальный базисный план:")
@@ -93,3 +131,13 @@ delta = calculate_reduced_costs(basis, costs, u, v)
 print("Оценки delta:")
 for row in delta:
     print(row)
+
+# Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
+is_optimal, entering_cell = check_optimality_and_select_entering_cell(
+    supply, delta, initial_allocation, basis
+)
+if is_optimal:
+    print("Текущий план оптимален.")
+else:
+    print("Текущий план не оптимален.")
+    print("Клетка для ввода в базис:", entering_cell)
