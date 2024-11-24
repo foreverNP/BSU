@@ -26,59 +26,51 @@ demand = [6, 7, 9, 8, 7]  # Мощности элеваторов B1, B2, B3, B4
 # demand = [6, 15, 7, 8, 8]  # Мощности элеваторов B1, B2, B3, B4, B5
 
 
-def print_table(allocation, supply, demand):
-    m = len(allocation)
-    n = len(allocation[0])
-
-    # Вывод строк таблицы
-    for i in range(m):
-        for j in range(n):
-            print(f"{allocation[i][j]:<6}", end="")
-        print(f"| {supply[i]:<6}")
-
-    # Разделительная линия
-    print("-" * (5 * (n + 2)))
-
-    # Вывод остатка потребностей
-    for d in demand:
-        print(f"{d:<6}", end="")
-    print("\n")
-
-
-def northwest_corner_method(supply, demand):
-    print("Метод северо-западного угла")
-    supply = supply.copy()  # Копируем списки, чтобы не изменить исходные данные
-    demand = demand.copy()
+def build_first_phase_problem(supply, demand, capacities):
     m = len(supply)
     n = len(demand)
+    total_supply = sum(supply)
+    total_demand = sum(demand)
 
-    basis = []
+    # Проверка баланса поставок и спроса
+    if total_supply != total_demand:
+        print("Общий объем поставок и спроса не равен. Балансировка задачи.")
 
-    allocation = [
-        [0 for _ in range(n)] for _ in range(m)
+    # Инициализируем расширенную матрицу затрат
+    extended_costs = []
+    for i in range(m + 1):  # m+1 строк
+        row = []
+        for j in range(n + 1):  # n+1 столбцов
+            if i < m and j < n:
+                # Исходные клетки: c_{ij} = 0
+                row.append(0)
+            elif i == m and j == n:
+                # Клетка (m+1, n+1): c_{m+1,n+1} = 0
+                row.append(0)
+            else:
+                # Искусственные клетки: c_{ij} = 1
+                row.append(1)
+        extended_costs.append(row)
+
+    # Начальные базисные переменные и их значения
+    basic_variables = []
+    flows = [
+        [0 for _ in range(n + 1)] for _ in range(m + 1)
     ]  # Инициализируем матрицу распределения нулями
 
-    i = 0  # Индекс текущего поставщика
-    j = 0  # Индекс текущего потребителя
+    # Переменные искусственного столбца x_{i,n+1}
+    for i in range(m):
+        basic_variables.append((i, n))
+        flows[i][j] = supply[i]
+    # Переменные искусственной строки x_{m+1,j}
+    for j in range(n):
+        basic_variables.append((m, j))
+        flows[m][j] = demand[j]
 
-    while i < m and j < n:
-        amount = min(
-            supply[i], demand[j]
-        )  # Определяем максимально возможное количество для поставки
-        allocation[i][j] = amount  # Заполняем клетку
-        basis.append((i, j))
-        supply[i] -= amount  # Обновляем остаток у поставщика
-        demand[j] -= amount  # Обновляем потребность у потребителя
+    basic_variables.append((m, n))
+    flows[m][n] = 0
 
-        # Если требуется, можно раскомментировать следующую строку для вывода таблицы
-        print_table(allocation, supply, demand)
-
-        if supply[i] == 0:
-            i += 1  # Переходим к следующему поставщику
-        elif demand[j] == 0:
-            j += 1  # Переходим к следующему потребителю
-
-    return allocation, basis
+    return extended_costs, basic_variables, flows
 
 
 def calculate_potentials(basis, costs):
@@ -268,7 +260,7 @@ def update_basis(basis, i0_j0, istar_jstar):
     return basis
 
 
-def solution(costs, supply, demand):
+def solution(costs, supply, demand, capacities):
     regions = [f"A{i+1}" for i in range(len(supply))]
     elevators = [f"B{j+1}" for j in range(len(demand))]
 
@@ -302,7 +294,6 @@ def solution(costs, supply, demand):
         )
 
     # Ограничения на мощности элеваторов
-
     for i in range(len(regions)):
         for j in range(len(elevators)):
             prob += (
@@ -321,74 +312,103 @@ def solution(costs, supply, demand):
     print(f"Общая стоимость: {pulp.value(prob.objective)}")
 
 
-# Начало основного алгоритма
-allocation, basis = northwest_corner_method(supply, demand)
+def optimize_transportation_plan(costs, capacities, basic_flows, basis_cells):
+    iteration = 0
+    while True:
+        iteration += 1
+        print(f"\nИтерация {iteration}")
 
-iteration = 0
-while True:
-    iteration += 1
-    print(f"\nИтерация {iteration}")
-
-    print("\nТекущий план распределения:")
-    for row in allocation:
-        print(row)
-    print("Базис:", basis)
-
-    # Шаг 1: Расчет потенциалов
-    print("Шаг 1: Расчет потенциалов")
-    u, v = calculate_potentials(basis, costs)
-    print("Потенциалы u:", u)
-    print("Потенциалы v:", v)
-
-    # Шаг 2: Подсчет оценок
-    print("Шаг 2: Подсчет оценок")
-    delta = calculate_reduced_costs(basis, costs, u, v)
-    print("Оценки delta:")
-    for row in delta:
-        print(row)
-
-    # Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
-    print("Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис")
-    is_optimal, entering_cell = check_optimality_and_select_entering_cell(
-        capacities, delta, allocation, basis
-    )
-    if is_optimal:
-        print("Текущий план оптимален.")
-        print("Оптимальный план распределения:")
-        for row in allocation:
+        print("\nТекущий план распределения:")
+        for row in basic_flows:
             print(row)
-        solution(costs, supply, demand)
-        break
-    else:
-        print("Текущий план не оптимален.")
-        print("Клетка для ввода в базис:", entering_cell)
+        print("Базис:", basis_cells)
 
-    # Шаг 5: Поиск цикла и вычисление θ^0
-    print("Шаг 5: Поиск цикла и вычисление θ^0")
-    cycle, signs, theta_values, theta_0, istar_jstar = find_cycle_and_calculate_theta(
-        allocation, basis, entering_cell, capacities
-    )
+        # Шаг 1: Расчет потенциалов
+        print("Шаг 1: Расчет потенциалов")
+        u, v = calculate_potentials(basis_cells, costs)
+        print("Потенциалы u:", u)
+        print("Потенциалы v:", v)
 
-    if cycle:
-        print("Найденный цикл:")
-        for idx, cell in enumerate(cycle):
-            i, j = cell
-            print(f"Клетка ({i}, {j}), знак: {signs[idx]}, θ_ij: {theta_values[idx]}")
-        print(f"Минимальное θ^0: {theta_0}")
-    else:
-        print("Цикл не найден.")
-        break
+        # Шаг 2: Подсчет оценок
+        print("Шаг 2: Подсчет оценок")
+        delta = calculate_reduced_costs(basis_cells, costs, u, v)
+        print("Оценки delta:")
+        for row in delta:
+            print(row)
 
-    # Шаг 6: Обновление плана распределения
-    print("Шаг 6: Обновление плана распределения")
-    allocation = update_allocation(allocation, cycle, signs, theta_0)
+        # Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
+        print("Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис")
+        is_optimal, entering_cell = check_optimality_and_select_entering_cell(
+            capacities, delta, basic_flows, basis_cells
+        )
+        if is_optimal:
+            print("Текущий план оптимален.")
+            return basic_flows, basis_cells
+        else:
+            print("Текущий план не оптимален.")
+            print("Клетка для ввода в базис:", entering_cell)
 
-    print("Обновленный план распределения:")
-    for row in allocation:
-        print(row)
+        # Шаг 5: Поиск цикла и вычисление θ^0
+        print("Шаг 5: Поиск цикла и вычисление θ^0")
+        cycle, signs, theta_values, theta_0, istar_jstar = (
+            find_cycle_and_calculate_theta(
+                basic_flows, basis_cells, entering_cell, capacities
+            )
+        )
 
-    # Шаг 7: Обновление базисного множества клеток
-    print("Шаг 7: Обновление базисного множества клеток")
-    basis = update_basis(basis, entering_cell, istar_jstar)
+        if cycle:
+            print("Найденный цикл:")
+            for idx, cell in enumerate(cycle):
+                i, j = cell
+                print(
+                    f"Клетка ({i}, {j}), знак: {signs[idx]}, θ_ij: {theta_values[idx]}"
+                )
+            print(f"Минимальное θ^0: {theta_0}")
+        else:
+            print("Цикл не найден.")
+            break
 
-    print("Обновленный базис:", basis)
+        # Шаг 6: Обновление плана распределения
+        print("Шаг 6: Обновление плана распределения")
+        basic_flows = update_allocation(basic_flows, cycle, signs, theta_0)
+
+        print("Обновленный план распределения:")
+        for row in basic_flows:
+            print(row)
+
+        # Шаг 7: Обновление базисного множества клеток
+        print("Шаг 7: Обновление базисного множества клеток")
+        basis_cells = update_basis(basis_cells, entering_cell, istar_jstar)
+
+        print("Обновленный базис:", basis_cells)
+
+
+# Строим задачу первой фазы
+extended_costs, basic_variables, flows = build_first_phase_problem(supply, demand)
+
+
+print("Расширенная матрица затрат:")
+for row in extended_costs:
+    print(row)
+print("Базисные потоки:")
+for row in flows:
+    print(row)
+
+# Решаем задачу первой фазы
+basic_flows, basis_cells = optimize_transportation_plan(
+    extended_costs, capacities, flows, basic_variables
+)
+
+# Выводим оптимальный план перевозок
+print("Оптимальный план перевозок для задачи первой фазы:")
+for row in basic_flows:
+    print(row)
+
+# Решаем задачу второй фазы
+flows, cells = optimize_transportation_plan(costs, capacities, basic_flows, basis_cells)
+
+# Выводим оптимальный план перевозок
+print("Оптимальный план перевозок:")
+for row in flows:
+    print(row)
+solution(costs, supply, demand, capacities)
