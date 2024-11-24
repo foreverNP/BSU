@@ -10,6 +10,13 @@ demand = [6, 7, 9, 8, 7]  # Мощности элеваторов B1, B2, B3, B4
 # supply = [20, 10, 14, 10]  # Ресурсы районов A1, A2, A3, A4
 # demand = [6, 8, 20, 5, 15]  # Мощности элеваторов B1, B2, B3, B4, B5
 
+capacities = [
+    [15, 13, 17, 20, 15],
+    [17, 25, 14, 16, 19],
+    [15, 16, 16, 15, 20],
+    [18, 15, 17, 14, 18],
+]
+
 # Индексы
 regions = [f"A{i+1}" for i in range(len(supply))]
 elevators = [f"B{j+1}" for j in range(len(demand))]
@@ -42,6 +49,14 @@ for j in range(len(elevators)):
         == demand[j],
         f"Demand_{elevators[j]}",
     )
+
+# Ограничения на мощности элеваторов
+for i in range(len(regions)):
+    for j in range(len(elevators)):
+        prob += (
+            x[regions[i]][elevators[j]] <= capacities[i][j],
+            f"Capacity_{regions[i]}_{elevators[j]}",
+        )
 
 prob.solve()
 

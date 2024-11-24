@@ -1,13 +1,22 @@
 import pulp
+
+# 13, 25
 # costs = [[10, 3, 8, 11, 2], [8, 7, 6, 10, 5], [11, 10, 12, 9, 10], [12, 14, 10, 14, 8]]
 
 # supply = [20, 10, 14, 10]  # Ресурсы районов A1, A2, A3, A4
 # demand = [6, 8, 20, 5, 15]  # Мощности элеваторов B1, B2, B3, B4, B5
 
-costs = [[10, 8, 5, 9, 16], [4, 3, 4, 11, 12], [5, 10, 29, 7, 6], [9, 2, 4, 1, 3]]
+# 19, 1
+# costs = [[10, 8, 5, 9, 16], [4, 3, 4, 11, 12], [5, 10, 29, 7, 6], [9, 2, 4, 1, 3]]
 
-supply = [9, 8, 8, 12]  # Ресурсы районов A1, A2, A3, A4
-demand = [6, 7, 9, 8, 7]  # Мощности элеваторов B1, B2, B3, B4, B5
+# supply = [9, 8, 8, 12]  # Ресурсы районов A1, A2, A3, A4
+# demand = [6, 7, 9, 8, 7]  # Мощности элеваторов B1, B2, B3, B4, B5
+
+# 1, 13
+costs = [[10, 10, 1, 2, 9], [10, 6, 1, 5, 3], [10, 8, 14, 5, 10], [9, 10, 2, 6, 10]]
+
+supply = [17, 8, 10, 9]  # Ресурсы районов A1, A2, A3, A4
+demand = [6, 15, 7, 8, 8]  # Мощности элеваторов B1, B2, B3, B4, B5
 
 
 def print_table(allocation, supply, demand):
@@ -86,11 +95,14 @@ def calculate_potentials(basis, costs):
 
     if max_row_count > max_col_count:
         u[max_row] = 0
+        print(f"u_{max_row} = 0")
     elif max_col_count > max_row_count:
         v[max_col] = 0
+        print(f"v_{max_col} = 0")
     else:
         # If counts are equal, prioritize the first row
         u[max_row] = 0
+        print(f"u_{max_row} = 0")
 
     updated = True
     while updated:
@@ -99,9 +111,11 @@ def calculate_potentials(basis, costs):
             cij = costs[i][j]
             if u[i] is not None and v[j] is None:
                 v[j] = -cij - u[i]
+                print(f"v_{j} = -c_{i}{j} - u_{i} = {v[j]}")
                 updated = True
             elif u[i] is None and v[j] is not None:
                 u[i] = -cij - v[j]
+                print(f"u_{i} = -c_{i}{j} - v_{j} = {u[i]}")
                 updated = True
     return u, v
 
@@ -114,6 +128,7 @@ def calculate_reduced_costs(basis, costs, u, v):
         for j in range(n):
             if (i, j) not in basis:
                 delta[i][j] = -costs[i][j] - (u[i] + v[j])
+                print(f"delta_{i}{j} = -c_{i}{j} - u_{i} - v_{j} = {delta[i][j]}")
     return delta
 
 
@@ -231,8 +246,10 @@ def update_allocation(allocation, cycle, signs, theta_0):
         sign = signs[idx]
         if sign == "+":
             allocation[i][j] += theta_0
+            print(f"x[{i}][{j}] += {theta_0} = {allocation[i][j]}")
         else:
             allocation[i][j] -= theta_0
+            print(f"x[{i}][{j}] -= {theta_0} = {allocation[i][j]}")
     return allocation
 
 
@@ -303,17 +320,20 @@ while True:
     print("Базис:", basis)
 
     # Шаг 1: Расчет потенциалов
+    print("Шаг 1: Расчет потенциалов")
     u, v = calculate_potentials(basis, costs)
     print("Потенциалы u:", u)
     print("Потенциалы v:", v)
 
     # Шаг 2: Подсчет оценок
+    print("Шаг 2: Подсчет оценок")
     delta = calculate_reduced_costs(basis, costs, u, v)
     print("Оценки delta:")
     for row in delta:
         print(row)
 
     # Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
+    print("Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис")
     is_optimal, entering_cell = check_optimality_and_select_entering_cell(
         supply, delta, allocation, basis
     )
@@ -329,6 +349,7 @@ while True:
         print("Клетка для ввода в базис:", entering_cell)
 
     # Шаг 5: Поиск цикла и вычисление θ^0
+    print("Шаг 5: Поиск цикла и вычисление θ^0")
     cycle, signs, theta_values, theta_0, istar_jstar = find_cycle_and_calculate_theta(
         allocation, basis, entering_cell, supply, demand
     )
@@ -344,6 +365,7 @@ while True:
         break
 
     # Шаг 6: Обновление плана распределения
+    print("Шаг 6: Обновление плана распределения")
     allocation = update_allocation(allocation, cycle, signs, theta_0)
 
     print("Обновленный план распределения:")
@@ -351,6 +373,7 @@ while True:
         print(row)
 
     # Шаг 7: Обновление базисного множества клеток
+    print("Шаг 7: Обновление базисного множества клеток")
     basis = update_basis(basis, entering_cell, istar_jstar)
 
     print("Обновленный базис:", basis)
