@@ -1,5 +1,12 @@
 import pulp
 
+capacities = [
+    [15, 13, 17, 20, 15],
+    [17, 25, 14, 16, 19],
+    [15, 16, 16, 15, 20],
+    [18, 15, 17, 14, 18],
+]
+
 # 13, 25
 # costs = [[10, 3, 8, 11, 2], [8, 7, 6, 10, 5], [11, 10, 12, 9, 10], [12, 14, 10, 14, 8]]
 
@@ -132,7 +139,7 @@ def calculate_reduced_costs(basis, costs, u, v):
     return delta
 
 
-def check_optimality_and_select_entering_cell(supply, delta, allocation, basis):
+def check_optimality_and_select_entering_cell(capacities, delta, allocation, basis):
     is_optimal = True
     max_delta = float("-inf")
     entering_cell = None
@@ -141,7 +148,9 @@ def check_optimality_and_select_entering_cell(supply, delta, allocation, basis):
             if (i, j) not in basis:
                 x_ij = allocation[i][j]
                 delta_ij = delta[i][j]
-                if x_ij == 0 and delta_ij > 0:
+                if (x_ij == 0 and delta_ij > 0) or (
+                    x_ij == capacities[i][j] and delta_ij < 0
+                ):
                     print(f"x{i}{j} = {x_ij}, Δ{i}{j} = {delta_ij} -")
                     is_optimal = False  # Нарушается условие оптимальности
                     if abs(delta_ij) > max_delta:
@@ -152,7 +161,7 @@ def check_optimality_and_select_entering_cell(supply, delta, allocation, basis):
     return is_optimal, entering_cell
 
 
-def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, demand):
+def find_cycle_and_calculate_theta(allocation, basis, entering_cell, capacities):
     m = len(allocation)
     n = len(allocation[0])
 
@@ -225,10 +234,7 @@ def find_cycle_and_calculate_theta(allocation, basis, entering_cell, supply, dem
     for idx, (i, j) in enumerate(cycle):
         sign = signs[idx]
         if sign == "+":
-            # Если есть ограничения на максимальные значения, используйте их здесь
-            # В данном случае считаем, что d_ij = supply[i] или demand[j], берем минимальное
-            d_ij = float("+inf")
-            theta_ij = d_ij - allocation[i][j]
+            theta_ij = capacities[i][j] - allocation[i][j]
         else:
             theta_ij = allocation[i][j]
         theta_values.append(theta_ij)
@@ -295,7 +301,16 @@ def solution(costs, supply, demand):
             f"Demand_{elevators[j]}",
         )
 
-    prob.solve()
+    # Ограничения на мощности элеваторов
+
+    for i in range(len(regions)):
+        for j in range(len(elevators)):
+            prob += (
+                x[regions[i]][elevators[j]] <= capacities[i][j],
+                f"Capacity_{regions[i]}_{elevators[j]}",
+            )
+
+    prob.solve(pulp.PULP_CBC_CMD(msg=False))
 
     print("Статус:", pulp.LpStatus[prob.status])
     print("Точный оптимальный план перевозки:")
@@ -335,7 +350,7 @@ while True:
     # Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис
     print("Шаг 3 и 4: Проверка оптимальности и выбор клетки для ввода в базис")
     is_optimal, entering_cell = check_optimality_and_select_entering_cell(
-        supply, delta, allocation, basis
+        capacities, delta, allocation, basis
     )
     if is_optimal:
         print("Текущий план оптимален.")
@@ -351,7 +366,7 @@ while True:
     # Шаг 5: Поиск цикла и вычисление θ^0
     print("Шаг 5: Поиск цикла и вычисление θ^0")
     cycle, signs, theta_values, theta_0, istar_jstar = find_cycle_and_calculate_theta(
-        allocation, basis, entering_cell, supply, demand
+        allocation, basis, entering_cell, capacities
     )
 
     if cycle:

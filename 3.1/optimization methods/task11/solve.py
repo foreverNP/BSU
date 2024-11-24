@@ -58,7 +58,7 @@ for i in range(len(regions)):
             f"Capacity_{regions[i]}_{elevators[j]}",
         )
 
-prob.solve()
+prob.solve(pulp.PULP_CBC_CMD(msg=False))
 
 print("Статус:", pulp.LpStatus[prob.status])
 print("Оптимальный план перевозки:")
