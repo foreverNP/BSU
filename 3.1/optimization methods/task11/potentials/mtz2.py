@@ -36,6 +36,12 @@ def build_first_phase_problem(supply, demand, capacities):
     if total_supply != total_demand:
         print("Общий объем поставок и спроса не равен. Балансировка задачи.")
 
+    # Скопировать capacities и добавить новую строку и столбец
+    extended_capacities = [row.copy() for row in capacities]
+    for row in extended_capacities:
+        row.append(0)  # Добавить столбец для искусственных
+    extended_capacities.append([0] * (n + 1))  # Добавить строку для искусственных
+
     # Инициализируем расширенную матрицу затрат
     extended_costs = []
     for i in range(m + 1):  # m+1 строк
@@ -61,16 +67,19 @@ def build_first_phase_problem(supply, demand, capacities):
     # Переменные искусственного столбца x_{i,n+1}
     for i in range(m):
         basic_variables.append((i, n))
-        flows[i][j] = supply[i]
+        flows[i][n] = supply[i]
+        extended_capacities[i][n] = supply[i]
     # Переменные искусственной строки x_{m+1,j}
     for j in range(n):
         basic_variables.append((m, j))
         flows[m][j] = demand[j]
+        extended_capacities[m][j] = demand[j]
 
     basic_variables.append((m, n))
     flows[m][n] = 0
+    extended_capacities[m][n] = total_supply
 
-    return extended_costs, basic_variables, flows
+    return extended_costs, basic_variables, flows, extended_capacities
 
 
 def calculate_potentials(basis, costs):
@@ -384,25 +393,34 @@ def optimize_transportation_plan(costs, capacities, basic_flows, basis_cells):
 
 
 # Строим задачу первой фазы
-extended_costs, basic_variables, flows = build_first_phase_problem(supply, demand)
+extended_costs, basic_variables, flows, capacities_ext = build_first_phase_problem(
+    supply, demand, capacities
+)
 
 
+print("Первая фаза: построение задачи")
 print("Расширенная матрица затрат:")
 for row in extended_costs:
     print(row)
 print("Базисные потоки:")
 for row in flows:
     print(row)
+print("Расширенные мощности:")
+for row in capacities_ext:
+    print(row)
 
 # Решаем задачу первой фазы
 basic_flows, basis_cells = optimize_transportation_plan(
-    extended_costs, capacities, flows, basic_variables
+    extended_costs, capacities_ext, flows, basic_variables
 )
 
 # Выводим оптимальный план перевозок
 print("Оптимальный план перевозок для задачи первой фазы:")
 for row in basic_flows:
     print(row)
+
+
+# TODO: Проверить решение задачи второй фазы
 
 # Решаем задачу второй фазы
 flows, cells = optimize_transportation_plan(costs, capacities, basic_flows, basis_cells)
