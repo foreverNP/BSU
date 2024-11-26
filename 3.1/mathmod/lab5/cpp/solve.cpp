@@ -5,7 +5,7 @@
 int main()
 {
     int n = 2;                                                     // Размерность системы
-    double x = 0, y = 0;                                           // Решение системы
+    std::vector<double> x(n, 0.0);                                 // Вектор решений системы
     std::vector<std::vector<double>> a(n, std::vector<double>(n)); // Исходная матрица
     std::vector<double> f(n);                                      // Правая часть системы
     std::vector<double> h(n);
@@ -16,8 +16,7 @@ int main()
     std::vector<int> i(N + 1);    // Цепь Маркова
     std::vector<double> Q(N + 1); // Веса состояний цепи Маркова
 
-    int m = 10000;                   // Количество реализаций цепи Маркова
-    std::vector<double> ksi(m, 0.0); // СВ
+    int m = 10000; // Количество реализаций цепи Маркова
 
     // Инициализация матриц и векторов
     a[0][0] = -0.1;
@@ -26,8 +25,6 @@ int main()
     a[1][1] = -0.1;
     f[0] = 0.1;
     f[1] = -0.2;
-    h[0] = 0.0;
-    h[1] = 1.0;
     pi[0] = 0.5;
     pi[1] = 0.5;
     p[0][0] = 0.5;
@@ -40,37 +37,55 @@ int main()
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0, 1.0);
 
-    // Моделируем m цепей Маркова длины N
-    for (int j = 0; j < m; j++)
+    // Цикл по переменным системы
+    for (int l = 0; l < n; l++)
     {
-        double alpha = dis(gen);
-        i[0] = (alpha < pi[0]) ? 0 : 1; // Начальное состояние
-
-        for (int k = 1; k <= N; k++)
+        // Инициализируем вектор h для текущей переменной
+        for (int t = 0; t < n; t++)
         {
-            alpha = dis(gen);
-            i[k] = (alpha < p[i[k - 1]][0]) ? 0 : 1;
+            h[t] = (t == l) ? 1.0 : 0.0;
         }
 
-        // Вычисляем веса цепи Маркова
-        Q[0] = (pi[i[0]] > 0) ? h[i[0]] / pi[i[0]] : 0.0;
+        double sum_x = 0.0; // Сумма для текущей переменной
 
-        for (int k = 1; k <= N; k++)
+        // Моделируем m цепей Маркова длины N
+        for (int j = 0; j < m; j++)
         {
-            double denominator = p[i[k - 1]][i[k]];
-            Q[k] = (denominator > 0) ? Q[k - 1] * a[i[k - 1]][i[k]] / denominator : 0.0;
+            double alpha = dis(gen);
+            i[0] = (alpha < pi[0]) ? 0 : 1; // Начальное состояние
+
+            for (int k = 1; k <= N; k++)
+            {
+                alpha = dis(gen);
+                i[k] = (alpha < p[i[k - 1]][0]) ? 0 : 1;
+            }
+
+            // Вычисляем веса цепи Маркова
+            Q[0] = (pi[i[0]] > 0) ? h[i[0]] / pi[i[0]] : 0.0;
+
+            for (int k = 1; k <= N; k++)
+            {
+                double denominator = p[i[k - 1]][i[k]];
+                Q[k] = (denominator > 0) ? Q[k - 1] * a[i[k - 1]][i[k]] / denominator : 0.0;
+            }
+
+            double ksi_j = 0.0;
+            for (int k = 0; k <= N; k++)
+            {
+                ksi_j += Q[k] * f[i[k]];
+            }
+
+            sum_x += ksi_j;
         }
 
-        for (int k = 0; k <= N; k++)
-        {
-            ksi[j] += Q[k] * f[i[k]];
-        }
-
-        x += ksi[j];
+        x[l] = sum_x / m; // Среднее значение для текущей переменной
     }
 
-    x /= m;
-    std::cout << x << std::endl;
+    // Выводим решения системы
+    for (int l = 0; l < n; l++)
+    {
+        std::cout << "x[" << l << "] = " << x[l] << std::endl;
+    }
 
     return 0;
 }
