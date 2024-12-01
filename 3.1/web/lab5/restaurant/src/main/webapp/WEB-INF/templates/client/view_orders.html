@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>My Orders</title>
+    </head>
+    <body>
+        <h1>My Orders</h1>
+        <ul>
+            <li th:each="order : ${orders}">
+                Order ID:
+                <span th:text="${order.id}"></span>
+                , Status:
+                <span th:text="${order.status}"></span>
+            </li>
+        </ul>
+    </body>
+</html>

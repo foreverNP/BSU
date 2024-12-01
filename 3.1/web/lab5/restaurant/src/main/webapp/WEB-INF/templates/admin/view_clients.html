@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Client List</title>
+    </head>
+    <body>
+        <h1>Client List</h1>
+        <ul>
+            <li th:each="client : ${clients}">
+                ID:
+                <span th:text="${client.id}"></span>
+                , Name:
+                <span th:text="${client.name}"></span>
+                , Balance:
+                <span th:text="${client.balance}"></span>
+            </li>
+        </ul>
+    </body>
+</html>

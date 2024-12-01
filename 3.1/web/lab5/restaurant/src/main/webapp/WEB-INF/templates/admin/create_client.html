@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Create Client</title>
+    </head>
+    <body>
+        <h1>Create Client</h1>
+        <form method="post" th:action="@{/app/admin/clients/create}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required />
+            <br />
+            <label for="balance">Balance:</label>
+            <input type="text" id="balance" name="balance" required />
+            <br />
+            <button type="submit">Create</button>
+        </form>
+        <div th:if="${message}">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </body>
+</html>
