@@ -1,48 +1,22 @@
-# Makefile
+CFLAGS = -Wall -Wextra -pthread
+TARGET = bin/server
+OBJS = obj/server.o obj/mmemory.o
+SRC_DIR = src
 
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g
-AR = ar
-ARFLAGS = rcs
+all: $(TARGET)
 
-# Определяем, использовать ли отладку
-ifdef DEBUG
-    CFLAGS += -DDEBUG
-endif
+$(TARGET): $(OBJS) | bin
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
-# Имя библиотеки
-LIB = bin/libmmemory.a
+obj/server.o: $(SRC_DIR)/server.c $(SRC_DIR)/mmemory.h | obj
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/server.c -o obj/server.o
 
-# Объектные файлы
-OBJS = obj/mmemory.o
+obj/mmemory.o: $(SRC_DIR)/mmemory.c $(SRC_DIR)/mmemory.h | obj
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/mmemory.c -o obj/mmemory.o
 
-# Тестовый исполняемый файл
-TEST = bin/test_mmemory
-
-all: create_dirs $(LIB) $(TEST)
-
-create_dirs:
-	mkdir -p bin obj
-
-$(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $@ $^
-
-obj/mmemory.o: src/mmemory.c src/mmemory.h
-	$(CC) $(CFLAGS) -c src/mmemory.c -o $@
-
-$(TEST): obj/test_mmemory.o $(LIB)
-	$(CC) $(CFLAGS) -o $@ obj/test_mmemory.o -Lbin -lmmemory
-
-obj/test_mmemory.o: src/test_mmemory.c src/mmemory.h
-	$(CC) $(CFLAGS) -c src/test_mmemory.c -o $@
+bin obj:
+	mkdir -p $@
 
 clean:
-	rm -f obj/*.o bin/$(LIB) bin/$(TEST)
+	rm -f $(TARGET) $(OBJS)
 	rm -rf bin obj
-
-build: all
-
-run: $(TEST)
-	./$(TEST)
-
-.PHONY: all clean create_dirs build run

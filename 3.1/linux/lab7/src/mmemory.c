@@ -1,309 +1,261 @@
-/* mmemory.c */
 #include "mmemory.h"
+
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
-// Инициализация менеджера памяти
-int memory_manager_init(MemoryManager *manager, size_t size, AllocationAlgorithm algorithm)
+#define BLOCK_ARR_SIZE 1000
+#define FOR_EACH_BLOCK(block) \
+    for ((block) = block_arr; (block) < block_arr + BLOCK_ARR_SIZE; ++(block))
+
+struct block
 {
-    if (manager == NULL || size < sizeof(MemoryBlock))
-    {
-        errno = EINVAL;
-        return -1;
-    }
+    const void *ptr;
+    size_t size;
+};
 
-    manager->memory_start = malloc(size);
-    if (manager->memory_start == NULL)
-    {
-        // Обработка ошибки выделения памяти
-        fprintf(stderr, "Не удалось выделить память.\n");
-        return -1;
-    }
-    manager->total_size = size;
-    manager->algorithm = algorithm;
+static struct block block_arr[BLOCK_ARR_SIZE];
+static size_t block_arr_count;
 
-    // Инициализация первого блока памяти
-    manager->free_list = (MemoryBlock *)manager->memory_start;
-    manager->free_list->size = size - sizeof(MemoryBlock);
-    manager->free_list->is_free = 1;
-    manager->free_list->next = NULL;
-    manager->free_list->prev = NULL;
-
-    LOG("Инициализирован менеджер памяти: %zu байт, алгоритм %d\n", size, algorithm);
-    return 0;
+static struct block *ptr_block_get(const void *ptr)
+{
+    struct block *ret;
+    FOR_EACH_BLOCK(ret)
+    if (ret->ptr == ptr)
+        return ret;
+    return NULL;
 }
 
-// Поиск подходящего блока в зависимости от алгоритма
-static MemoryBlock *find_best_fit(MemoryManager *manager, size_t size)
+static struct block *avail_block_get(void)
 {
-    MemoryBlock *current = manager->free_list;
-    MemoryBlock *best_fit = NULL;
-
-    while (current != NULL)
-    {
-        if (current->is_free && current->size >= size)
-        {
-            if (best_fit == NULL || current->size < best_fit->size)
-            {
-                best_fit = current;
-                if (best_fit->size == size)
-                {
-                    break; // Наилучшее совпадение
-                }
-            }
-        }
-        current = current->next;
-    }
-    return best_fit;
+    return block_arr_count < BLOCK_ARR_SIZE ? ptr_block_get(NULL) : NULL;
 }
 
-static MemoryBlock *find_worst_fit(MemoryManager *manager, size_t size)
+static void block_set(const void *ptr, size_t size)
 {
-    MemoryBlock *current = manager->free_list;
-    MemoryBlock *worst_fit = NULL;
-
-    while (current != NULL)
+    struct block *block = avail_block_get();
+    if (block != NULL)
     {
-        if (current->is_free && current->size >= size)
-        {
-            if (worst_fit == NULL || current->size > worst_fit->size)
-            {
-                worst_fit = current;
-            }
-        }
-        current = current->next;
-    }
-    return worst_fit;
-}
-
-// Выделение блока памяти
-void *memory_alloc(MemoryManager *manager, size_t size)
-{
-    if (manager == NULL || size == 0)
-    {
-        errno = EINVAL;
-        return NULL;
-    }
-
-    MemoryBlock *selected_block = NULL;
-
-    if (manager->algorithm == FIRST_FIT)
-    {
-        selected_block = manager->free_list;
-        while (selected_block != NULL)
-        {
-            if (selected_block->is_free && selected_block->size >= size)
-            {
-                break;
-            }
-            selected_block = selected_block->next;
-        }
-    }
-    else if (manager->algorithm == BEST_FIT)
-    {
-        selected_block = find_best_fit(manager, size);
-    }
-    else if (manager->algorithm == WORST_FIT)
-    {
-        selected_block = find_worst_fit(manager, size);
-    }
-
-    if (selected_block == NULL)
-    {
-        LOG("Не удалось найти подходящий блок для размера %zu\n", size);
-        errno = ENOMEM;
-        return NULL;
-    }
-
-    // Если блок больше необходимого, разделяем его
-    if (selected_block->size >= size + sizeof(MemoryBlock) + 1)
-    { // +1 для хотя бы одного байта в новом блоке
-        MemoryBlock *new_block = (MemoryBlock *)((char *)selected_block + sizeof(MemoryBlock) + size);
-        new_block->size = selected_block->size - size - sizeof(MemoryBlock);
-        new_block->is_free = 1;
-        new_block->next = selected_block->next;
-        new_block->prev = selected_block;
-
-        if (selected_block->next != NULL)
-        {
-            selected_block->next->prev = new_block;
-        }
-
-        selected_block->size = size;
-        selected_block->is_free = 0;
-        selected_block->next = new_block;
-
-        LOG("Разделен блок: новый блок размером %zu байт\n", new_block->size);
+        block->ptr = ptr;
+        block->size = size;
+        ++block_arr_count;
+        printf("Block set: ptr = %p, size = %zu\n", ptr, size);
     }
     else
     {
-        // Блок подходит по размеру
-        selected_block->is_free = 0;
-        LOG("Выделен блок размером %zu байт без разделения\n", selected_block->size);
+        printf("Failed to set block: no available blocks\n");
     }
-
-    return (void *)((char *)selected_block + sizeof(MemoryBlock));
 }
 
-// Освобождение блока памяти
-int memory_free_block(MemoryManager *manager, void *ptr)
+static void block_modify(const void *old_ptr, const void *new_ptr, size_t new_size)
 {
-    if (manager == NULL || ptr == NULL)
+    struct block *block = ptr_block_get(old_ptr);
+    if (block != NULL)
     {
-        errno = EINVAL;
-        return -1;
+        block->ptr = new_ptr;
+        block->size = new_size;
+        printf("Block modified: old_ptr = %p, new_ptr = %p, new_size = %zu\n", old_ptr, new_ptr, new_size);
     }
-
-    // Проверка, что ptr находится внутри выделенной области
-    if (ptr < manager->memory_start || ptr >= (void *)((char *)manager->memory_start + manager->total_size))
+    else
     {
-        fprintf(stderr, "Попытка освобождения памяти вне области управления.\n");
-        errno = EFAULT;
-        return -1;
+        block_set(new_ptr, new_size);
     }
+}
 
-    MemoryBlock *block = (MemoryBlock *)((char *)ptr - sizeof(MemoryBlock));
-    if (block->is_free)
+static void block_clear(const void *ptr)
+{
+    struct block *block = ptr_block_get(ptr);
+    if (block != NULL)
     {
-        fprintf(stderr, "Блок уже освобожден.\n");
-        errno = EINVAL;
-        return -1;
+        block->ptr = NULL;
+        block->size = 0;
+        --block_arr_count;
+        printf("Block cleared: ptr = %p\n", ptr);
     }
-
-    block->is_free = 1;
-    LOG("Освобожден блок размером %zu байт\n", block->size);
-
-    // Слияние с последующим блоком, если он свободен
-    if (block->next != NULL && block->next->is_free)
+    else
     {
-        LOG("Слияние с последующим блоком\n");
-        block->size += sizeof(MemoryBlock) + block->next->size;
-        block->next = block->next->next;
-        if (block->next != NULL)
+        printf("Failed to clear block: block not found\n");
+    }
+}
+
+void *mem_mgr_calloc(size_t num, size_t size)
+{
+    void *ret;
+    ret = calloc(num, size);
+    if (ret != NULL)
+    {
+        block_set(ret, num * size);
+    }
+    else
+    {
+        printf("Failed to allocate memory with calloc\n");
+    }
+    return ret;
+}
+
+void *mem_mgr_malloc(size_t size)
+{
+    void *ret;
+    ret = malloc(size);
+    if (ret != NULL)
+    {
+        block_set(ret, size);
+    }
+    else
+    {
+        printf("Failed to allocate memory with malloc\n");
+    }
+    return ret;
+}
+
+void *mem_mgr_realloc(void *ptr, size_t size)
+{
+    void *ret;
+    ret = realloc(ptr, size);
+    if (size == 0)
+    {
+        block_clear(ptr);
+    }
+    else if (ret != NULL)
+    {
+        block_modify(ptr, ret, size);
+    }
+    else
+    {
+        printf("Failed to reallocate memory\n");
+    }
+    return ret;
+}
+
+void mem_mgr_free(void *ptr)
+{
+    block_clear(ptr);
+    free(ptr);
+}
+
+size_t mem_mgr_size_get(void)
+{
+    size_t ret = 0;
+    struct block *block;
+    if (block_arr_count == 0)
+    {
+        return 0;
+    }
+    FOR_EACH_BLOCK(block)
+    {
+        ret += block->size;
+    }
+    printf("Total allocated memory size: %zu\n", ret);
+    return ret;
+}
+
+// Добавьте эту функцию вместо существующей mem_mgr_list_print
+char *mem_mgr_list_get(void)
+{
+    static char list[4096];
+    size_t total = 0;
+    struct block *block;
+    size_t offset = 0;
+
+    offset += snprintf(list + offset, sizeof(list) - offset,
+                       "|===========================================|\n");
+    offset += snprintf(list + offset, sizeof(list) - offset,
+                       "|     Address      |          Size          |\n");
+
+    if (block_arr_count != 0)
+    {
+        offset += snprintf(list + offset, sizeof(list) - offset,
+                           "|-------------------------------------------|\n");
+        FOR_EACH_BLOCK(block)
         {
-            block->next->prev = block;
-        }
-    }
-
-    // Слияние с предыдущим блоком, если он свободен
-    if (block->prev != NULL && block->prev->is_free)
-    {
-        LOG("Слияние с предыдущим блоком\n");
-        block->prev->size += sizeof(MemoryBlock) + block->size;
-        block->prev->next = block->next;
-        if (block->next != NULL)
-        {
-            block->next->prev = block->prev;
-        }
-        block = block->prev;
-    }
-
-    return 0;
-}
-
-// Запись данных в память
-int memory_write(MemoryManager *manager, void *ptr, const void *data, size_t size)
-{
-    if (manager == NULL || ptr == NULL || data == NULL)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    // Проверка, что ptr находится внутри выделенной области
-    if (ptr < manager->memory_start || ptr >= (void *)((char *)manager->memory_start + manager->total_size))
-    {
-        fprintf(stderr, "Попытка записи за пределы области управления.\n");
-        errno = EFAULT;
-        return -1;
-    }
-
-    MemoryBlock *block = (MemoryBlock *)((char *)ptr - sizeof(MemoryBlock));
-    if (size > block->size)
-    {
-        // Запись выходит за пределы блока
-        fprintf(stderr, "Запись выходит за пределы выделенного блока.\n");
-        errno = EFAULT;
-        return -1;
-    }
-
-    memcpy(ptr, data, size);
-    LOG("Записаны данные в блок размером %zu байт\n", size);
-    return 0;
-}
-
-// Чтение данных из памяти
-int memory_read(MemoryManager *manager, void *ptr, void *buffer, size_t size)
-{
-    if (manager == NULL || ptr == NULL || buffer == NULL)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    // Проверка, что ptr находится внутри выделенной области
-    if (ptr < manager->memory_start || ptr >= (void *)((char *)manager->memory_start + manager->total_size))
-    {
-        fprintf(stderr, "Попытка чтения за пределы области управления.\n");
-        errno = EFAULT;
-        return -1;
-    }
-
-    MemoryBlock *block = (MemoryBlock *)((char *)ptr - sizeof(MemoryBlock));
-    if (size > block->size)
-    {
-        // Чтение выходит за пределы блока
-        fprintf(stderr, "Чтение выходит за пределы выделенного блока.\n");
-        errno = EFAULT;
-        return -1;
-    }
-
-    memcpy(buffer, ptr, size);
-    LOG("Прочитаны данные из блока размером %zu байт\n", size);
-    return 0;
-}
-
-// Дефрагментация памяти
-void memory_defragment(MemoryManager *manager)
-{
-    if (manager == NULL)
-    {
-        return;
-    }
-
-    MemoryBlock *current = manager->free_list;
-
-    while (current != NULL && current->next != NULL)
-    {
-        if (current->is_free && current->next->is_free)
-        {
-            LOG("Дефрагментация: слияние блоков %p и %p\n", (void *)current, (void *)current->next);
-            current->size += sizeof(MemoryBlock) + current->next->size;
-            current->next = current->next->next;
-            if (current->next != NULL)
+            if (block->ptr != NULL)
             {
-                current->next->prev = current;
+                offset += snprintf(list + offset, sizeof(list) - offset,
+                                   "| %16p | %20zu B |\n", block->ptr, block->size);
+                total += block->size;
             }
+            if (offset >= sizeof(list))
+                break;
+        }
+    }
+    offset += snprintf(list + offset, sizeof(list) - offset,
+                       "|-------------------------------------------|\n");
+    offset += snprintf(list + offset, sizeof(list) - offset,
+                       "|      Total       | %20zu B |\n", total);
+    offset += snprintf(list + offset, sizeof(list) - offset,
+                       "|===========================================|\n");
+
+    return list;
+}
+
+size_t mem_mgr_malloc_max(void)
+{
+    size_t low = 0, high = SIZE_MAX, current;
+    void *ptr;
+    do
+    {
+        current = (high - low) / 2 + low;
+        ptr = malloc(current);
+        if (ptr != NULL)
+        {
+            low = current;
+            free(ptr);
         }
         else
         {
-            current = current->next;
+            high = current;
         }
+    } while (high - low > 1);
+    printf("Maximum allocatable memory size: %zu\n", low);
+    return low;
+}
+size_t mem_mgr_hash(const void *data, size_t size)
+{
+    const unsigned char *ptr = data;
+    const unsigned char shift_mask = sizeof(size_t) - 1;
+    unsigned char shift = 0;
+    size_t ret = 0;
+    while (size != 0)
+    {
+        ret ^= (size_t)*ptr << (shift & shift_mask) * 8;
+        ++ptr;
+        ++shift;
+        --size;
     }
-    LOG("Дефрагментация завершена.\n");
+    printf("Hash value: %zu\n", ret);
+    return ret;
 }
 
-// Очистка менеджера памяти
-void memory_manager_destroy(MemoryManager *manager)
+void mem_mgr_init(void)
 {
-    if (manager == NULL)
+    block_arr_count = 0;
+    memset(block_arr, 0, sizeof(block_arr));
+    printf("Memory manager initialized\n");
+}
+
+void mem_mgr_write(void *ptr, size_t offset, const void *data, size_t size)
+{
+    if (ptr != NULL && offset + size <= mem_mgr_size_get())
     {
-        return;
+        memcpy((char *)ptr + offset, data, size);
+        printf("Data written to ptr = %p, offset = %zu, size = %zu\n", ptr, offset, size);
     }
-    free(manager->memory_start);
-    manager->memory_start = NULL;
-    manager->free_list = NULL;
-    manager->total_size = 0;
-    LOG("Менеджер памяти уничтожен.\n");
+    else
+    {
+        printf("Failed to write data: invalid parameters\n");
+    }
+}
+
+void mem_mgr_read(void *ptr, size_t offset, void *data, size_t size)
+{
+    if (ptr != NULL && offset + size <= mem_mgr_size_get())
+    {
+        memcpy(data, (char *)ptr + offset, size);
+        printf("Data read from ptr = %p, offset = %zu, size = %zu\n", ptr, offset, size);
+    }
+    else
+    {
+        printf("Failed to read data: invalid parameters\n");
+    }
 }

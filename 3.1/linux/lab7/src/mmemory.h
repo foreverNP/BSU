@@ -1,51 +1,25 @@
-/* mmemory.h */
-#ifndef MMEMORY_H
-#define MMEMORY_H
+#ifndef MEM_MGR_H
+#define MEM_MGR_H
 
 #include <stddef.h>
-#include <errno.h>
 
-// Макросы для логирования
-#ifdef DEBUG
-#include <stdio.h>
-#define LOG(fmt, ...) fprintf(stderr, fmt, __VA_ARGS__)
-#else
-#define LOG(fmt, ...)
-#endif
+// Функции выделения и освобождения памяти
+void *mem_mgr_malloc(size_t size);
+void *mem_mgr_calloc(size_t num, size_t size);
+void *mem_mgr_realloc(void *ptr, size_t size);
+void mem_mgr_free(void *ptr);
 
-// Перечисление алгоритмов распределения
-typedef enum
-{
-    FIRST_FIT,
-    BEST_FIT,
-    WORST_FIT
-} AllocationAlgorithm;
+// Функции для чтения и записи данных
+void mem_mgr_write(void *ptr, size_t offset, const void *data, size_t size);
+void mem_mgr_read(void *ptr, size_t offset, void *data, size_t size);
 
-// Структура блока памяти
-typedef struct MemoryBlock
-{
-    size_t size;
-    int is_free;
-    struct MemoryBlock *next;
-    struct MemoryBlock *prev;
-} MemoryBlock;
+// Вспомогательные функции
+size_t mem_mgr_size_get(void);
+char *mem_mgr_list_get(void);
+size_t mem_mgr_malloc_max(void);
+size_t mem_mgr_hash(const void *data, size_t size);
 
-// Структура менеджера памяти
-typedef struct MemoryManager
-{
-    void *memory_start;
-    size_t total_size;
-    MemoryBlock *free_list;
-    AllocationAlgorithm algorithm;
-} MemoryManager;
+// Функция инициализации менеджера памяти
+void mem_mgr_init(void);
 
-// Прототипы функций
-int memory_manager_init(MemoryManager *manager, size_t size, AllocationAlgorithm algorithm);
-void *memory_alloc(MemoryManager *manager, size_t size);
-int memory_free_block(MemoryManager *manager, void *ptr);
-int memory_write(MemoryManager *manager, void *ptr, const void *data, size_t size);
-int memory_read(MemoryManager *manager, void *ptr, void *buffer, size_t size);
-void memory_defragment(MemoryManager *manager);
-void memory_manager_destroy(MemoryManager *manager);
-
-#endif // MMEMORY_H
+#endif // MEM_MGR_H

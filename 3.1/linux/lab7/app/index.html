@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Менеджер Памяти</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h1>Менеджер Памяти</h1>
+
+        <div class="container">
+            <div class="operation">
+                <h2>Выделение памяти (malloc)</h2>
+                <input
+                    type="number"
+                    id="malloc-size"
+                    placeholder="Размер (bytes)" />
+                <button onclick="mallocMemory()">Malloc</button>
+                <p id="malloc-result"></p>
+            </div>
+
+            <div class="operation">
+                <h2>Выделение памяти (calloc)</h2>
+                <input type="number" id="calloc-num" placeholder="Количество" />
+                <input
+                    type="number"
+                    id="calloc-size"
+                    placeholder="Размер (bytes)" />
+                <button onclick="callocMemory()">Calloc</button>
+                <p id="calloc-result"></p>
+            </div>
+
+            <div class="operation">
+                <h2>Перепределение памяти (realloc)</h2>
+                <input
+                    type="text"
+                    id="realloc-ptr"
+                    placeholder="Адрес указателя" />
+                <input
+                    type="number"
+                    id="realloc-size"
+                    placeholder="Новый размер (bytes)" />
+                <button onclick="reallocMemory()">Realloc</button>
+                <p id="realloc-result"></p>
+            </div>
+
+            <div class="operation">
+                <h2>Освобождение памяти (free)</h2>
+                <input
+                    type="text"
+                    id="free-ptr"
+                    placeholder="Адрес указателя" />
+                <button onclick="freeMemory()">Free</button>
+                <p id="free-result"></p>
+            </div>
+
+            <div class="operation">
+                <h2>Общая выделенная память</h2>
+                <button onclick="getTotalSize()">Получить размер</button>
+                <p id="size-result"></p>
+            </div>
+
+            <div class="operation">
+                <h2>Список выделенной памяти</h2>
+                <button onclick="getList()">Получить список</button>
+                <pre id="list-result"></pre>
+            </div>
+
+            <div class="operation">
+                <h2>Вычисление хеша</h2>
+                <input type="text" id="hash-data" placeholder="Данные" />
+                <input type="number" id="hash-size" placeholder="Размер" />
+                <button onclick="getHash()">Get Hash</button>
+                <p id="hash-result"></p>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>

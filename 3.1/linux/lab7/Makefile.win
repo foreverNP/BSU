@@ -1,0 +1,24 @@
+CC = gcc
+CFLAGS = -Wall -Wextra
+LDFLAGS = -lws2_32
+TARGET = bin\server.exe
+SRCDIR = src
+OBJDIR = obj
+OBJS = $(OBJDIR)\server.o $(OBJDIR)\mmemory.o
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	if not exist bin mkdir bin
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+
+$(OBJDIR)\server.o: $(SRCDIR)\server.c $(SRCDIR)\mmemory.h
+	if not exist $(OBJDIR) mkdir $(OBJDIR)
+	$(CC) $(CFLAGS) -c $(SRCDIR)\server.c -o $(OBJDIR)\server.o
+
+$(OBJDIR)\mmemory.o: $(SRCDIR)\mmemory.c $(SRCDIR)\mmemory.h
+	if not exist $(OBJDIR) mkdir $(OBJDIR)
+	$(CC) $(CFLAGS) -c $(SRCDIR)\mmemory.c -o $(OBJDIR)\mmemory.o
+
+clean:
+	del /Q bin\server.exe $(OBJDIR)\*.o
