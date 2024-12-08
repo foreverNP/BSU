@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebFilter;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,6 +17,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import org.thymeleaf.web.servlet.IServletWebExchange;
 
@@ -34,7 +38,20 @@ public class RequestFilter implements Filter {
         logger.info("RequestFilter initialized.");
 
         this.application = JakartaServletWebApplication.buildApplication(filterConfig.getServletContext());
-        this.templateEngine = TemplateEngineUtil.buildTemplateEngine(this.application);
+
+        final WebApplicationTemplateResolver templateResolver = new WebApplicationTemplateResolver(application);
+
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        templateResolver.setCacheTTLMs(Long.valueOf(3600000L));
+        templateResolver.setCacheable(true);
+
+        final TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+
+        this.templateEngine = templateEngine;
     }
 
     @Override

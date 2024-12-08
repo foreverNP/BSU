@@ -14,6 +14,8 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import restaurant.entity.UserRole;
+
 @WebFilter("/app/*")
 public class AuthFilter implements Filter {
 
@@ -46,7 +48,7 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        String role = (session != null) ? (String) session.getAttribute("role") : null;
+        UserRole role = (session != null) ? (UserRole) session.getAttribute("role") : null;
 
         // Если нет сессии или роли, перенаправить на логин
         if (role == null) {
@@ -58,14 +60,14 @@ public class AuthFilter implements Filter {
         // Проверка прав доступа
         if (path.startsWith("/app/admin")) {
             // Только администратор
-            if (!"admin".equals(role)) {
+            if (role != UserRole.ADMIN) {
                 logger.warn("Access denied. Role {} tried to access admin resource.", role);
                 httpResp.sendRedirect("/app/login");
                 return;
             }
         } else if (path.startsWith("/app/client")) {
-            // Доступ для client или admin
-            if (!"admin".equals(role) && !"client".equals(role)) {
+            // Доступ для USER или ADMIN
+            if (role != UserRole.ADMIN && role != UserRole.USER) {
                 logger.warn("Access denied. Role {} tried to access client resource.", role);
                 httpResp.sendRedirect("/app/login");
                 return;

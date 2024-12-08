@@ -7,9 +7,9 @@
             function onRoleChange() {
                 var role = document.getElementById("role").value;
                 document.getElementById("adminFields").style.display =
-                    role === "admin" ? "block" : "none";
+                    role === "ADMIN" ? "block" : "none";
                 document.getElementById("clientFields").style.display =
-                    role === "client" ? "block" : "none";
+                    role === "USER" ? "block" : "none";
             }
         </script>
     </head>
@@ -96,9 +96,9 @@
             <label for="role">Select role:</label>
             <select id="role" name="role" required onchange="onRoleChange()">
                 <option value="" selected disabled>-- Select a role --</option>
-                <option value="admin">Admin</option>
-                <option value="client">Client</option>
-                <option value="guest">Guest</option>
+                <option value="ADMIN">Admin</option>
+                <option value="USER">User</option>
+                <option value="GUEST">Guest</option>
             </select>
             <br />
             <br />

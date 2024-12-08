@@ -13,6 +13,7 @@ import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.IWebSession;
 
 import restaurant.entity.Client;
+import restaurant.entity.UserRole;
 import restaurant.exceptions.ClientServiceException;
 import restaurant.services.ClientService;
 
@@ -36,21 +37,29 @@ public class LoginController implements IController {
         IWebSession session = webExchange.getSession();
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            String role = request.getParameter("role");
+            String roleParam = request.getParameter("role");
 
-            if (role == null || role.isEmpty()) {
+            if (roleParam == null || roleParam.isEmpty()) {
                 ctx.setVariable("errorMessage", "Please select a role.");
                 templateEngine.process("login", ctx, writer);
                 return;
             }
 
+            UserRole role;
+            try {
+                role = UserRole.valueOf(roleParam.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                ctx.setVariable("errorMessage", "Unknown role selected.");
+                templateEngine.process("login", ctx, writer);
+                return;
+            }
+
             switch (role) {
-                case "admin":
+                case ADMIN:
                     String adminLogin = request.getParameter("adminLogin");
                     String adminPassword = request.getParameter("adminPassword");
                     if ("admin".equals(adminLogin) && "admin".equals(adminPassword)) {
-                        session.setAttributeValue("role", "admin");
-                        // Перенаправим на home для админа
+                        session.setAttributeValue("role", UserRole.ADMIN);
                         response.sendRedirect("/app/home");
                         return;
                     } else {
@@ -58,13 +67,13 @@ public class LoginController implements IController {
                     }
                     break;
 
-                case "client":
+                case USER:
                     String clientIdStr = request.getParameter("clientId");
                     try {
                         int clientId = Integer.parseInt(clientIdStr);
                         Client client = clientService.getClientById(clientId);
                         if (client != null) {
-                            session.setAttributeValue("role", "client");
+                            session.setAttributeValue("role", UserRole.USER);
                             session.setAttributeValue("clientId", clientId);
                             session.setAttributeValue("clientName", client.getName());
                             response.sendRedirect("/app/home");
@@ -81,14 +90,10 @@ public class LoginController implements IController {
                     }
                     break;
 
-                case "guest":
-                    // Гость не вводит никаких данных
-                    session.setAttributeValue("role", "guest");
+                case GUEST:
+                    session.setAttributeValue("role", UserRole.GUEST);
                     response.sendRedirect("/app/home");
                     return;
-
-                default:
-                    ctx.setVariable("errorMessage", "Unknown role selected.");
             }
         }
 
