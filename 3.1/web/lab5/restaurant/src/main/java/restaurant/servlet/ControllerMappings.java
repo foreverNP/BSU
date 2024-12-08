@@ -12,6 +12,7 @@ public class ControllerMappings {
 
     static {
         controllersByURL.put("/admin/menu", new restaurant.controllers.admin.MenuController());
+        controllersByURL.put("/admin/menu/create", new CreateMenuItemController());
         controllersByURL.put("/admin/orders", new ViewOrdersByClientController());
         controllersByURL.put("/admin/orders/confirm", new ConfirmOrderController());
         controllersByURL.put("/admin/clients", new ViewClientsController());

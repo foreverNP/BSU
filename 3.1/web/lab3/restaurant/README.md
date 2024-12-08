@@ -30,4 +30,5 @@
 ``` bash
 mvn clean package
 mvn exec:java -Dexec.args="admin/client [clienId]"
+mvn exec:java "-Dexec.args=admin"
 ```

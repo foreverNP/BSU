@@ -7,7 +7,6 @@ import restaurant.exceptions.MenuServiceException;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.web.IWebExchange;
-import org.thymeleaf.web.IWebSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.Writer;

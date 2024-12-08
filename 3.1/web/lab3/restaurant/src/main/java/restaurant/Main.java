@@ -23,10 +23,10 @@ public class Main {
                 try {
                         MenuService menuService = new MenuService(entityManagerFactory);
 
-                        menuService.addMenuItem("Burger", 8.50, MenuItem.mainCourseCategory);
-                        menuService.addMenuItem("Salad", 5.00, MenuItem.mainCourseCategory);
-                        menuService.addMenuItem("Ice Cream", 3.50, MenuItem.dessertCategory);
-                        menuService.addMenuItem("Coffee", 2.50, MenuItem.drinkCategory);
+                        menuService.addMenuItem("Burger", 8.50, "main course");
+                        menuService.addMenuItem("Salad", 5.00, "main course");
+                        menuService.addMenuItem("Ice Cream", 3.50, "dessert");
+                        menuService.addMenuItem("Coffee", 2.50, "drink");
 
                         logger.info("Menu items successfully inserted.");
                 } catch (Exception e) {
