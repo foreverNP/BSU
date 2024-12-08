@@ -8,13 +8,14 @@ import restaurant.exceptions.OrderServiceException;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.web.IWebExchange;
-import org.thymeleaf.web.IWebRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ConfirmOrderController implements IController {
 
@@ -28,13 +29,13 @@ public class ConfirmOrderController implements IController {
     }
 
     @Override
-    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer)
+    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         WebContext ctx = new WebContext(webExchange, webExchange.getLocale());
-        IWebRequest request = webExchange.getRequest();
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            String orderIdStr = request.getParameterValue("orderId");
+            String orderIdStr = request.getParameter("orderId");
 
             try {
                 int orderId = Integer.parseInt(orderIdStr);

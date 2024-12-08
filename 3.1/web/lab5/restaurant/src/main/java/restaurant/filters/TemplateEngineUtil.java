@@ -1,4 +1,4 @@
-package restaurant.utils;
+package restaurant.filters;
 
 import java.nio.charset.StandardCharsets;
 

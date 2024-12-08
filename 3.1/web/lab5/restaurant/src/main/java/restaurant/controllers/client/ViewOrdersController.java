@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.Writer;
 
 import java.util.List;
@@ -30,7 +33,8 @@ public class ViewOrdersController implements IController {
     }
 
     @Override
-    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer)
+    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         WebContext ctx = new WebContext(webExchange, webExchange.getLocale());
         IWebSession session = webExchange.getSession();

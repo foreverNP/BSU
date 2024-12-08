@@ -8,12 +8,13 @@ import restaurant.exceptions.ClientServiceException;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.web.IWebExchange;
-import org.thymeleaf.web.IWebRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class CreateClientController implements IController {
 
@@ -27,14 +28,14 @@ public class CreateClientController implements IController {
     }
 
     @Override
-    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer)
+    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         WebContext ctx = new WebContext(webExchange, webExchange.getLocale());
-        IWebRequest request = webExchange.getRequest();
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            String name = request.getParameterValue("name");
-            String balanceStr = request.getParameterValue("balance");
+            String name = request.getParameter("name");
+            String balanceStr = request.getParameter("balance");
 
             try {
                 double balance = Double.parseDouble(balanceStr);

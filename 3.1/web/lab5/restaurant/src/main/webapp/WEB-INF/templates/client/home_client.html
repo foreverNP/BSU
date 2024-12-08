@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Client Home</title>
+        <link rel="stylesheet" href="/styles/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1 th:text="'Welcome ' + ${clientName}">Welcome Client</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="/app/client/menu">View Menu</a></li>
+                <li><a href="/app/client/orders">View Orders</a></li>
+                <li><a href="/app/client/order/create">Create Order</a></li>
+                <li><a href="/app/client/order/pay">Pay Order</a></li>
+            </ul>
+        </nav>
+        <main>
+            <p>You can view the menu, create orders and pay for them.</p>
+        </main>
+    </body>
+</html>

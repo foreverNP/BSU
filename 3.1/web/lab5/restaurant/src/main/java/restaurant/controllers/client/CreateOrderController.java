@@ -12,7 +12,6 @@ import restaurant.exceptions.MenuServiceException;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.web.IWebExchange;
-import org.thymeleaf.web.IWebRequest;
 import org.thymeleaf.web.IWebSession;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +40,10 @@ public class CreateOrderController implements IController {
     }
 
     @Override
-    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer)
+    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         WebContext ctx = new WebContext(webExchange, webExchange.getLocale());
-        IWebRequest request = webExchange.getRequest();
         IWebSession session = webExchange.getSession();
 
         if (session == null || session.getAttributeValue("clientId") == null) {

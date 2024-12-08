@@ -17,6 +17,8 @@ import java.io.Writer;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class PayOrderController implements IController {
 
@@ -30,10 +32,11 @@ public class PayOrderController implements IController {
     }
 
     @Override
-    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer)
+    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         WebContext ctx = new WebContext(webExchange, webExchange.getLocale());
-        IWebRequest request = webExchange.getRequest();
+
         IWebSession session = webExchange.getSession();
 
         if (session == null || session.getAttributeValue("clientId") == null) {
@@ -45,7 +48,7 @@ public class PayOrderController implements IController {
         int clientId = (Integer) session.getAttributeValue("clientId");
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            String orderIdStr = request.getParameterValue("orderId");
+            String orderIdStr = request.getParameter("orderId");
 
             try {
                 int orderId = Integer.parseInt(orderIdStr);

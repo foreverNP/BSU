@@ -11,6 +11,8 @@ import org.thymeleaf.web.IWebRequest;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import restaurant.controllers.IController;
 import restaurant.services.MenuService;
 import restaurant.exceptions.MenuServiceException;
@@ -27,15 +29,15 @@ public class CreateMenuItemController implements IController {
     }
 
     @Override
-    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer)
+    public void process(final IWebExchange webExchange, final ITemplateEngine templateEngine, final Writer writer,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         WebContext ctx = new WebContext(webExchange, webExchange.getLocale());
-        IWebRequest request = webExchange.getRequest();
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            String name = request.getParameterValue("name");
-            String priceStr = request.getParameterValue("price");
-            String category = request.getParameterValue("category");
+            String name = request.getParameter("name");
+            String priceStr = request.getParameter("price");
+            String category = request.getParameter("category");
 
             try {
                 double price = Double.parseDouble(priceStr);
