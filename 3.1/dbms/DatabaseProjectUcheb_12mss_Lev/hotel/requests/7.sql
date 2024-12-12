@@ -33,7 +33,6 @@ DELETE FROM clients WHERE id = 'TEST1';
 -- 27.2 AFTER UPDATE
 -- Описание запроса: При обновлении статуса бронирования на 'Completed' (status_id=4), увеличивает рейтинг клиента.
 -- Business value: Вознаграждает клиентов за завершенные бронирования, поощряя их к дальнейшим действиям.
-
 DROP TRIGGER IF EXISTS trg_AfterUpdate_Bookings;
 GO
 CREATE TRIGGER trg_AfterUpdate_Bookings
@@ -138,7 +137,7 @@ END;
 GO
 
 INSERT INTO rooms (building_id, bed_num, floor, price)
-VALUES (1, 6, 2, 400.00);
+VALUES (1, 5, 2, 400.00);
 GO
 
 SELECT TOP 1 * FROM rooms ORDER BY id DESC;
@@ -238,8 +237,6 @@ BEGIN CATCH
 END CATCH
 GO
 
-
-
 -- ТРАНЗАКЦИИ
 
 -- 29.1 Транзакция создания нового бронирования и обновления скидки клиента
@@ -290,7 +287,6 @@ GO
 
 SELECT * FROM bookings WHERE booker_id = 'NEW123';
 GO
-
 
 -- ТРАНЗАКЦИИ С ОБРАБОТКОЙ ОШИБОК
 
