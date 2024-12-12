@@ -12,7 +12,6 @@ BEGIN
         System_User AS СистемныйПользователь
 END
 GO
--- Вызов процедуры PROC1
 EXEC PROC1
 GO
 
@@ -33,7 +32,6 @@ BEGIN
 END
 GO
 
--- Вызов процедуры PROC2
 DECLARE @K AS INT
 DECLARE @Б AS NCHAR(1)
 SET @Б = N'y'
@@ -64,10 +62,8 @@ BEGIN
 END
 GO
 
--- Вызов процедуры PROC3
 EXECUTE PROC3 DEFAULT
 GO
-
 
 ---------------------------------------------------
 -- 1. Напишите функцию для вывода списка стран с площадью в интервале заданных значений, и вызовите её
@@ -94,10 +90,8 @@ RETURN
         PL BETWEEN @A1 AND @B1
 )
 GO
--- Вызов функции Fun1
 SELECT * FROM dbo.Fun1(10, 1000)
 GO
-
 
 -- 2. Напишите функцию для вывода столицы данной страны, и вызовите её
 DROP FUNCTION IF EXISTS Fun2
@@ -120,10 +114,8 @@ BEGIN
 END
 GO
 
--- Вызов функции Fun2
 SELECT dbo.Fun2(N'Австрия')
 GO
-
 
 -- 3. Напишите функцию для вычисления плотности населения, и вызовите её
 DROP FUNCTION IF EXISTS Fun3
@@ -142,7 +134,6 @@ BEGIN
 END
 GO
 
--- Вызов функции Fun3
 SELECT 
     Nazvanie,
     Stolica,

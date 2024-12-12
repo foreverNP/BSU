@@ -106,7 +106,6 @@ RETURN
 );
 GO
 
--- Вызов функции Fun_CountriesBelowArea
 SELECT * FROM dbo.Fun_CountriesBelowArea(100000);
 GO
 
@@ -127,6 +126,5 @@ RETURN
 );
 GO
 
--- Вызов функции Fun_PopulationDensity
 SELECT * FROM dbo.Fun_PopulationDensity();
 GO
