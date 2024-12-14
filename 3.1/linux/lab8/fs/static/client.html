@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <title>FileSystem</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .section {
+                margin-bottom: 30px;
+            }
+            input,
+            textarea,
+            button {
+                padding: 5px;
+                margin: 5px 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .message {
+                margin-top: 10px;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            .success {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .error {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            th,
+            td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            Одноуровневая файловая система, с физической организацией файла -
+            связанный список блоков
+        </h1>
+
+        <!-- Секция Создания Файла -->
+        <div class="section" id="create-file-section">
+            <h2>Создать Файл</h2>
+            <input type="text" id="create-file-name" placeholder="Имя файла" />
+            <textarea
+                id="create-file-content"
+                rows="4"
+                placeholder="Содержимое файла"></textarea>
+            <button onclick="createFile()">Создать</button>
+            <div id="create-file-message"></div>
+        </div>
+
+        <!-- Секция Удаления Файла -->
+        <div class="section" id="delete-file-section">
+            <h2>Удалить Файл</h2>
+            <input type="text" id="delete-file-name" placeholder="Имя файла" />
+            <button onclick="deleteFile()">Удалить</button>
+            <div id="delete-file-message"></div>
+        </div>
+
+        <!-- Секция Чтения Файла -->
+        <div class="section" id="read-file-section">
+            <h2>Читать Файл</h2>
+            <input type="text" id="read-file-name" placeholder="Имя файла" />
+            <button onclick="readFile()">Читать</button>
+            <div id="read-file-message"></div>
+        </div>
+
+        <!-- Секция Списка Файлов -->
+        <div class="section" id="list-files-section">
+            <h2>Список Файлов</h2>
+            <button onclick="listFiles()">Обновить Список</button>
+            <div id="list-files-message"></div>
+        </div>
+
+        <!-- Секция Dump Файловой Системы -->
+        <div class="section" id="dump-section">
+            <h2>Dump Файловой Системы</h2>
+            <button onclick="dumpFileSystem()">Получить Dump</button>
+            <pre id="dump-message"></pre>
+        </div>
+
+        <!-- Новая Секция для Изменения Параметров -->
+        <div class="section" id="parameters-section">
+            <h2>Изменить Параметры Файловой Системы</h2>
+            <label for="block-size">Размер блока:</label>
+            <input
+                type="number"
+                id="block-size"
+                min="1"
+                placeholder="Введите новый размер блока" />
+            <label for="total-blocks">Общее количество блоков:</label>
+            <input
+                type="number"
+                id="total-blocks"
+                min="1"
+                placeholder="Введите новое общее количество блоков" />
+            <button onclick="setParameters()">Изменить Параметры</button>
+            <div id="parameters-message"></div>
+        </div>
+
+        <!-- Новая Секция для Отображения Текущих Параметров -->
+        <div class="section" id="current-parameters-section">
+            <h2>Текущие Параметры Файловой Системы</h2>
+            <button onclick="getParameters()">Обновить Параметры</button>
+            <div id="current-parameters-message"></div>
+        </div>
+
+        <script>
+            const serverUrl = "";
+
+            function showMessage(elementId, message, isSuccess = true) {
+                const messageDiv = document.getElementById(elementId);
+                messageDiv.innerHTML = `<div class="message ${
+                    isSuccess ? "success" : "error"
+                }">${message}</div>`;
+            }
+
+            async function createFile() {
+                const name = document
+                    .getElementById("create-file-name")
+                    .value.trim();
+                const content = document.getElementById(
+                    "create-file-content"
+                ).value;
+
+                if (!name) {
+                    showMessage(
+                        "create-file-message",
+                        "Имя файла обязательно.",
+                        false
+                    );
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/create_file", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, content }),
+                    });
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        showMessage("create-file-message", data.message);
+                    } else {
+                        showMessage("create-file-message", data.message, false);
+                    }
+                } catch (error) {
+                    showMessage(
+                        "create-file-message",
+                        "Ошибка при создании файла.",
+                        false
+                    );
+                }
+            }
+
+            async function deleteFile() {
+                const name = document
+                    .getElementById("delete-file-name")
+                    .value.trim();
+
+                if (!name) {
+                    showMessage(
+                        "delete-file-message",
+                        "Имя файла обязательно.",
+                        false
+                    );
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/delete_file", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name }),
+                    });
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        showMessage("delete-file-message", data.message);
+                    } else {
+                        showMessage("delete-file-message", data.message, false);
+                    }
+                } catch (error) {
+                    showMessage(
+                        "delete-file-message",
+                        "Ошибка при удалении файла.",
+                        false
+                    );
+                }
+            }
+
+            async function readFile() {
+                const name = document
+                    .getElementById("read-file-name")
+                    .value.trim();
+
+                if (!name) {
+                    showMessage(
+                        "read-file-message",
+                        "Имя файла обязательно.",
+                        false
+                    );
+                    return;
+                }
+
+                try {
+                    const response = await fetch(
+                        `/read_file?name=${encodeURIComponent(name)}`
+                    );
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        showMessage(
+                            "read-file-message",
+                            `<strong>Содержимое:</strong><br>${data.content}`
+                        );
+                    } else {
+                        showMessage("read-file-message", data.message, false);
+                    }
+                } catch (error) {
+                    showMessage(
+                        "read-file-message",
+                        "Ошибка при чтении файла.",
+                        false
+                    );
+                }
+            }
+
+            async function listFiles() {
+                try {
+                    const response = await fetch("/list_files");
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        const files = data.files;
+                        if (files.length === 0) {
+                            document.getElementById(
+                                "list-files-message"
+                            ).innerHTML = "Нет файлов.";
+                            return;
+                        }
+                        let table = `<table><tr><th>Имя Файла</th></tr>`;
+                        files.forEach(file => {
+                            table += `<tr><td>${file}</td></tr>`;
+                        });
+                        table += `</table>`;
+                        document.getElementById(
+                            "list-files-message"
+                        ).innerHTML = table;
+                    } else {
+                        showMessage("list-files-message", data.message, false);
+                    }
+                } catch (error) {
+                    showMessage(
+                        "list-files-message",
+                        "Ошибка при получении списка файлов.",
+                        false
+                    );
+                }
+            }
+
+            async function dumpFileSystem() {
+                try {
+                    const response = await fetch("/dump");
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        const state = JSON.stringify(data.state, null, 2);
+                        document.getElementById("dump-message").textContent =
+                            state;
+                    } else {
+                        document.getElementById("dump-message").textContent =
+                            data.message;
+                    }
+                } catch (error) {
+                    document.getElementById("dump-message").textContent =
+                        "Ошибка при получении dump.";
+                }
+            }
+
+            // Новая функция для изменения параметров файловой системы
+            async function setParameters() {
+                const blockSizeInput = document
+                    .getElementById("block-size")
+                    .value.trim();
+                const totalBlocksInput = document
+                    .getElementById("total-blocks")
+                    .value.trim();
+
+                // Валидация входных данных
+                if (!blockSizeInput || !totalBlocksInput) {
+                    showMessage(
+                        "parameters-message",
+                        "Оба параметра обязательны.",
+                        false
+                    );
+                    return;
+                }
+
+                const block_size = parseInt(blockSizeInput, 10);
+                const total_blocks = parseInt(totalBlocksInput, 10);
+
+                if (
+                    isNaN(block_size) ||
+                    isNaN(total_blocks) ||
+                    block_size < 1 ||
+                    total_blocks < 1
+                ) {
+                    showMessage(
+                        "parameters-message",
+                        "Параметры должны быть положительными целыми числами.",
+                        false
+                    );
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/set_parameters", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ block_size, total_blocks }),
+                    });
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        showMessage("parameters-message", data.message);
+                    } else {
+                        showMessage("parameters-message", data.message, false);
+                    }
+                } catch (error) {
+                    showMessage(
+                        "parameters-message",
+                        "Ошибка при изменении параметров.",
+                        false
+                    );
+                }
+            }
+
+            // Новая функция для получения текущих параметров файловой системы
+            async function getParameters() {
+                try {
+                    const response = await fetch("/get_parameters");
+                    const data = await response.json();
+                    if (data.status === "success") {
+                        const params = data.parameters;
+                        const paramsHtml = `
+                        <strong>Размер блока:</strong> ${params.block_size}<br>
+                        <strong>Общее количество блоков:</strong> ${params.total_blocks}
+                    `;
+                        document.getElementById(
+                            "current-parameters-message"
+                        ).innerHTML = paramsHtml;
+                    } else {
+                        showMessage(
+                            "current-parameters-message",
+                            data.message,
+                            false
+                        );
+                    }
+                } catch (error) {
+                    showMessage(
+                        "current-parameters-message",
+                        "Ошибка при получении параметров.",
+                        false
+                    );
+                }
+            }
+
+            // Автоматическое получение текущих параметров при загрузке страницы
+            window.onload = function () {
+                getParameters();
+            };
+        </script>
+    </body>
+</html>

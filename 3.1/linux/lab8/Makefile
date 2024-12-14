@@ -6,7 +6,13 @@ test:
 bench:
 	python fs/benchmarks.py
 
-run:
+run_main:
 	python fs/main.py
 
-.PHONY: all test bench run
+run: install
+	python fs/server.py
+
+install:
+	pip install -r requirements.txt
+
+.PHONY: all test bench run run_main
