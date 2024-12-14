@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <RollingFile name="A1" fileName="app.log"
+                 filePattern="%d{MM-dd-yyyy}-%i.log" append="false">
+      <PatternLayout pattern="%level - %m%n"/>
+            <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      
+    </RollingFile>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %p %c{1} [%t]  ${java:locale} %level - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="by.red.lab5.filters.LogFilter" level="debug">
+      <AppenderRef ref="A1"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+</Configuration>
