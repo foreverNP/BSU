@@ -75,11 +75,16 @@ def create_file():
     name = data.get("name")
     content = data.get("content", "")
 
+    if not name:
+        return jsonify({"status": "error", "message": "Имя файла обязательно."}), 400
+
     fs = get_filesystem()
     try:
         fs.create_file(name, content)
         save_filesystem(fs)
-        return jsonify({"status": "success", "message": f"File '{name}' created."}), 201
+        return jsonify(
+            {"status": "success", "message": f"Файл '{name}' успешно создан."}
+        ), 201
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
@@ -95,11 +100,16 @@ def delete_file():
     data = request.get_json()
     name = data.get("name")
 
+    if not name:
+        return jsonify({"status": "error", "message": "Имя файла обязательно."}), 400
+
     fs = get_filesystem()
     try:
         fs.delete_file(name)
         save_filesystem(fs)
-        return jsonify({"status": "success", "message": f"File '{name}' deleted."}), 200
+        return jsonify(
+            {"status": "success", "message": f"Файл '{name}' успешно удален."}
+        ), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
@@ -114,7 +124,9 @@ def read_file():
     """
     name = request.args.get("name")
     if not name:
-        return jsonify({"status": "error", "message": "Missing 'name' parameter."}), 400
+        return jsonify(
+            {"status": "error", "message": "Параметр 'name' обязателен."}
+        ), 400
 
     fs = get_filesystem()
     try:
@@ -159,35 +171,38 @@ def set_parameters():
 
     # Проверка наличия необходимых параметров
     if new_block_size is None or new_total_blocks is None:
-        return jsonify({"status": "error", "message": "Missing parameters."}), 400
+        return jsonify(
+            {
+                "status": "error",
+                "message": "Необходимо указать 'block_size' и 'total_blocks'.",
+            }
+        ), 400
 
     # Проверка типов данных
     if not isinstance(new_block_size, int) or not isinstance(new_total_blocks, int):
         return jsonify(
-            {"status": "error", "message": "Parameters must be integers."}
-        ), 400
-
-    fs = get_filesystem()
-
-    # Проверка, пустая ли файловая система
-    if fs.files:
-        return jsonify(
             {
                 "status": "error",
-                "message": "Cannot change parameters while files exist.",
+                "message": "'block_size' и 'total_blocks' должны быть целыми числами.",
             }
         ), 400
 
-    # Обновление параметров
-    try:
-        fs.block_size = new_block_size
-        fs.total_blocks = new_total_blocks
-        fs.storage = [None] * new_total_blocks
-        fs.files = {}
-        fs.free_blocks = list(range(new_total_blocks))
-        save_filesystem(fs)
+    if new_block_size < 1 or new_total_blocks < 1:
         return jsonify(
-            {"status": "success", "message": "Filesystem parameters updated."}
+            {
+                "status": "error",
+                "message": "'block_size' и 'total_blocks' должны быть положительными числами.",
+            }
+        ), 400
+
+    try:
+        new_fs = FileSystem(block_size=new_block_size, total_blocks=new_total_blocks)
+        save_filesystem(new_fs)
+        return jsonify(
+            {
+                "status": "success",
+                "message": "Параметры файловой системы успешно изменены",
+            }
         ), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400

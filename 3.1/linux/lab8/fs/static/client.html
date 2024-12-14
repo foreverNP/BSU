@@ -4,124 +4,371 @@
         <meta charset="UTF-8" />
         <title>FileSystem</title>
         <style>
+            /* Общие стили */
             body {
                 font-family: Arial, sans-serif;
-                margin: 20px;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                height: 100vh;
+                background-color: #ffffff;
+                color: #000000;
             }
+
+            /* Боковая панель навигации */
+            .sidebar {
+                width: 220px;
+                background-color: #f0f0f0;
+                border-right: 1px solid #ccc;
+                padding-top: 20px;
+                box-sizing: border-box;
+            }
+
+            .sidebar h2 {
+                text-align: center;
+                margin-bottom: 30px;
+                font-size: 1.2em;
+                color: #333333;
+            }
+
+            .sidebar button {
+                background: none;
+                border: none;
+                color: #000000;
+                padding: 15px 20px;
+                text-align: left;
+                width: 100%;
+                cursor: pointer;
+                font-size: 1em;
+                transition: background 0.3s;
+                display: flex;
+                align-items: center;
+            }
+
+            .sidebar button:hover,
+            .sidebar button.active {
+                background-color: #dddddd;
+            }
+
+            .sidebar button i {
+                margin-right: 10px;
+            }
+
+            /* Основная область контента */
+            .main-content {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Верхняя панель с текущими параметрами */
+            .top-panel {
+                background-color: #f9f9f9;
+                padding: 15px;
+                border-bottom: 1px solid #ccc;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .top-panel h2 {
+                margin: 0;
+                font-size: 1.1em;
+                color: #333333;
+            }
+
+            /* Секции */
             .section {
+                display: none;
+                animation: fadeIn 0.5s;
                 margin-bottom: 30px;
             }
+
+            .section.active {
+                display: block;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #333333;
+                font-size: 1.5em;
+            }
+
+            h2 {
+                color: #555555;
+                margin-bottom: 10px;
+                font-size: 1.2em;
+            }
+
+            label {
+                display: block;
+                margin-top: 10px;
+                margin-bottom: 5px;
+                color: #333333;
+                font-weight: bold;
+            }
+
             input,
             textarea,
             button {
-                padding: 5px;
+                padding: 10px;
                 margin: 5px 0;
                 width: 100%;
                 box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 1em;
             }
+
+            button {
+                background-color: #000000;
+                color: #ffffff;
+                border: none;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+
+            button:hover {
+                background-color: #333333;
+            }
+
             .message {
                 margin-top: 10px;
                 padding: 10px;
                 border-radius: 5px;
             }
+
             .success {
-                background-color: #d4edda;
-                color: #155724;
+                background-color: #e6ffe6;
+                color: #006600;
             }
+
             .error {
-                background-color: #f8d7da;
-                color: #721c24;
+                background-color: #ffe6e6;
+                color: #990000;
             }
+
             table {
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 10px;
+                background-color: #ffffff;
             }
+
             th,
             td {
                 border: 1px solid #ccc;
-                padding: 8px;
+                padding: 10px;
                 text-align: left;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+
+            pre {
+                background-color: #f2f2f2;
+                padding: 15px;
+                border-radius: 5px;
+                max-height: 400px;
+                overflow-y: auto;
+                white-space: pre-wrap; /* Позволяет перенос строк */
+            }
+
+            /* Кнопка копирования */
+            .copy-button {
+                background-color: #000000;
+                color: #ffffff;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+                border-radius: 3px;
+                font-size: 0.9em;
+                transition: background 0.3s;
+                margin-left: 10px;
+            }
+
+            .copy-button:hover {
+                background-color: #333333;
+            }
+
+            /* Responsive дизайн */
+            @media (max-width: 768px) {
+                body {
+                    flex-direction: column;
+                }
+
+                .sidebar {
+                    width: 100%;
+                    border-right: none;
+                    border-bottom: 1px solid #ccc;
+                    display: flex;
+                    overflow-x: auto;
+                }
+
+                .sidebar button {
+                    flex: 1;
+                    justify-content: center;
+                    padding: 10px;
+                    font-size: 0.9em;
+                }
+
+                .main-content {
+                    padding: 10px;
+                }
+
+                .top-panel {
+                    padding: 10px;
+                }
             }
         </style>
     </head>
     <body>
-        <h1>
-            Одноуровневая файловая система, с физической организацией файла -
-            связанный список блоков
-        </h1>
-
-        <!-- Секция Создания Файла -->
-        <div class="section" id="create-file-section">
-            <h2>Создать Файл</h2>
-            <input type="text" id="create-file-name" placeholder="Имя файла" />
-            <textarea
-                id="create-file-content"
-                rows="4"
-                placeholder="Содержимое файла"></textarea>
-            <button onclick="createFile()">Создать</button>
-            <div id="create-file-message"></div>
+        <!-- Боковая панель навигации -->
+        <div class="sidebar">
+            <h2>Файловая Система</h2>
+            <button
+                class="nav-button active"
+                onclick="showSection('create-file-section')">
+                <i class="fas fa-file-alt"></i>
+                Создать Файл
+            </button>
+            <button
+                class="nav-button"
+                onclick="showSection('delete-file-section')">
+                <i class="fas fa-trash-alt"></i>
+                Удалить Файл
+            </button>
+            <button
+                class="nav-button"
+                onclick="showSection('read-file-section')">
+                <i class="fas fa-book-reader"></i>
+                Читать Файл
+            </button>
+            <button
+                class="nav-button"
+                onclick="showSection('list-files-section')">
+                <i class="fas fa-list"></i>
+                Список Файлов
+            </button>
+            <button class="nav-button" onclick="showSection('dump-section')">
+                <i class="fas fa-database"></i>
+                Dump Системы
+            </button>
+            <button
+                class="nav-button"
+                onclick="showSection('parameters-section')">
+                <i class="fas fa-cogs"></i>
+                Изменить Параметры
+            </button>
         </div>
 
-        <!-- Секция Удаления Файла -->
-        <div class="section" id="delete-file-section">
-            <h2>Удалить Файл</h2>
-            <input type="text" id="delete-file-name" placeholder="Имя файла" />
-            <button onclick="deleteFile()">Удалить</button>
-            <div id="delete-file-message"></div>
+        <!-- Основная область контента -->
+        <div class="main-content">
+            <h1>Одноуровневая файловая система</h1>
+
+            <!-- Верхняя панель с текущими параметрами -->
+            <div class="top-panel">
+                <h2>Текущие Параметры Файловой Системы</h2>
+                <div id="current-parameters-message">
+                    <!-- Содержимое будет обновляться автоматически -->
+                    Загрузка параметров...
+                </div>
+            </div>
+
+            <!-- Секция Создания Файла -->
+            <div class="section active" id="create-file-section">
+                <h2>Создать Файл</h2>
+                <input
+                    type="text"
+                    id="create-file-name"
+                    placeholder="Имя файла" />
+                <textarea
+                    id="create-file-content"
+                    rows="4"
+                    placeholder="Содержимое файла"></textarea>
+                <button onclick="createFile()">Создать</button>
+                <div id="create-file-message"></div>
+            </div>
+
+            <!-- Секция Удаления Файла -->
+            <div class="section" id="delete-file-section">
+                <h2>Удалить Файл</h2>
+                <input
+                    type="text"
+                    id="delete-file-name"
+                    placeholder="Имя файла" />
+                <button onclick="deleteFile()">Удалить</button>
+                <div id="delete-file-message"></div>
+            </div>
+
+            <!-- Секция Чтения Файла -->
+            <div class="section" id="read-file-section">
+                <h2>Читать Файл</h2>
+                <input
+                    type="text"
+                    id="read-file-name"
+                    placeholder="Имя файла" />
+                <button onclick="readFile()">Читать</button>
+                <div id="read-file-message"></div>
+            </div>
+
+            <!-- Секция Списка Файлов -->
+            <div class="section" id="list-files-section">
+                <h2>Список Файлов</h2>
+                <button onclick="listFiles()">Обновить Список</button>
+                <div id="list-files-message"></div>
+            </div>
+
+            <!-- Секция Dump Файловой Системы -->
+            <div class="section" id="dump-section">
+                <h2>Dump Файловой Системы</h2>
+                <button onclick="dumpFileSystem()">Получить Dump</button>
+                <pre id="dump-message"></pre>
+            </div>
+
+            <!-- Секция Изменения Параметров -->
+            <div class="section" id="parameters-section">
+                <h2>Изменить Параметры Файловой Системы</h2>
+                <label for="block-size">Размер блока:</label>
+                <input
+                    type="number"
+                    id="block-size"
+                    min="1"
+                    placeholder="Введите новый размер блока" />
+                <label for="total-blocks">Общее количество блоков:</label>
+                <input
+                    type="number"
+                    id="total-blocks"
+                    min="1"
+                    placeholder="Введите новое общее количество блоков" />
+                <button onclick="setParameters()">Изменить Параметры</button>
+                <div id="parameters-message"></div>
+            </div>
         </div>
 
-        <!-- Секция Чтения Файла -->
-        <div class="section" id="read-file-section">
-            <h2>Читать Файл</h2>
-            <input type="text" id="read-file-name" placeholder="Имя файла" />
-            <button onclick="readFile()">Читать</button>
-            <div id="read-file-message"></div>
-        </div>
-
-        <!-- Секция Списка Файлов -->
-        <div class="section" id="list-files-section">
-            <h2>Список Файлов</h2>
-            <button onclick="listFiles()">Обновить Список</button>
-            <div id="list-files-message"></div>
-        </div>
-
-        <!-- Секция Dump Файловой Системы -->
-        <div class="section" id="dump-section">
-            <h2>Dump Файловой Системы</h2>
-            <button onclick="dumpFileSystem()">Получить Dump</button>
-            <pre id="dump-message"></pre>
-        </div>
-
-        <!-- Новая Секция для Изменения Параметров -->
-        <div class="section" id="parameters-section">
-            <h2>Изменить Параметры Файловой Системы</h2>
-            <label for="block-size">Размер блока:</label>
-            <input
-                type="number"
-                id="block-size"
-                min="1"
-                placeholder="Введите новый размер блока" />
-            <label for="total-blocks">Общее количество блоков:</label>
-            <input
-                type="number"
-                id="total-blocks"
-                min="1"
-                placeholder="Введите новое общее количество блоков" />
-            <button onclick="setParameters()">Изменить Параметры</button>
-            <div id="parameters-message"></div>
-        </div>
-
-        <!-- Новая Секция для Отображения Текущих Параметров -->
-        <div class="section" id="current-parameters-section">
-            <h2>Текущие Параметры Файловой Системы</h2>
-            <button onclick="getParameters()">Обновить Параметры</button>
-            <div id="current-parameters-message"></div>
-        </div>
+        <!-- Подключение Font Awesome для иконок -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+            integrity="sha512-+k+k3OfXqWfSS0M0W3IasMQrOqX9tC9t6hHhc6Vsu31+I3SifGjlT1t/uW+skpByIE+UEZT+K7Id6E+nhsVUgQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
 
         <script>
             const serverUrl = "";
 
+            // Функция для отображения сообщений
             function showMessage(elementId, message, isSuccess = true) {
                 const messageDiv = document.getElementById(elementId);
                 messageDiv.innerHTML = `<div class="message ${
@@ -129,6 +376,28 @@
                 }">${message}</div>`;
             }
 
+            // Функция для переключения секций
+            function showSection(sectionId) {
+                const sections = document.querySelectorAll(".section");
+                sections.forEach(section => {
+                    if (section.id === sectionId) {
+                        section.classList.add("active");
+                    } else {
+                        section.classList.remove("active");
+                    }
+                });
+
+                const navButtons = document.querySelectorAll(".nav-button");
+                navButtons.forEach(button => {
+                    if (button.getAttribute("onclick").includes(sectionId)) {
+                        button.classList.add("active");
+                    } else {
+                        button.classList.remove("active");
+                    }
+                });
+            }
+
+            // Функции для работы с API
             async function createFile() {
                 const name = document
                     .getElementById("create-file-name")
@@ -155,6 +424,8 @@
                     const data = await response.json();
                     if (data.status === "success") {
                         showMessage("create-file-message", data.message);
+                        getParameters(); // Обновление текущих параметров
+                        listFiles(); // Обновление списка файлов
                     } else {
                         showMessage("create-file-message", data.message, false);
                     }
@@ -190,6 +461,8 @@
                     const data = await response.json();
                     if (data.status === "success") {
                         showMessage("delete-file-message", data.message);
+                        getParameters(); // Обновление текущих параметров
+                        listFiles(); // Обновление списка файлов
                     } else {
                         showMessage("delete-file-message", data.message, false);
                     }
@@ -222,10 +495,14 @@
                     );
                     const data = await response.json();
                     if (data.status === "success") {
-                        showMessage(
-                            "read-file-message",
-                            `<strong>Содержимое:</strong><br>${data.content}`
-                        );
+                        // Отображаем содержимое файла в формате Dump
+                        const contentFormatted = data.content
+                            .split("\n")
+                            .map(line => line.trim())
+                            .join("\n");
+                        document.getElementById(
+                            "read-file-message"
+                        ).innerHTML = `<pre>${contentFormatted}</pre>`;
                     } else {
                         showMessage("read-file-message", data.message, false);
                     }
@@ -250,9 +527,12 @@
                             ).innerHTML = "Нет файлов.";
                             return;
                         }
-                        let table = `<table><tr><th>Имя Файла</th></tr>`;
+                        let table = `<table><tr><th>Имя Файла</th><th>Действия</th></tr>`;
                         files.forEach(file => {
-                            table += `<tr><td>${file}</td></tr>`;
+                            table += `<tr>
+                                    <td>${file}</td>
+                                    <td><button class="copy-button" onclick="copyToClipboard('${file}')">Копировать</button></td>
+                                  </tr>`;
                         });
                         table += `</table>`;
                         document.getElementById(
@@ -288,7 +568,6 @@
                 }
             }
 
-            // Новая функция для изменения параметров файловой системы
             async function setParameters() {
                 const blockSizeInput = document
                     .getElementById("block-size")
@@ -324,6 +603,14 @@
                     return;
                 }
 
+                // Подтверждение действия пользователя
+                const confirmChange = confirm(
+                    "Изменение параметров файловой системы удалит все существующие файлы. Продолжить?"
+                );
+                if (!confirmChange) {
+                    return;
+                }
+
                 try {
                     const response = await fetch("/set_parameters", {
                         method: "POST",
@@ -333,6 +620,12 @@
                     const data = await response.json();
                     if (data.status === "success") {
                         showMessage("parameters-message", data.message);
+                        getParameters(); // Автоматическое обновление текущих параметров
+                        listFiles(); // Очистка списка файлов, так как они удалены
+                        dumpFileSystem(); // Очистка dump, так как файловая система сброшена
+                        // Очистка полей ввода
+                        document.getElementById("block-size").value = "";
+                        document.getElementById("total-blocks").value = "";
                     } else {
                         showMessage("parameters-message", data.message, false);
                     }
@@ -345,7 +638,6 @@
                 }
             }
 
-            // Новая функция для получения текущих параметров файловой системы
             async function getParameters() {
                 try {
                     const response = await fetch("/get_parameters");
@@ -375,9 +667,24 @@
                 }
             }
 
+            // Функция для копирования текста в буфер обмена
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(
+                    function () {
+                        // alert(
+                        //     `Название файла "${text}" скопировано в буфер обмена.`
+                        // );
+                    },
+                    function (err) {
+                        alert("Не удалось скопировать текст: ", err);
+                    }
+                );
+            }
+
             // Автоматическое получение текущих параметров при загрузке страницы
             window.onload = function () {
                 getParameters();
+                listFiles();
             };
         </script>
     </body>
