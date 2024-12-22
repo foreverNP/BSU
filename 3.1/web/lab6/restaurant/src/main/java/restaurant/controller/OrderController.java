@@ -13,9 +13,6 @@ import restaurant.repository.MenuItemRepository;
 import restaurant.repository.OrderItemRepository;
 import restaurant.repository.OrderRepository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Controller
 @RequestMapping("/orders")
 public class OrderController {

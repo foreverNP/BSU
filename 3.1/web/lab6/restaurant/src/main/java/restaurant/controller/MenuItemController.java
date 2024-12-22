@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.entity.MenuItem;
 import restaurant.repository.MenuItemRepository;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 @RequestMapping("/menuItems")
 public class MenuItemController {
@@ -17,13 +20,21 @@ public class MenuItemController {
     @GetMapping
     public String getAllMenuItems(Model model) {
         model.addAttribute("menuItems", menuItemRepository.findAll());
-        return "menu/list"; // вернёт шаблон menu/list.html
+        return "menu/list";
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("menuItem", new MenuItem());
-        return "menu/create"; // вернёт шаблон menu/create.html
+
+        List<String> categories = Arrays.asList(
+                MenuItem.mainCourseCategory,
+                MenuItem.dessertCategory,
+                MenuItem.drinkCategory);
+
+        model.addAttribute("categories", categories);
+
+        return "menu/create";
     }
 
     @PostMapping("/create")
@@ -36,8 +47,16 @@ public class MenuItemController {
     public String editMenuItem(@PathVariable Integer id, Model model) {
         MenuItem item = menuItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("MenuItem not found"));
+
         model.addAttribute("menuItem", item);
-        return "menu/edit"; // вернёт шаблон menu/edit.html
+
+        List<String> categories = Arrays.asList(
+                MenuItem.mainCourseCategory,
+                MenuItem.dessertCategory,
+                MenuItem.drinkCategory);
+        model.addAttribute("categories", categories);
+
+        return "menu/edit";
     }
 
     @PostMapping("/edit/{id}")
