@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <!-- Appender for debug level logs, writes to logs/debug.log -->
+        <File name="DEBUG_FILE" fileName="logs/debug.log" append="false">
+            <LevelRangeFilter minLevel="debug" maxLevel="debug" onMatch="ACCEPT" onMismatch="DENY" />
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="%level - %m%n" />
+        </File>
+
+        <!-- Appender for info level logs, writes to logs/info.log -->
+        <File name="INFO_FILE" fileName="logs/info.log" append="false">
+            <LevelRangeFilter minLevel="info" maxLevel="info" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="%level - %m%n" />
+        </File>
+
+        <!-- Appender for warn level logs, writes to logs/warn.log -->
+        <File name="WARN_FILE" fileName="logs/warn.log" append="false">
+            <LevelRangeFilter minLevel="warn" maxLevel="warn" onMatch="ACCEPT" onMismatch="DENY" />
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="%level - %m%n" />
+        </File>
+
+        <!-- Appender for error level logs, writes to logs/error.log -->
+        <File name="ERROR_FILE" fileName="logs/error.log" append="false">
+            <LevelRangeFilter minLevel="error" maxLevel="error" onMatch="ACCEPT" onMismatch="DENY" />
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            <PatternLayout pattern="%level - %m%n" />
+        </File>
+
+        <!-- Appender for console output -->
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%level - %m%n" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger for the Main class, logs to all file appenders -->
+        <Logger name="Main" level="debug" additivity="false">
+            <AppenderRef ref="DEBUG_FILE" />
+            <AppenderRef ref="INFO_FILE" />
+            <AppenderRef ref="WARN_FILE" />
+            <AppenderRef ref="ERROR_FILE" />
+        </Logger>
+        <!-- Root logger, logs to console and all file appenders -->
+        <Root level="debug">
+            <AppenderRef ref="DEBUG_FILE" />
+            <AppenderRef ref="INFO_FILE" />
+            <AppenderRef ref="WARN_FILE" />
+            <AppenderRef ref="ERROR_FILE" />
+        </Root>
+    </Loggers>
+</Configuration>
