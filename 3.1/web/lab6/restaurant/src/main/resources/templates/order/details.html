@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Order Details</title>
+    </head>
+    <body>
+        <h1>
+            Order Details (ID:
+            <span th:text="${order.id}"></span>
+            )
+        </h1>
+        <p>
+            Client:
+            <span th:text="${order.client.name}"></span>
+        </p>
+        <p>
+            Status:
+            <span th:text="${order.status}"></span>
+        </p>
+        <p>
+            Total Price:
+            <span th:text="${order.totalPrice}"></span>
+        </p>
+        <h3>Items:</h3>
+        <table border="1">
+            <tr>
+                <th>Menu Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            <tr th:each="item : ${order.orderItems}">
+                <td th:text="${item.menuItem.name}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.price}"></td>
+            </tr>
+        </table>
+        <a th:href="@{'/orders/addItem/' + ${order.id}}">
+            Add Item to this Order
+        </a>
+        <br />
+        <a th:href="@{/orders}">Back to Orders</a>
+    </body>
+</html>

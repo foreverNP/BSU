@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Edit Menu Item</title>
+    </head>
+    <body>
+        <h1>Edit Menu Item</h1>
+        <form
+            th:action="@{'/menuItems/edit/' + ${menuItem.id}}"
+            method="post"
+            th:object="${menuItem}">
+            <label>
+                Name:
+                <input type="text" th:field="*{name}" />
+            </label>
+            <br />
+            <label>
+                Price:
+                <input type="number" th:field="*{price}" step="0.01" />
+            </label>
+            <br />
+            <label>
+                Category:
+                <input type="text" th:field="*{category}" />
+            </label>
+            <br />
+            <button type="submit">Update</button>
+        </form>
+    </body>
+</html>
