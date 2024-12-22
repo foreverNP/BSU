@@ -1,4 +1,4 @@
-CPP_FILE = cpp/solve.cpp
+CPP_FILE = cpp/solve1.cpp
 CPP_OUTPUT = cpp/solve
 
 PYTHON_FILE = task5.py

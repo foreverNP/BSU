@@ -1,34 +1,36 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Инициализация переменных
 n = 3  # Количество переменных в системе
-x = np.zeros(n)  # Вектор решений
 
-a = np.array(
+A = np.array([[1.0, -0.4, -0.1], [0.4, 0.7, -0.1], [0.3, 0.2, 1.0]])
+f = np.array([-1, 5, -4])
+
+B = np.array(
     [
-        [0, 0.2 / 0.7, -0.3 / 0.7],
-        [-0.4 / 1.3, 0, -0.1 / 1.3],
-        [-0.2 / 1.1, -0.1 / 1.1, 0],
+        [0, 0.4, 0.1],
+        [-0.4 / 0.7, 0, 0.1 / 0.7],
+        [-0.3, -0.2, 0],
     ]
 )
-f = np.array([3 / 0.7, 1 / 1.3, 1 / 1.1])
+g = np.array([-1, 5 / 0.7, -4])
 
 # Начальные вероятности для цепи Маркова (должны суммироваться в 1)
-pi = np.array([0.2, 0.3, 0.5])
+pi = np.array([1 / 3, 1 / 3, 1 / 3])
 
-# Матрица переходных вероятностей для цепи Маркова (3x3)
+# Матрица переходов для цепи Маркова
 p = np.array([[0, 0.5, 0.5], [0.5, 0, 0.5], [0.5, 0.5, 0]])
 
-N = 1000  # Длина цепи Маркова
-m = 10000  # Количество реализаций цепи Маркова
+x_direct = np.linalg.solve(A, f)
 
-# Цикл по переменным системы
-for l in range(n):
+
+def solve_monte_carlo(N, m, l):
     # Инициализация вектора h для текущей переменной
     h = np.zeros(n)
     h[l] = 1
     ksi = np.zeros(m)  # Массив для хранения результатов ksi для текущей переменной
-    # Моделирование m цепей Маркова длины N
+
     for j in range(m):
         # Инициализация цепи Маркова
         alpha = np.random.rand()
@@ -57,25 +59,56 @@ for l in range(n):
             Q[0] = 0
 
         for k in range(1, N + 1):
-            denom = p[i_chain[k - 1]][i_chain[k]]
-            if denom > 0:
-                Q[k] = Q[k - 1] * a[i_chain[k - 1]][i_chain[k]] / denom
+            pr = p[i_chain[k - 1]][i_chain[k]]
+            if pr > 0:
+                Q[k] = Q[k - 1] * B[i_chain[k - 1]][i_chain[k]] / pr
             else:
                 Q[k] = 0
 
         # Вычисление ksi для данной цепи
         for k in range(N + 1):
-            ksi[j] += Q[k] * f[i_chain[k]]
+            ksi[j] += Q[k] * g[i_chain[k]]
 
     # Вычисление среднего значения x[l]
-    x[l] = np.sum(ksi) / m
+    return np.sum(ksi) / m
 
-a_direct = np.array([[0.7, -0.2, 0.3], [0.4, 1.3, 0.1], [0.2, 0.1, 1.1]])
-f_direct = np.array([3, 1, 1])
-x_direct = np.linalg.solve(a_direct, f_direct)
-print("Прямое решение с использованием numpy.linalg.solve:")
-print(x_direct)
 
-# Вывод вектора решений x
-for idx, val in enumerate(x):
-    print(f"x[{idx}] = {val}")
+m_fixed = 1000
+Ns = [100, 500, 1000, 5000]  # Различные длины цепей Маркова
+errors_N = []
+
+for N in Ns:
+    x = np.zeros(n)
+    for l in range(n):
+        x[l] = solve_monte_carlo(N, m_fixed, l)
+    error = np.linalg.norm(x - x_direct)
+    errors_N.append(error)
+
+plt.figure()
+plt.plot(Ns, errors_N, marker="o")
+plt.xlabel("Длина цепи Маркова (N)")
+plt.ylabel("Ошибка")
+plt.title("Зависимость ошибки от длины цепи Маркова при m = {}".format(m_fixed))
+plt.grid(True)
+plt.savefig("img/error_vs_N.png")
+plt.close()
+
+N_fixed = 1000
+ms = [100, 500, 1000, 2000, 5000]  # Различные количества реализаций
+errors_m = []
+
+for m in ms:
+    x = np.zeros(n)
+    for l in range(n):
+        x[l] = solve_monte_carlo(N_fixed, m, l)
+    error = np.linalg.norm(x - x_direct)
+    errors_m.append(error)
+
+plt.figure()
+plt.plot(ms, errors_m, marker="o")
+plt.xlabel("Количество реализаций (m)")
+plt.ylabel("Ошибка")
+plt.title("Зависимость ошибки от количества реализаций при N = {}".format(N_fixed))
+plt.grid(True)
+plt.savefig("img/error_vs_m.png")
+plt.close()
