@@ -63,7 +63,6 @@ def solve_monte_carlo_all_coords(N, m):
         #    Q будет размером (n, N+1), т.к. для каждого l своя строка
         Q = np.zeros((n, N + 1))
 
-        # Инициализация Q[:, 0]
         # Для каждого l: Q[l, 0] = h[l, i_chain[0]] / pi[i_chain[0]] (если pi[i_chain[0]]>0)
         # h[l, i_chain[0]] = 1, если l == i_chain[0], иначе 0
         if pi[i_chain[0]] > 0:
@@ -75,11 +74,8 @@ def solve_monte_carlo_all_coords(N, m):
             if pr > 0:
                 for l in range(n):
                     Q[l, k] = Q[l, k - 1] * B[i_chain[k - 1]][i_chain[k]] / pr
-            else:
-                # Если pr == 0, то переход невозможен; обнулим соответствующие веса
-                Q[:, k] = 0
 
-        # 4. Накопим вклад в x (для каждой компоненты l)
+        # 4. Накопим вклад в x для каждой компоненты l
         #    ksi[l] = sum_{k=0..N} Q[l, k] * g[i_chain[k]]
         ksi = np.zeros(n)
         for l in range(n):
@@ -135,30 +131,30 @@ print(solve_monte_carlo_all_coords(N=1000, m=1000))
 # plt.close()
 
 
-Ns = [100, 500, 1000, 5000]  # Длина цепи Маркова
-ms = [100, 500, 1000, 2000, 5000]  # Количество реализаций
+# Ns = [100, 500, 1000, 5000]  # Длина цепи Маркова
+# ms = [100, 500, 1000, 2000, 5000]  # Количество реализаций
 
-error_grid = np.zeros((len(ms), len(Ns)))
+# error_grid = np.zeros((len(ms), len(Ns)))
 
-for i, N_ in enumerate(Ns):
-    for j, m_ in enumerate(ms):
-        x_est = solve_monte_carlo_all_coords(N_, m_)
-        error_grid[j, i] = np.linalg.norm(x_est - x_direct)
+# for i, N_ in enumerate(Ns):
+#     for j, m_ in enumerate(ms):
+#         x_est = solve_monte_carlo_all_coords(N_, m_)
+#         error_grid[j, i] = np.linalg.norm(x_est - x_direct)
 
-# Подготовим координатные сетки (они должны совпадать с размерностями error_grid)
-N_grid, M_grid = np.meshgrid(Ns, ms, indexing="xy")  # shape -> (len(ms), len(Ns))
+# # Подготовим координатные сетки (они должны совпадать с размерностями error_grid)
+# N_grid, M_grid = np.meshgrid(Ns, ms, indexing="xy")  # shape -> (len(ms), len(Ns))
 
-fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(8, 6))
+# fig, ax = plt.subplots(subplot_kw={"projection": "3d"}, figsize=(8, 6))
 
-surf = ax.plot_surface(N_grid, M_grid, error_grid, cmap="viridis", edgecolor="none")
+# surf = ax.plot_surface(N_grid, M_grid, error_grid, cmap="viridis", edgecolor="none")
 
-ax.set_title("Зависимость ошибки от (N, m)")
-ax.set_xlabel("N")
-ax.set_ylabel("m")
-ax.set_zlabel("Error")
+# ax.set_title("Зависимость ошибки от (N, m)")
+# ax.set_xlabel("N")
+# ax.set_ylabel("m")
+# ax.set_zlabel("Error")
 
-fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
+# fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
 
-plt.savefig("img/error_3d_surface.png")
-plt.show()
-plt.close()
+# plt.savefig("img/error_3d_surface.png")
+# plt.show()
+# plt.close()
