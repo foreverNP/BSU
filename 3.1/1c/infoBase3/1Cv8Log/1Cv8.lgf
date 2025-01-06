@@ -12,4 +12,6 @@
 {4,"_$InfoBase$_.DBConfigUpdateStart",5},
 {4,"_$InfoBase$_.DBConfigUpdate",6},
 {4,"_$Access$_.Access",7},
-{3,"1CV8C",2}
+{3,"1CV8C",2},
+{4,"_$InfoBase$_.DumpStart",8},
+{4,"_$InfoBase$_.DumpFinish",9}

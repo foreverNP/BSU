@@ -32,4 +32,6 @@
 {5,bf268cd7-d07e-4727-84ff-fb751c9b88fe,"Документ.РеализацияТоваровИУслуг",7},
 {2,"redmibook-15",2},
 {13,2,1},
-{4,"_$Data$_.Delete",14}
+{4,"_$Data$_.Delete",14},
+{4,"_$InfoBase$_.DumpStart",15},
+{4,"_$InfoBase$_.DumpFinish",16}
