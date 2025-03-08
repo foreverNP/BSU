@@ -5,21 +5,21 @@ package Point;
 
 /**
  * Класс, представляющий точку в двумерном пространстве.
- * Содержит координаты X и Y и методы для работы с ними.
- *
+ * Содержит координаты X и Y, методы для работы с ними, а также дополнительные
+ * методы для сравнения, вычисления расстояния и строкового представления.
+ * 
  * @author Лев Сергиенко
- * @version 1.0
+ * @version 1.1
  */
 public class Point {
-    private int X, Y;
+    private int x, y;
 
     /**
      * Конструктор по умолчанию.
      * Инициализирует точку в начале координат (0, 0).
      */
     public Point() {
-        X = 0;
-        Y = 0;
+        this(0, 0);
     }
 
     /**
@@ -30,43 +30,85 @@ public class Point {
      * @param y Координата Y точки.
      */
     public Point(int x, int y) {
-        X = x;
-        Y = y;
+        this.x = x;
+        this.y = y;
     }
 
     /**
-     * Получает значение координаты X.
+     * Возвращает координату X.
      *
-     * @return Текущее значение координаты X.
+     * @return Значение X.
      */
     public int getX() {
-        return X;
+        return x;
     }
 
     /**
-     * Получает значение координаты Y.
+     * Возвращает координату Y.
      *
-     * @return Текущее значение координаты Y.
+     * @return Значение Y.
      */
     public int getY() {
-        return Y;
+        return y;
     }
 
     /**
      * Устанавливает новое значение для координаты X.
      *
-     * @param x Новое значение координаты X.
+     * @param x Новое значение X.
      */
     public void setX(int x) {
-        X = x;
+        this.x = x;
     }
 
     /**
      * Устанавливает новое значение для координаты Y.
      *
-     * @param y Новое значение координаты Y.
+     * @param y Новое значение Y.
      */
     public void setY(int y) {
-        Y = y;
+        this.y = y;
+    }
+
+    /**
+     * Вычисляет евклидово расстояние до другой точки.
+     *
+     * @param other Другая точка. Не должна быть null.
+     * @return Расстояние до другой точки.
+     * @throws IllegalArgumentException если other равен null.
+     */
+    public double distanceTo(Point other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Другой объект Point не должен быть null");
+        }
+        int dx = this.x - other.x;
+        int dy = this.y - other.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /**
+     * Переопределенный метод equals для сравнения точек.
+     *
+     * @param o Объект для сравнения.
+     * @return true, если объекты представляют одинаковые координаты, иначе false.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Point point = (Point) o;
+        return x == point.x && y == point.y;
+    }
+
+    /**
+     * Возвращает строковое представление точки.
+     *
+     * @return Строка в формате "(x, y)".
+     */
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }

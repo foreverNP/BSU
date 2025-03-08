@@ -31,6 +31,9 @@ public class Trapezium extends Figure implements Comparable<Trapezium>, Iterable
      * @param value Критерий сортировки из перечисления TrapeziumSortBy.
      */
     public static void setSortBy(TrapeziumSortBy value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Критерий сортировки не может быть null");
+        }
         sortBy = value;
     }
 
@@ -208,6 +211,9 @@ public class Trapezium extends Figure implements Comparable<Trapezium>, Iterable
      */
     @Override
     public double Area() {
+        if (!isTrapezium()) {
+            throw new ArithmeticException("Фигура не является трапецией");
+        }
         // Используем формулу площади четырехугольника через полупериметр и стороны
         double s = Perimetr() / 2;
         double a = distance(p1, p2);
@@ -225,7 +231,11 @@ public class Trapezium extends Figure implements Comparable<Trapezium>, Iterable
         double area1 = Math.sqrt(s1 * (s1 - a) * (s1 - b) * (s1 - diagonal));
         double area2 = Math.sqrt(s2 * (s2 - c) * (s2 - d) * (s2 - diagonal));
 
-        return area1 + area2;
+        double result = area1 + area2; // суммарная площадь
+        if (result == 0.0) {
+            throw new ArithmeticException("Площадь трапеции не может быть равна нулю");
+        }
+        return result;
     }
 
     /**
@@ -239,6 +249,9 @@ public class Trapezium extends Figure implements Comparable<Trapezium>, Iterable
      * @return Косинус угла между векторами.
      */
     public double cosAngle(Point v1start, Point v1end, Point v2start, Point v2end) {
+        if (v1start == null || v1end == null || v2start == null || v2end == null) {
+            throw new IllegalArgumentException("Точки не могут быть null");
+        }
         // Вычисляем компоненты векторов
         double v1x = v1end.getX() - v1start.getX();
         double v1y = v1end.getY() - v1start.getY();
