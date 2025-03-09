@@ -1,0 +1,114 @@
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.10.0
+** Copyright (c) 2022 Microsoft Corporation
+// cl /D "NDEBUG" Эта опция нужна для режима релиз
+// /MD Эта опция необходима для подключения динамического модуля (библиотеки) для режима релиз (опция для режима дебаг MDd)
+// /EHsc Эта опция требует чтобы компилятор встроил обработку exception
+// /FAcs Эта опция нужна для генерации файлов с расширением .cod
+// /link Эта опция необходима, если определяем функции линкера, иначе работает по умолчанию
+// /out:Two.exe Эта опция определяет имя исполняемого файла (Two.exe)
+**********************************************************************
+
+C:\Program Files\Microsoft Visual Studio\2022\Community>d:
+
+D:\>cd D:\DZ\UNIK\MT\nastya
+
+D:\DZ\UNIK\MT\nastya>cl /EHsc TwoModules.cpp Mod2.cpp Mod3.cpp pch.cpp /link /out:Three_Debug.exe
+Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.40.33808 для x86
+(C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+
+TwoModules.cpp
+Mod2.cpp
+Mod3.cpp
+pch.cpp
+Создание кода...
+Microsoft (R) Incremental Linker Version 14.40.33808.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:Three_Debug.exe
+TwoModules.obj
+Mod2.obj
+Mod3.obj
+pch.obj
+
+D:\DZ\UNIK\MT\nastya>Three_Debug.exe
+Hello World!
+
+v-vector
+1;2;3;
+
+w-vector
+3;2;1;
+
+scalar product (v,w)
+10
+
+vector product (v, w): (-4, 8, -4)
+
+D:\DZ\UNIK\MT\nastya>cl /D "NDEBUG" /MD /EHsc /FAcs TwoModules.cpp Mod2.cpp Mod3.cpp pch.cpp /link /out:Three_Release.exe
+Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.40.33808 для x86
+(C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+
+TwoModules.cpp
+Mod2.cpp
+Mod3.cpp
+pch.cpp
+Создание кода...
+Microsoft (R) Incremental Linker Version 14.40.33808.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:Three_Release.exe
+TwoModules.obj
+Mod2.obj
+Mod3.obj
+pch.obj
+
+D:\DZ\UNIK\MT\nastya>Three_Release.exe
+Hello World!
+
+v-vector
+1;2;3;
+
+w-vector
+3;2;1;
+
+scalar product (v,w)
+10
+
+vector product (v, w): (-4, 8, -4)
+
+D:\DZ\UNIK\MT\nastya>
+D:\DZ\UNIK\MT\nastya>cl /EHsc /FAcs TwoModules.cpp Mod2.cpp Mod3.cpp pch.cpp /link /out:Three_Debug(With_Cod).exe
+Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.40.33808 для x86
+(C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+
+TwoModules.cpp
+Mod2.cpp
+Mod3.cpp
+pch.cpp
+Создание кода...
+Microsoft (R) Incremental Linker Version 14.40.33808.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:Three_Debug(With_Cod).exe
+TwoModules.obj
+Mod2.obj
+Mod3.obj
+pch.obj
+
+D:\DZ\UNIK\MT\nastya>Three_Debug(With_Cod).exe
+Hello World!
+
+v-vector
+1;2;3;
+
+w-vector
+3;2;1;
+
+scalar product (v,w)
+10
+
+vector product (v, w): (-4, 8, -4)

@@ -1,0 +1,247 @@
+протокол моего поведения как разработчика
+
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.12.3
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+
+C:\Program Files\Microsoft Visual Studio\2022\Community>cl ?
+Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34435 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+usage: cl [ option... ] filename... [ /link linkoption... ]
+
+C:\Program Files\Microsoft Visual Studio\2022\Community>cd C:\File\MT\2025MT_02
+
+C:\File\MT\2025MT_02>dir
+ Том в устройстве C имеет метку Windows 10
+ Серийный номер тома: 8C50-7824
+
+ Содержимое папки C:\File\MT\2025MT_02
+
+20.02.2025  16:18    <DIR>          .
+20.02.2025  16:18    <DIR>          ..
+10.02.2025  18:47               258 Mod2.cpp
+10.02.2025  17:17               191 pch.cpp
+10.02.2025  17:17               552 pch.h
+20.02.2025  16:18             1 464 TwoModules.cpp
+               4 файлов          2 465 байт
+               2 папок  47 778 271 232 байт свободно
+
+C:\File\MT\2025MT_02>cl /D "NDEBUG" /MD /EHsc /FAcs TwoModules.cpp Mod2.cpp pch.cpp
+Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34435 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.42.34435.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+
+C:\File\MT\2025MT_02>dir
+ Том в устройстве C имеет метку Windows 10
+ Серийный номер тома: 8C50-7824
+
+ Содержимое папки C:\File\MT\2025MT_02
+
+20.02.2025  16:26    <DIR>          .
+20.02.2025  16:26    <DIR>          ..
+20.02.2025  16:26             2 345 Mod2.cod
+10.02.2025  18:47               258 Mod2.cpp
+20.02.2025  16:26               741 Mod2.obj
+20.02.2025  16:26               220 pch.cod
+10.02.2025  17:17               191 pch.cpp
+10.02.2025  17:17               552 pch.h
+20.02.2025  16:26               489 pch.obj
+20.02.2025  16:26            50 849 TwoModules.cod
+20.02.2025  16:18             1 464 TwoModules.cpp
+20.02.2025  16:26            12 800 TwoModules.exe
+20.02.2025  16:26            10 211 TwoModules.obj
+              11 файлов         80 120 байт
+               2 папок  47 776 010 240 байт свободно
+
+C:\File\MT\2025MT_02>cl /D "NDEBUG" /MD /EHsc /FAcs TwoModules.cpp Mod2.cpp pch.cpp /link /out:two.exe
+Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34435 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+"NDEBUG" - это опция нужна для режима релиз
+/MD - это опция необходима для подключения динамического модуля (библиотеки) для режима релиз (опция для режима дебаг /MDd)
+/EHsc - эта опция требует, чтобы компилятор встроил обработку Exception
+/FAcs - эта опция нужна для генерации ассемблеровских файлов (с расширением .cod). Генерируются для пользователя
+/link - необходима, если определяются опции линкера. Если не писать, то будет по дефолту
+/out:two.exe - определяет имя исполняемого файла
+
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.42.34435.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:two.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+
+C:\File\MT\2025MT_02>cl /D "NDEBUG" /MD /EHsc /FAcs TwoModules.cpp Mod2.cpp pch.cpp /link /out:two.exe
+Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34435 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.42.34435.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:two.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+
+C:\File\MT\2025MT_02>dir
+ Том в устройстве C имеет метку Windows 10
+ Серийный номер тома: 8C50-7824
+
+ Содержимое папки C:\File\MT\2025MT_02
+
+20.02.2025  16:33    <DIR>          .
+20.02.2025  16:33    <DIR>          ..
+20.02.2025  16:33             2 345 Mod2.cod
+10.02.2025  18:47               258 Mod2.cpp
+20.02.2025  16:33               741 Mod2.obj
+20.02.2025  16:33               220 pch.cod
+10.02.2025  17:17               191 pch.cpp
+10.02.2025  17:17               552 pch.h
+20.02.2025  16:33               489 pch.obj
+20.02.2025  16:33            12 800 two.exe
+20.02.2025  16:33            50 849 TwoModules.cod
+20.02.2025  16:18             1 464 TwoModules.cpp
+20.02.2025  16:33            10 211 TwoModules.obj
+              11 файлов         80 120 байт
+               2 папок  47 775 481 856 байт свободно
+
+C:\File\MT\2025MT_02>cl /D "NDEBUG" /MD /EHsc /FAcs TwoModules.cpp Mod2.cpp pch.cpp
+Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34435 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.42.34435.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+
+C:\File\MT\2025MT_02>dir
+ Том в устройстве C имеет метку Windows 10
+ Серийный номер тома: 8C50-7824
+
+ Содержимое папки C:\File\MT\2025MT_02
+
+20.02.2025  16:34    <DIR>          .
+20.02.2025  16:34    <DIR>          ..
+20.02.2025  16:34             2 345 Mod2.cod
+10.02.2025  18:47               258 Mod2.cpp
+20.02.2025  16:34               741 Mod2.obj
+20.02.2025  16:34               220 pch.cod
+10.02.2025  17:17               191 pch.cpp
+10.02.2025  17:17               552 pch.h
+20.02.2025  16:34               489 pch.obj
+20.02.2025  16:33            12 800 two.exe
+20.02.2025  16:34            50 849 TwoModules.cod
+20.02.2025  16:18             1 464 TwoModules.cpp
+20.02.2025  16:34            12 800 TwoModules.exe
+20.02.2025  16:34            10 211 TwoModules.obj
+              12 файлов         92 920 байт
+               2 папок  47 775 465 472 байт свободно
+
+C:\File\MT\2025MT_02>two.exe
+Hello World!
+
+v-vector
+1;2;3;
+
+w-vector
+3;2;1;
+
+scalar product (v,w)
+10
+
+press the key enter
+
+
+C:\File\MT\2025MT_02>notepad mod2.cod
+
+C:\File\MT\2025MT_02>cl /EHsc /FAcs TwoModules.cpp Mod2.cpp pch.cpp /link /out:two_debug.exe
+Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34435 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.42.34435.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:two_debug.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+
+C:\File\MT\2025MT_02>dir
+ Том в устройстве C имеет метку Windows 10
+ Серийный номер тома: 8C50-7824
+
+ Содержимое папки C:\File\MT\2025MT_02
+
+20.02.2025  16:42    <DIR>          .
+20.02.2025  16:42    <DIR>          ..
+20.02.2025  16:42             2 345 Mod2.cod
+10.02.2025  18:47               258 Mod2.cpp
+20.02.2025  16:42               741 Mod2.obj
+20.02.2025  16:37             2 345 mod2_release.cod
+20.02.2025  16:42               220 pch.cod
+10.02.2025  17:17               191 pch.cpp
+10.02.2025  17:17               552 pch.h
+20.02.2025  16:42               489 pch.obj
+20.02.2025  16:33            12 800 two.exe
+20.02.2025  16:42           893 929 TwoModules.cod
+20.02.2025  16:18             1 464 TwoModules.cpp
+20.02.2025  16:34            12 800 TwoModules.exe
+20.02.2025  16:42           148 197 TwoModules.obj
+20.02.2025  16:42           202 752 two_debug.exe
+              14 файлов      1 279 083 байт
+               2 папок  47 771 983 872 байт свободно
+
+C:\File\MT\2025MT_02>two_debug.exe
+Hello World!
+
+v-vector
+1;2;3;
+
+w-vector
+3;2;1;
+
+scalar product (v,w)
+10
+
+press the key enter
+
+
+C:\File\MT\2025MT_02>notepad
+
+C:\File\MT\2025MT_02>

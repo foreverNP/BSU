@@ -1,0 +1,90 @@
+**********************************************************************
+** Visual Studio 2019 Developer Command Prompt v16.11.18
+** Copyright (c) 2021 Microsoft Corporation
+**********************************************************************
+
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community>Cl ?
+Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.29.30146 для x86
+(C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+
+использование: cl [ параметр... ] имя_файла... [ /link параметр_компоновки... ]
+
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community>d:
+
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community>d:\
+"d:\" не является внутренней или внешней
+командой, исполняемой программой или пакетным файлом.
+
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community>..
+".." не является внутренней или внешней
+командой, исполняемой программой или пакетным файлом.
+
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community>CD d:\
+
+d:\>dir
+ Том в устройстве D имеет метку DATA
+ Серийный номер тома: 844E-CA7E
+
+ Содержимое папки d:\
+
+.............................................
+28.01.2025  11:54    <DIR>          Учебные программы OC MT_ПИNET_ОбнЛит
+              12 файлов     75 830 038 байт
+              94 папок  859 321 192 448 байт свободно
+
+d:\>2025MT
+"2025MT" не является внутренней или внешней
+командой, исполняемой программой или пакетным файлом.
+
+d:\>cd 2025MT
+
+d:\2025MT>cl /EHsc TwoModules.cpp Mod2.cpp pch.cpp pch.h /link /out:Two.exe
+Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.29.30146 для x86
+(C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+
+cl: командная строка warning D9024: нераспознанный тип исходных файлов "pch.h", использование объектного файла
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Создание кода...
+Microsoft (R) Incremental Linker Version 14.29.30146.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:Two.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+pch.h
+pch.h : fatal error LNK1107: недопустимый или поврежденный файл: не удается прочитать по 0x228
+
+d:\2025MT>cl /EHsc TwoModules.cpp Mod2.cpp pch.cpp /link /out:Two.exe
+Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.29.30146 для x86
+(C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+
+TwoModules.cpp
+Mod2.cpp
+pch.cpp
+Создание кода...
+Microsoft (R) Incremental Linker Version 14.29.30146.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:TwoModules.exe
+/out:Two.exe
+TwoModules.obj
+Mod2.obj
+pch.obj
+
+d:\2025MT>Two.exe
+Hello World!
+
+v-vector
+1;2;3;
+
+w-vector
+3;2;1;
+
+scalar product (v,w)
+10
+
+d:\2025MT>
