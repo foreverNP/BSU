@@ -1,219 +1,184 @@
+import tkinter as tk
+from tkinter import messagebox, ttk
 from rich.console import Console
 from rich.table import Table
 
-rules = [
-    {
-        "id": 1,
-        "conditions": ["компьютер не включается", "индикатор питания не светится"],
-        "conclusion": ("проблема", "отсутствие питания"),
-    },
-    {
-        "id": 2,
-        "conditions": ["компьютер не включается", "индикатор питания светится"],
-        "conclusion": ("проблема", "неисправность блока питания"),
-    },
-    {
-        "id": 3,
-        "conditions": ["компьютер включается", "не воспроизводит звук"],
-        "conclusion": ("проблема", "неисправность звуковой карты"),
-    },
-    {
-        "id": 4,
-        "conditions": ["компьютер включается", "монитор не отображает изображение"],
-        "conclusion": ("проблема", "неисправность видеокарты"),
-    },
-    {
-        "id": 5,
-        "conditions": ["компьютер включается", "операционная система не загружается"],
-        "conclusion": ("обнаружено повреждение системных файлов", True),
-    },
-    {
-        "id": 6,
-        "conditions": ["обнаружено повреждение системных файлов"],
-        "conclusion": ("действие", "провести восстановление системы"),
-    },
-    {
-        "id": 7,
-        "conditions": ["экран гаснет через некоторое время работы"],
-        "conclusion": ("перебои в работе оперативной памяти", True),
-    },
-    {
-        "id": 8,
-        "conditions": ["перебои в работе оперативной памяти"],
-        "conclusion": ("действие", "провести тестирование модулей RAM"),
-    },
-    {
-        "id": 9,
-        "conditions": ["тестирование модулей RAM показало сбои"],
-        "conclusion": ("проблема", "неисправность модулей RAM"),
-    },
-    {
-        "id": 10,
-        "conditions": [
-            "потребление оперативной памяти аномально высокое",
-            "минимальное количество запущенных приложений",
-        ],
-        "conclusion": ("проблема", "вирусное заражение системы"),
-    },
-]
-
-facts = {}  # Известные факты: {признак: значение}
-goal_stack = []  # Стек целей (признаков, которые требуется установить)
-context_stack = []  # Контекстный стек – накопленные факты с информацией, каким правилом они получены
-log_table = []  # Таблица с протоколом шагов
-step_counter = 1  # Порядковый номер шага
+log_table = []
+step_counter = 1
 
 
-def log_step(rule_analyzed, answer, accepted_rule, rejected_rule):
-    """
-    Формирует запись о шаге и добавляет её в log_table.
-    Параметры:
-      rule_analyzed      – информация об анализируемом правиле (например, "Правило 1" или "Прямой ввод")
-      answer             – ответ на вопрос или комментарий (строка)
-      accepted_rule      – номер правила, которое принято (если правило сработало)
-      rejected_rule      – номер правила, которое отверглось (если не выполнено условие)
-    """
+def log_step(rule, answer, accepted_rule=""):
     global step_counter
-    row = {
-        "Шаг": step_counter,
-        "Анализируемое правило": rule_analyzed,
-        "Ответ на вопрос": answer,
-        "Стек целей": goal_stack.copy(),
-        "Контекстный стек": context_stack.copy(),
-        "№ принимаемого правила": accepted_rule,
-        "№ отбрасываемого правила": rejected_rule,
-    }
-    log_table.append(row)
+    log_table.append(
+        {
+            "Шаг": step_counter,
+            "Анализируемое правило": rule,
+            "Ответ на вопрос": answer,
+            "№ принимаемого правила": accepted_rule,
+        }
+    )
     step_counter += 1
 
 
-def ask_question(condition):
+def ask_question_tk(question):
     """
-    Запрашивает у пользователя ввод для указанного условия.
-    Возвращает булево значение (True для 'да', False для 'нет')
-    и записывает шаг в лог.
+    Отображает модальное окно с вопросом и кнопками 'Да' и 'Нет'.
+    Возвращает True, если выбран ответ 'Да', иначе False.
     """
-    answer = input(f"Установлено ли условие '{condition}'? (да/нет): ").strip().lower()
-    while answer not in ["да", "нет"]:
-        answer = input("Введите 'да' или 'нет': ").strip().lower()
-    bool_answer = answer == "да"
-    log_step(
-        rule_analyzed="",
-        answer=f"{condition}: {bool_answer}",
-        accepted_rule="",
-        rejected_rule="",
-    )
-    return bool_answer
-
-
-def backward_chain(goal):
-    """
-    Реализует обратный вывод для доказательства цели.
-    Если для цели существуют правила, пытается доказать её, запрашивая недостающие условия.
-    При срабатывании правила значение цели сохраняется в facts.
-    Если ни одно правило не доказало цель – запрашивается её значение напрямую у пользователя.
-    """
-    if goal in facts:
-        return facts[goal]
-    goal_stack.append(goal)
-    applicable_rules = [rule for rule in rules if rule["conclusion"][0] == goal]
-    for rule in applicable_rules:
-        log_step(
-            rule_analyzed=f"Правило {rule['id']}",
-            answer="",
-            accepted_rule="",
-            rejected_rule="",
-        )
-        all_conditions_true = True
-        for cond in rule["conditions"]:
-            if cond not in facts:
-                answer = ask_question(cond)
-                facts[cond] = answer
-                context_stack.append((cond, answer))
-            if not facts[cond]:
-                all_conditions_true = False
-                log_step(
-                    rule_analyzed=f"Правило {rule['id']}",
-                    answer=f"Условие '{cond}' не выполнено",
-                    accepted_rule="",
-                    rejected_rule=rule["id"],
-                )
-                break
-        if all_conditions_true:
-            facts[goal] = rule["conclusion"][1]
-            context_stack.append((goal, facts[goal], rule["id"]))
-            log_step(
-                rule_analyzed=f"Правило {rule['id']}",
-                answer="Все условия выполнены",
-                accepted_rule=rule["id"],
-                rejected_rule="",
-            )
-            goal_stack.pop()
-            return facts[goal]
-    # Если ни одно правило не доказало цель – запрашиваем её значение напрямую.
-    user_answer = ask_question(goal)
-    facts[goal] = user_answer
-    context_stack.append((goal, user_answer, "direct"))
-    log_step(
-        rule_analyzed="Прямой ввод",
-        answer=f"{goal}: {user_answer}",
-        accepted_rule="direct",
-        rejected_rule="",
-    )
-    goal_stack.pop()
-    return user_answer
+    return messagebox.askyesno("Вопрос", question)
 
 
 def main():
-    """
-    Главная функция:
-      1. Запускает механизм обратного вывода для установки конечной цели (диагностика проблемы).
-      2. Выводит результаты диагностики.
-      3. Формирует протокол работы в виде таблицы с использованием Rich и сохраняет его в файл.
-    """
-    print("=== Система диагностики неисправностей ПК ===")
-    print("Ответьте на вопросы, вводя 'да' или 'нет'.\n")
+    # Инициализация основного окна Tkinter (оно будет скрыто)
+    root = tk.Tk()
+    root.withdraw()  # Скрываем главное окно
 
-    result = backward_chain("проблема")
+    # Вывод вступительного сообщения
+    messagebox.showinfo(
+        "Система диагностики неисправностей ПК",
+        "Ответьте на вопросы, нажимая 'Да' или 'Нет'.",
+    )
 
-    print("\n--- Результаты диагностики ---")
-    if result:
-        print(f"Обнаруженная проблема: {facts['проблема']}")
-        if "действие" in facts:
-            print(f"Рекомендуемое действие: {facts['действие']}")
+    problem = None
+    action = None
+
+    # Начинаем опрос пользователя
+    computer_on = ask_question_tk("Включается ли компьютер?")
+    log_step("Начало", f"Включается ли компьютер: {computer_on}")
+
+    if not computer_on:
+        power_indicator = ask_question_tk("Светится ли индикатор питания?")
+        log_step("Правило 1/2", f"Светится ли индикатор питания: {power_indicator}")
+        if not power_indicator:
+            problem = "отсутствие питания"  # Правило 1
+            log_step("Правило 1", "Все условия выполнены", "Правило 1 принято")
+        else:
+            problem = "неисправность блока питания"  # Правило 2
+            log_step("Правило 2", "Все условия выполнены", "Правило 2 принято")
     else:
-        print("Не удалось установить проблему.")
+        sound = ask_question_tk("Воспроизводится ли звук?")
+        log_step("Правило 3", f"Воспроизводится ли звук: {sound}")
+        if not sound:
+            problem = "неисправность звуковой карты"  # Правило 3
+            log_step("Правило 3", "Все условия выполнены", "Правило 3 принято")
+        else:
+            display = ask_question_tk("Отображает ли монитор изображение?")
+            log_step("Правило 4", f"Отображает ли монитор изображение: {display}")
+            if not display:
+                problem = "неисправность видеокарты"  # Правило 4
+                log_step("Правило 4", "Все условия выполнены", "Правило 4 принято")
+            else:
+                os_load = ask_question_tk("Загружается ли операционная система?")
+                log_step("Правило 5", f"Загружается ли операционная система: {os_load}")
+                if not os_load:
+                    problem = "повреждение системных файлов"  # Правило 5
+                    log_step("Правило 5", "Все условия выполнены", "Правило 5 принято")
+                    action = "провести восстановление системы"  # Правило 6
+                    log_step("Правило 6", "Все условия выполнены", "Правило 6 принято")
+                else:
+                    screen_off = ask_question_tk(
+                        "Гаснет ли экран через некоторое время работы?"
+                    )
+                    log_step(
+                        "Правило 7",
+                        f"Гаснет ли экран через некоторое время работы: {screen_off}",
+                    )
+                    if screen_off:
+                        log_step(
+                            "Правило 7", "Все условия выполнены", "Правило 7 принято"
+                        )
+                        action = "провести тестирование модулей RAM"  # Правило 8
+                        log_step(
+                            "Правило 8", "Все условия выполнены", "Правило 8 принято"
+                        )
+                        ram_test = ask_question_tk(
+                            "Показало ли тестирование модулей RAM сбои?"
+                        )
+                        log_step(
+                            "Правило 9",
+                            f"Показало ли тестирование модулей RAM сбои: {ram_test}",
+                        )
+                        if ram_test:
+                            problem = "неисправность модулей RAM"  # Правило 9
+                            log_step(
+                                "Правило 9",
+                                "Все условия выполнены",
+                                "Правило 9 принято",
+                            )
+                    virus = ask_question_tk(
+                        "Аномально высоко ли потребление оперативной памяти при минимальном количестве запущенных приложений?"
+                    )
+                    log_step(
+                        "Правило 10",
+                        f"Аномально высоко ли потребление оперативной памяти: {virus}",
+                    )
+                    if virus:
+                        problem = "вирусное заражение системы"  # Правило 10
+                        log_step(
+                            "Правило 10", "Все условия выполнены", "Правило 10 принято"
+                        )
 
-    # Вывод протокола работы с использованием Rich
-    console = Console()
-    table = Table(show_header=True, header_style="bold magenta")
-    table.add_column("Шаг", justify="center")
-    table.add_column("Анализируемое правило", justify="center")
-    table.add_column("Ответ на вопрос", justify="center")
-    table.add_column("Стек целей", justify="center")
-    table.add_column("Контекстный стек", justify="center")
-    table.add_column("№ принимаемого правила", justify="center")
-    table.add_column("№ отбрасываемого правила", justify="center")
+    # Формирование итогового сообщения диагностики
+    result_message = ""
+    if problem:
+        result_message += f"Обнаруженная проблема: {problem}\n"
+    else:
+        result_message += "Проблема не выявлена.\n"
+    if action:
+        result_message += f"Рекомендуемое действие: {action}\n"
 
+    # Вывод результатов диагностики
+    messagebox.showinfo("Результаты диагностики", result_message)
+
+    # Отображение протокола работы в новом окне с использованием Treeview
+    log_window = tk.Toplevel(root)
+    log_window.title("Протокол работы")
+
+    columns = (
+        "Шаг",
+        "Анализируемое правило",
+        "Ответ на вопрос",
+        "№ принимаемого правила",
+    )
+    tree = ttk.Treeview(log_window, columns=columns, show="headings", height=10)
+    for col in columns:
+        tree.heading(col, text=col)
+        tree.column(col, width=180, anchor="center")
     for row in log_table:
-        table.add_row(
-            str(row["Шаг"]),
-            str(row["Анализируемое правило"]),
-            str(row["Ответ на вопрос"]),
-            str(row["Стек целей"]),
-            str(row["Контекстный стек"]),
-            str(row["№ принимаемого правила"]),
-            str(row["№ отбрасываемого правила"]),
+        tree.insert(
+            "",
+            tk.END,
+            values=(
+                row["Шаг"],
+                row["Анализируемое правило"],
+                row["Ответ на вопрос"],
+                row["№ принимаемого правила"],
+            ),
         )
+    tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-    console.print("\n--- Протокол работы (формат Rich) ---")
-    console.print(table)
+    close_button = ttk.Button(log_window, text="Закрыть", command=log_window.destroy)
+    close_button.pack(pady=5)
 
-    # Сохранение протокола в log.txt
-    with open("log.txt", "w", encoding="utf-8") as f:
-        file_console = Console(file=f, width=120)
-        file_console.print(table)
-    print("\nЛог работы сохранён в файле log.txt")
+    # Сохранение лога в файл с использованием rich для форматирования таблицы
+    with open("logs.txt", "w", encoding="utf-8") as f:
+        console = Console(file=f, width=120)
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("Шаг", justify="center")
+        table.add_column("Анализируемое правило", justify="center")
+        table.add_column("Ответ на вопрос", justify="center")
+        table.add_column("№ принимаемого правила", justify="center")
+        for row in log_table:
+            table.add_row(
+                str(row["Шаг"]),
+                str(row["Анализируемое правило"]),
+                str(row["Ответ на вопрос"]),
+                str(row["№ принимаемого правила"]),
+            )
+        console.print(table)
+    messagebox.showinfo("Завершено", "Лог работы сохранён в файле logs.txt")
+
+    root.mainloop()
 
 
 if __name__ == "__main__":

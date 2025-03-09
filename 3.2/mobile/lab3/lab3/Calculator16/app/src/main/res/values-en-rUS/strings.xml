@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Calculator16</string>
+    <string name="error_title">Error</string>
+    <string name="error_no_input">Please enter a number!</string>
+    <string name="error_not_a_number">Invalid input! Please enter a valid number.</string>
+    <string name="btn_convert_uk">To Yards²</string>
+    <string name="btn_convert_us">To Feet²</string>
+    <string name="unit_uk">yards²</string>
+    <string name="unit_us">feet²</string>
+    <string name="btn_info">Extra Screen</string>
+    <string name="info_message">Welcome to the second screen!</string>
+    <string name="btn_back">Back</string>
+    <string name="advanced_mode">Advanced mode</string>
+    <string name="advanced_mode_on">Advanced mode enabled</string>
+    <string name="advanced_mode_off">Advanced mode disabled</string>
+</resources>

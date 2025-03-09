@@ -1,0 +1,22 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = git@github.com:fpmi-pmvs2025/pmvs12b-lab1-foreverNP.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[branch "project1"]
+	remote = origin
+	merge = refs/heads/project1
+[branch "project2"]
+	remote = origin
+	merge = refs/heads/project2
+[branch "project3"]
+	remote = origin
+	merge = refs/heads/project3

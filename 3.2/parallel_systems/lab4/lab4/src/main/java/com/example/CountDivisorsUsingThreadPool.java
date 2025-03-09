@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.Scanner;
 
 public class CountDivisorsUsingThreadPool {
-    private final static int MAX = 500_000;
+    private final static int MAX = 25_000_000;
     private final static int CHUNK_SIZE = 1000;
 
     private static ConcurrentLinkedQueue<Task> pendingTasks;

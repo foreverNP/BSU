@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp"
+    android:stretchColumns="*">
+
+    <TableRow>
+        <TextView
+            android:id="@+id/tvInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_to_guess"
+            android:textSize="20sp"
+            android:padding="8dp" />
+    </TableRow>
+
+    <TableRow>
+        <EditText
+            android:id="@+id/etInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/input_value"
+            android:inputType="number" />
+    </TableRow>
+
+    <TableRow>
+        <Button
+            android:id="@+id/bControl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_more"
+            android:onClick="onClick" />
+    </TableRow>
+</TableLayout>

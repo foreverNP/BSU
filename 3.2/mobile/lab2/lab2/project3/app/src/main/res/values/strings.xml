@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Угадай число</string>
+    <string name="title_numberguess">Угадай число</string>
+    <string name="btn_start">Старт</string>
+    <string name="label_guess">Введите число:</string>
+    <string name="btn_do_guess">Проверить</string>
+    <string name="edit_number">Число</string>
+    <string name="status_start_info">Нажмите Старт для начала игры</string>
+    <string name="label_log">Лог:</string>
+    <string name="guess_hint">Введите число от %1$d до %2$d</string>
+    <string name="status_too_low">Ваше число меньше загаданного. Попробуйте больше.</string>
+    <string name="status_too_high">Ваше число больше загаданного. Попробуйте меньше.</string>
+    <string name="status_hit">Поздравляем! Вы угадали число за %1$d попыток. Нажмите Старт для новой игры.</string>
+    <string name="error_no_input">Пожалуйста, введите число!</string>
+    <string name="error_not_a_number">Неверный ввод! Введите число.</string>
+    <string name="error_out_of_range">Число должно быть от 1 до 200.</string>
+</resources>

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CountDivisorsUsingExecutor {
-    private final static int MAX = 500_000;
+    private final static int MAX = 1_000_000;
     private final static int TASK_SIZE = 1000;
 
     public static void main(String[] args) {
