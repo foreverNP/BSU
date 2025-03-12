@@ -83,23 +83,26 @@ def visualize_results(districts_data):
     district_names = [d[KEY_DISTRICT] for d in districts_data]
     total_costs = [d[KEY_TOTAL_COST] for d in districts_data]
     available_resources = [d[KEY_AVAILABLE_RESOURCES] for d in districts_data]
-    x = range(len(district_names))
-    plt.figure(figsize=(10, 6))
-    plt.bar(x, total_costs, width=0.4, label="Общая стоимость", align="center")
-    plt.bar(x, available_resources, width=0.4, label="Доступные ресурсы", align="edge")
-    plt.xticks(x, district_names)
-    plt.ylabel("Единицы")
-    plt.title("Сравнение затрат на ремонт/строительство и доступных ресурсов")
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+
     statuses = ["норма", "поврежден", "разрушен"]
     status_colors = {"норма": "green", "поврежден": "orange", "разрушен": "red"}
-    fig, ax = plt.subplots(figsize=(10, 6))
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    x = range(len(district_names))
+    axes[0].bar(x, total_costs, width=0.4, label="Общая стоимость", align="center")
+    axes[0].bar(
+        x, available_resources, width=0.4, label="Доступные ресурсы", align="edge"
+    )
+    axes[0].set_xticks(x)
+    axes[0].set_xticklabels(district_names, rotation=45)
+    axes[0].set_ylabel("Единицы")
+    axes[0].set_title("Сравнение затрат на ремонт/строительство и доступных ресурсов")
+    axes[0].legend()
+
     bottom = [0] * len(districts_data)
     for status in statuses:
         counts = [d[KEY_STATUS_COUNTS][status] for d in districts_data]
-        ax.bar(
+        axes[1].bar(
             district_names,
             counts,
             bottom=bottom,
@@ -107,9 +110,11 @@ def visualize_results(districts_data):
             label=status,
         )
         bottom = [bottom[i] + counts[i] for i in range(len(counts))]
-    ax.set_ylabel("Количество объектов")
-    ax.set_title("Распределение статусов объектов по районам")
-    ax.legend()
+
+    axes[1].set_ylabel("Количество объектов")
+    axes[1].set_title("Распределение статусов объектов по районам")
+    axes[1].legend()
+
     plt.tight_layout()
     plt.show()
 
