@@ -118,7 +118,6 @@ def main():
                             "Правило 10", "Все условия выполнены", "Правило 10 принято"
                         )
 
-    # Формирование итогового сообщения диагностики
     result_message = ""
     if problem:
         result_message += f"Обнаруженная проблема: {problem}\n"
@@ -127,7 +126,6 @@ def main():
     if action:
         result_message += f"Рекомендуемое действие: {action}\n"
 
-    # Вывод результатов диагностики
     messagebox.showinfo("Результаты диагностики", result_message)
 
     # Отображение протокола работы в новом окне с использованием Treeview
@@ -160,7 +158,6 @@ def main():
     close_button = ttk.Button(log_window, text="Закрыть", command=log_window.destroy)
     close_button.pack(pady=5)
 
-    # Сохранение лога в файл с использованием rich для форматирования таблицы
     with open("logs.txt", "w", encoding="utf-8") as f:
         console = Console(file=f, width=120)
         table = Table(show_header=True, header_style="bold magenta")
