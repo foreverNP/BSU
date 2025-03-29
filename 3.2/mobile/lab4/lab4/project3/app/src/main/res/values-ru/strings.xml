@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">project5</string>
+    <string name="behind">Слишком мало!</string>
+    <string name="ahead">Слишком много!</string>
+    <string name="hit">Угадали!</string>
+    <string name="input_value">Ввести значение</string>
+    <string name="play_more">Еще раз</string>
+    <string name="try_to_guess">Попробуйте угадать число (1 - 100)</string>
+    <string name="error">Неверный ввод!</string>
+</resources>

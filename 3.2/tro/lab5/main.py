@@ -85,24 +85,24 @@ def simulate_hospital():
     roles = list(role_calls.keys())
     calls = list(role_calls.values())
 
+    plt.figure(figsize=(8, 6))
+    plt.bar(roles, calls, color=["blue", "green", "orange"])
+    plt.xlabel("Медперсонал")
+    plt.ylabel("Количество вызовов")
+    plt.title("Загруженность медперсонала за 1 день")
+    plt.show()
+
+    # Визуализация загруженности каждого сотрудника
     all_staff = doctors + senior_nurses + junior_nurses
     names = [s.name for s in all_staff]
     calls_for_each = [s.calls for s in all_staff]
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 10))
-
-    ax1.bar(roles, calls, color=["blue", "green", "orange"])
-    ax1.set_xlabel("Медперсонал")
-    ax1.set_ylabel("Количество вызовов")
-    ax1.set_title("Загруженность медперсонала за 1 день")
-
-    ax2.bar(names, calls_for_each)
-    ax2.set_xticks(range(len(names)))
-    ax2.set_xticklabels(names, rotation=45)
-    ax2.set_xlabel("Сотрудник")
-    ax2.set_ylabel("Количество вызовов")
-    ax2.set_title("Загруженность по каждому сотруднику")
-
+    plt.figure(figsize=(10, 5))
+    plt.bar(names, calls_for_each)
+    plt.xticks(rotation=45)
+    plt.xlabel("Сотрудник")
+    plt.ylabel("Количество вызовов")
+    plt.title("Загруженность по каждому сотруднику")
     plt.tight_layout()
     plt.show()
 

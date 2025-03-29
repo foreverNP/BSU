@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">project5</string>
+    <string name="behind">Too low!</string>
+    <string name="ahead">Too high!</string>
+    <string name="hit">Yup!</string>
+    <string name="input_value">Enter value</string>
+    <string name="play_more">Play again</string>
+    <string name="try_to_guess">Try to guess the number (1 – 100)</string>
+    <string name="error">Invalid input!</string>
+
+</resources>
