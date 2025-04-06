@@ -54,17 +54,8 @@ else:
 # Визуализация данных
 plt.figure(figsize=(12, 8))
 
-# Продажи в аптеках
-plt.subplot(2, 2, 1)
-plt.plot(pharmacy_sales, label="Pharmacy Sales", color="blue")
-plt.axvline(x=epidemic_day, color="red", linestyle="--", label="Epidemic Start")
-plt.title("Pharmacy Sales")
-plt.xlabel("Days")
-plt.ylabel("Sales")
-plt.legend()
-
 # Визиты в поликлиники
-plt.subplot(2, 2, 2)
+plt.subplot(2, 2, 1)
 plt.plot(clinic_visits, label="Clinic Visits", color="green")
 plt.axvline(x=epidemic_day, color="red", linestyle="--", label="Epidemic Start")
 plt.title("Clinic Visits")
@@ -73,12 +64,21 @@ plt.ylabel("Visits")
 plt.legend()
 
 # Визиты в больницы
-plt.subplot(2, 2, 3)
+plt.subplot(2, 2, 2)
 plt.plot(hospital_visits, label="Hospital Visits", color="purple")
 plt.axvline(x=epidemic_day, color="red", linestyle="--", label="Epidemic Start")
 plt.title("Hospital Visits")
 plt.xlabel("Days")
 plt.ylabel("Visits")
+plt.legend()
+
+# Продажи в аптеках
+plt.subplot(2, 2, 3)
+plt.plot(pharmacy_sales, label="Pharmacy Sales", color="blue")
+plt.axvline(x=epidemic_day, color="red", linestyle="--", label="Epidemic Start")
+plt.title("Pharmacy Sales")
+plt.xlabel("Days")
+plt.ylabel("Sales")
 plt.legend()
 
 # Упоминания в соцсетях
