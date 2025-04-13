@@ -1,14 +1,17 @@
 package lab7;
 
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PiParallel {
     private static final int NUM_POINTS = 100_000_000;
-    private static final int NUM_PRODUCERS = 4;
+    private static final int NUM_PRODUCERS = 2;
     private static final int NUM_CONSUMERS = 4;
     private static final int QUEUE_CAPACITY = 1000;
+
+    private static final Random random = new Random(100000000L);
 
     private static final Point POISON_PILL = new Point(2, 2);
 
@@ -35,8 +38,8 @@ public class PiParallel {
                     if (current >= NUM_POINTS) {
                         break;
                     }
-                    double x = Math.random();
-                    double y = Math.random();
+                    double x = random.nextDouble();
+                    double y = random.nextDouble();
                     Point p = new Point(x, y);
                     try {
                         queue.put(p);

@@ -6,7 +6,7 @@ public class PiSequential {
     public static void main(String[] args) {
         long iterations = 100_000_000;
         long pointsInCircle = 0;
-        Random random = new Random();
+        Random random = new Random(100000000L);
 
         long startTime = System.currentTimeMillis();
         for (long i = 0; i < iterations; i++) {

@@ -117,6 +117,10 @@ public class ParkingLotSynchronized {
         ParkingLotSynchronized parkingLot = new ParkingLotSynchronized();
         List<Car> cars = new ArrayList<>();
 
+        System.out.println("Запуск симуляции автостоянки с использованием synchronized");
+        System.out.println("Количество мест на стоянке: " + PARKING_CAPACITY);
+        System.out.println("Количество автомобилей: " + CARS_COUNT);
+
         for (int i = 1; i <= CARS_COUNT; i++) {
             Car car = new Car(i, parkingLot);
             cars.add(car);
