@@ -81,12 +81,10 @@ medical_staff = [
 ]
 
 
-# Проверка здоровья сотрудников и назначение лечения с учетом дополнительных метрик
 def health_check(employees, medical_staff):
     for employee in employees:
         assigned = False
 
-        # Проверка повышенного давления
         if employee["pressure"] > 130:
             print(
                 f"У {employee['name']} повышенное давление: {employee['pressure']}. Назначен кардиолог."
@@ -94,7 +92,6 @@ def health_check(employees, medical_staff):
             assign_doctor(employee, "Кардиолог", medical_staff)
             assigned = True
 
-        # Проверка уровня сахара (сахарный диабет или преддиабет)
         if employee["sugar"] > 6.5:
             print(
                 f"У {employee['name']} высокий уровень сахара: {employee['sugar']}. Назначен терапевт."
@@ -102,7 +99,6 @@ def health_check(employees, medical_staff):
             assign_doctor(employee, "Терапевт", medical_staff)
             assigned = True
 
-        # Проверка уровня холестерина
         if employee["cholesterol"] > 200:
             print(
                 f"У {employee['name']} повышенный уровень холестерина: {employee['cholesterol']}. Назначен кардиолог."
@@ -110,7 +106,6 @@ def health_check(employees, medical_staff):
             assign_doctor(employee, "Кардиолог", medical_staff)
             assigned = True
 
-        # Проверка индекса массы тела (BMI) — возможное ожирение
         if employee["BMI"] > 30:
             print(
                 f"У {employee['name']} повышенный индекс массы тела (BMI): {employee['BMI']}. Назначен диетолог."
@@ -118,7 +113,6 @@ def health_check(employees, medical_staff):
             assign_doctor(employee, "Диетолог", medical_staff)
             assigned = True
 
-        # Проверка уровня стресса
         if employee["stress"] > 7:
             print(
                 f"У {employee['name']} высокий уровень стресса: {employee['stress']}. Назначен психолог."
@@ -152,13 +146,10 @@ def generate_report(medical_staff):
     plt.show()
 
 
-# Симуляция рабочего дня
 def simulate_day(employees, medical_staff):
     print("Проверка состояния здоровья сотрудников:")
     health_check(employees, medical_staff)
-    # Генерация отчёта по загруженности медперсонала
     generate_report(medical_staff)
 
 
-# Запуск симуляции
 simulate_day(employees, medical_staff)
