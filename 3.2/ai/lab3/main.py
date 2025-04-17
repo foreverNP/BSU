@@ -110,7 +110,7 @@ def show_log():
 # Setup main window
 root = tk.Tk()
 root.title("Продукционная система - Обратный вывод")
-root.geometry("700x500")
+root.geometry("1920x1080")
 root.configure(bg=COLORS["bg_light"])
 
 # Create custom styles
