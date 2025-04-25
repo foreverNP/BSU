@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Календарь</string>
+    <string name="select_date_label">Выберите дату</string>
+    <string name="select_date_button">Выбрать дату</string>
+    <string name="save_button">Сохранить</string>
+    <string name="date_format_pattern">dd/MM/yyyy</string> <string name="date_saved_toast">Дата сохранена: %s</string>
+    <string name="date_not_selected_toast">Пожалуйста, сначала выберите дату</string>
+</resources>

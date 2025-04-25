@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Crypto Tracker</string>
+
+    <string name="bottom_nav_dashboard">Dashboard</string>
+    <string name="bottom_nav_portfolio">Portfolio</string>
+    <string name="bottom_nav_profile">Profile</string>
+
+    <string name="dashboard_title">Cryptocurrencies</string>
+    <string name="crypto_price_label">Price:</string>
+    <string name="crypto_change_label">24h Change:</string>
+    <string name="crypto_volume_label">24h Volume:</string>
+    <string name="error_loading_data">Error loading data</string>
+    <string name="try_again">Try Again</string>
+    <string name="loading">Loading…</string>
+
+    <string name="crypto_detail_title">Details</string>
+    <string name="buy_button">Buy (Demo)</string>
+    <string name="sell_button">Sell (Demo)</string>
+    <string name="historical_data_placeholder">Historical Chart Placeholder</string>
+    <string name="analytics_notes_placeholder">Analytical Notes Placeholder</string>
+
+    <string name="portfolio_title">Demo Portfolio</string>
+    <string name="current_balance">Current Balance:</string>
+    <string name="total_value">Total Assets Value:</string>
+    <string name="total_pnl">Total P/L:</string>
+    <string name="your_assets">Your Assets</string>
+    <string name="transaction_history">Transaction History</string>
+    <string name="no_assets">You have no assets yet.</string>
+    <string name="no_transactions">No transaction history.</string>
+    <string name="portfolio_amount">Amount:</string>
+    <string name="portfolio_avg_buy_price">Avg. Buy Price:</string>
+    <string name="portfolio_current_value">Current Value:</string>
+    <string name="transaction_type_buy">BUY</string>
+    <string name="transaction_type_sell">SELL</string>
+    <string name="transaction_details">%1$s %2$s @ %3$s</string>
+    <string name="transaction_time">Time:</string>
+
+    <string name="usd_symbol">$</string>
+    <string name="percentage_symbol">%</string>
+
+    <!-- New strings for portfolio screen -->
+    <string name="account_summary">Account Summary</string>
+    <string name="available_balance">Available Balance</string>
+    <string name="portfolio_value">Portfolio Value</string>
+    <string name="account_data_not_available">Account data not available</string>
+    <string name="empty_portfolio_message">Your portfolio is empty</string>
+    <string name="empty_portfolio_instruction">Go to a cryptocurrency page to buy assets</string>
+    <string name="bought_amount">Bought %1$s %2$s</string>
+    <string name="sold_amount">Sold %1$s %2$s</string>
+
+    <!-- New strings for detail screen -->
+    <string name="chart_placeholder">Price chart will be here</string>
+    <string name="trade">Trade</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="amount_in_crypto">Amount in %1$s</string>
+    <string name="total">Total</string>
+    <string name="execute_buy">Buy %1$s</string>
+    <string name="execute_sell">Sell %1$s</string>
+    <string name="market_info">Market Information</string>
+    <string name="market_cap">Market Cap</string>
+    <string name="volume_24h">24h Volume</string>
+    <string name="circulating_supply">Circulating Supply</string>
+    <string name="all_time_high">All Time High</string>
+    <string name="no_data_available">No data available</string>
+    <string name="percent_change_24h">24h Change</string>
+    <string name="max_supply">Max Supply</string>
+
+    <!-- Profile screen strings -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_account_info">Account Information</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_joined">Joined on</string>
+    <string name="profile_theme_settings">Theme Settings</string>
+    <string name="profile_theme_light">Light</string>
+    <string name="profile_theme_dark">Dark</string>
+    <string name="profile_theme_system">System</string>
+    <string name="profile_portfolio_settings">Portfolio Settings</string>
+    <string name="profile_reset_portfolio">Reset Portfolio</string>
+    <string name="profile_reset_portfolio_confirm">Are you sure you want to reset your portfolio?
+        All transactions will be deleted and balance restored.</string>
+    <string name="profile_logout">Logout</string>
+    <string name="profile_confirm">Confirm</string>
+    <string name="profile_cancel">Cancel</string>
+    <string name="profile_save">Save</string>
+</resources>

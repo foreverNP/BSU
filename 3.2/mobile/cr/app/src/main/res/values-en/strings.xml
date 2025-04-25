@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calendar App</string>
+    <string name="select_date_label">Select date</string>
+    <string name="select_date_button">Choose Date</string>
+    <string name="save_button">Save</string>
+    <string name="date_format_pattern">MM/dd/yyyy</string>
+    <string name="date_saved_toast">Date saved: %s</string>
+    <string name="date_not_selected_toast">Please select a date first</string>
+</resources>
