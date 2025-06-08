@@ -1,0 +1,36 @@
+[
+	{ "id": "A1B2C3D4E5F6G7H8", "type": "tab", "label": "Flow 1", "disabled": false, "info": "", "env": [] },
+	{
+		"id": "I9J0K1L2M3N4O5P6",
+		"type": "inject",
+		"z": "A1B2C3D4E5F6G7H8",
+		"name": "every 1 second to",
+		"props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+		"repeat": "1",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 110,
+		"y": 180,
+		"wires": [["Q7R8S9T0U1V2W3X4"]]
+	},
+	{
+		"id": "Q7R8S9T0U1V2W3X4",
+		"type": "debug",
+		"z": "A1B2C3D4E5F6G7H8",
+		"name": "debug 1",
+		"active": true,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 320,
+		"y": 180,
+		"wires": []
+	}
+]

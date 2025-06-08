@@ -30,7 +30,7 @@ import androidx.room.Room
 import kotlinx.coroutines.launch
 
 object ApiConfig {
-    const val apiKey = "44df0497941ac33dc89fc435cf4da681"
+    const val apiKey = ""
 }
 
 class MainActivity : ComponentActivity() {

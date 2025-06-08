@@ -1,0 +1,58 @@
+[
+	{ "id": "Z1Y2X3W4V5U6T7S8", "type": "tab", "label": "Flow 1", "disabled": false, "info": "", "env": [] },
+	{
+		"id": "R6Q5P4O3N2M1L0K9",
+		"type": "inject",
+		"z": "Z1Y2X3W4V5U6T7S8",
+		"name": "inject",
+		"props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 90,
+		"y": 220,
+		"wires": [["J8I7H6G5F4E3D2C1"]]
+	},
+	{
+		"id": "J8I7H6G5F4E3D2C1",
+		"type": "rpi-sensehatsim out",
+		"z": "Z1Y2X3W4V5U6T7S8",
+		"name": "",
+		"x": 260,
+		"y": 220,
+		"wires": []
+	},
+	{
+		"id": "B2A3C4D5E6F7G8H9",
+		"type": "rpi-sensehatsim in",
+		"z": "Z1Y2X3W4V5U6T7S8",
+		"name": "",
+		"motion": false,
+		"env": true,
+		"stick": true,
+		"x": 120,
+		"y": 120,
+		"wires": [["U0V9W8X7Y6Z5A4B3"]]
+	},
+	{
+		"id": "U0V9W8X7Y6Z5A4B3",
+		"type": "debug",
+		"z": "Z1Y2X3W4V5U6T7S8",
+		"name": "msg.payload",
+		"active": true,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "payload",
+		"targetType": "msg",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 330,
+		"y": 120,
+		"wires": []
+	}
+]
