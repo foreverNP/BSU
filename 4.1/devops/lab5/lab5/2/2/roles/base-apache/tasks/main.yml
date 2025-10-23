@@ -1,0 +1,9 @@
+---
+- name: Install Apache (package task example)
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apache2
+    - httpd
+  ignore_errors: true

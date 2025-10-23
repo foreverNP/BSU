@@ -282,7 +282,6 @@ pub fn par_mul_block_ikj2(a: &[f64], b: &[f64], n: usize, r: usize) -> Vec<f64> 
             }
         }
 
-        // редукция локального буфера в глобальную C (с mutex)
         let mut c_guard = c.lock().unwrap();
         for (li, i) in (i_start..i_end).enumerate() {
             let base_i = n * i;

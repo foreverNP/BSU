@@ -1,0 +1,9 @@
+---
+- name: Deploy simple index.html template
+  copy:
+    dest: /var/www/html/index.html
+    content: "<h1>Site deployed by role web (placeholder)</h1>\n"
+    owner: root
+    group: root
+    mode: '0644'
+  ignore_errors: true

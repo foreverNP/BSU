@@ -1,0 +1,4 @@
+---
+- name: Placeholder - haproxy config
+  debug:
+    msg: "HAProxy role: configure your haproxy here (manage service, config templates, stats socket)"

@@ -1,0 +1,6 @@
+[application:vars]
+
+mysql_host=ansible-app-3
+mysql_port=3306
+mysql_user=test_user
+mysql_password=password

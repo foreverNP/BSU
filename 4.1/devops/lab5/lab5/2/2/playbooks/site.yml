@@ -1,0 +1,54 @@
+---
+- name: Gather minikube nodes
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Get minikube node names
+      command: kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+      register: nodes_out
+      changed_when: false
+
+    - name: Set fact with node list
+      set_fact:
+        minikube_nodes: "{{ nodes_out.stdout_lines }}"
+
+    - name: Show nodes
+      debug:
+        var: minikube_nodes
+
+- name: Apply 'common' config to all minikube nodes
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Ensure basic packages + motd on each node
+      shell: |
+        echo "Applying common tasks to {{ item }}"
+        minikube ssh -n "{{ item }}" -- 'sudo apt-get update || true; sudo apt-get install -y curl || true; echo "Managed by Ansible (common)" | sudo tee /etc/motd'
+      loop: "{{ minikube_nodes }}"
+
+- name: Deploy web (apache) on web nodes
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Install Apache and deploy demo index.html
+      shell: |
+        echo "Deploying web to {{ item }}"
+        minikube ssh -n "{{ item }}" -- '
+          if command -v apt-get >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y apache2 || true
+            sudo systemctl enable apache2 || true
+            sudo systemctl restart apache2 || true
+            echo "<h1>Deployed by Ansible on {{ item }}</h1>" | sudo tee /var/www/html/index.html
+          elif command -v yum >/dev/null 2>&1; then
+            sudo yum install -y httpd || true
+            sudo systemctl enable httpd || true
+            sudo systemctl restart httpd || true
+            echo "<h1>Deployed by Ansible on {{ item }}</h1>" | sudo tee /var/www/html/index.html
+          else
+            echo "No known package manager on node"
+          fi
+        '
+      loop: "{{ minikube_nodes }}"

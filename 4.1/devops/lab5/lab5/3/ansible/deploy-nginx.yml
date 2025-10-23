@@ -1,0 +1,42 @@
+---
+- name: Deploy nginx DaemonSet to all nodes
+  hosts: local
+  connection: local
+  gather_facts: no
+
+  vars:
+    manifest_path: "./manifests/nginx-daemonset.yaml"
+
+  tasks:
+    - name: Wait for kubeconfig and API to be ready
+      shell: |
+        kubectl version --client >/dev/null 2>&1 || exit 1
+        # try reach api-server
+        kubectl get nodes --no-headers >/dev/null 2>&1
+      register: kubectl_check
+      retries: 10
+      delay: 3
+      until: kubectl_check.rc == 0
+      changed_when: false
+
+    - name: Apply nginx DaemonSet (kubectl apply)
+      shell: kubectl apply -f {{ manifest_path }}
+      args:
+        chdir: "{{ playbook_dir }}"
+      register: apply_out
+
+    - name: Show kubectl apply output
+      debug:
+        var: apply_out.stdout_lines
+
+    - name: Wait for DaemonSet pods to be ready (max 120s)
+      shell: |
+        kubectl -n default rollout status daemonset/nginx-daemonset --timeout=120s
+      register: rollout
+      failed_when: rollout.rc != 0
+
+    - name: Show pods (wide)
+      shell: kubectl get pods -o wide
+      register: pods
+    - debug:
+        var: pods.stdout_lines

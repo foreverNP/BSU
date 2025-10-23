@@ -1,0 +1,13 @@
+[ansible_master]
+ansible-ansible-1
+
+[database]
+ansible-app-3
+
+[application]
+ansible-app-1
+ansible-app-2
+
+[webapp:children]
+database
+application

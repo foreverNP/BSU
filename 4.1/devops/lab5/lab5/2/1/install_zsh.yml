@@ -1,0 +1,25 @@
+- name: Install zsh on minikube nodes via minikube ssh
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Get minikube node names
+      command: kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+      register: nodes_out
+      changed_when: false
+
+    - name: Debug - show found nodes
+      debug:
+        msg: "{{ nodes_out.stdout_lines }}"
+
+    - name: Install zsh on each node via minikube ssh
+      shell: |
+        echo "Installing zsh on {{ item }}"
+        minikube ssh -n "{{ item }}" -- 'sudo apt update && sudo apt install -y zsh || sudo yum install -y zsh || true'
+      loop: "{{ nodes_out.stdout_lines }}"
+      register: install_results
+
+    - name: Show installation results
+      debug:
+        var: install_results.results

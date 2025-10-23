@@ -1,0 +1,4 @@
+---
+- name: Placeholder - ensure mysql service present (demo)
+  debug:
+    msg: "This is a placeholder for db role. In real world, would install & configure MySQL."

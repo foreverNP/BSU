@@ -1,0 +1,48 @@
+- name: Get minikube nodes list
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Get nodes
+      command: kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+      register: nodes_out
+      changed_when: false
+    - name: Set nodes fact
+      set_fact:
+        minikube_nodes: "{{ nodes_out.stdout_lines }}"
+    - name: "Pre-task: disable monitoring/put out of rotation (simulated)"
+      debug:
+        msg: "Would disable monitoring / remove {{ cur_node }} from LB pool (simulate)"
+      loop: "{{ minikube_nodes }}"
+      loop_control:
+        loop_var: cur_node
+    - name: Update app on the node (install packages + replace index)
+      vars:
+        demo_app_file: /var/www/html/index.html
+      shell: |
+        echo "Updating app on {{ cur_node }}"
+        minikube ssh -n "{{ cur_node }}" -- '
+          if command -v apt-get >/dev/null 2>&1; then
+            sudo apt-get update || true
+            sudo apt-get install -y apache2 || true
+            echo "<h1>Rolling-updated at $(date)</h1>" | sudo tee {{ demo_app_file }}
+            sudo systemctl restart apache2 || true
+          elif command -v yum >/dev/null 2>&1; then
+            sudo yum install -y httpd || true
+            echo "<h1>Rolling-updated at $(date)</h1>" | sudo tee {{ demo_app_file }}
+            sudo systemctl restart httpd || true
+          fi
+        '
+      register: update_result
+      loop: "{{ minikube_nodes }}"
+      loop_control:
+        loop_var: cur_node
+    - name: "Post-task: re-enable monitoring/put back into rotation (simulated)"
+      debug:
+        msg: "Would re-enable monitoring / add {{ cur_node }} back to LB pool (simulate)"
+      loop: "{{ minikube_nodes }}"
+      loop_control:
+        loop_var: cur_node
+    - name: Show update result for node
+      debug:
+        var: update_result.stdout_lines

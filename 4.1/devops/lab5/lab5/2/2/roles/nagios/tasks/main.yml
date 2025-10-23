@@ -1,0 +1,4 @@
+---
+- name: Placeholder - nagios role
+  debug:
+    msg: "Nagios role: install nagios and configure checks"
